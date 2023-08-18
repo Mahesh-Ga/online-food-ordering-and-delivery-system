@@ -78,6 +78,7 @@ public class CartServiceImpl implements CartService {
 	public void removeFromCart() {
 		// TODO Auto-generated method stub
 		System.out.println("Mahesh");
+		System.out.println("Kalpesh");
 		
 	}
 }
