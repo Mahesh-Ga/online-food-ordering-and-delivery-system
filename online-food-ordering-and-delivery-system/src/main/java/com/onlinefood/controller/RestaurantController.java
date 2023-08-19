@@ -29,12 +29,12 @@ public class RestaurantController {
 	RestaurantService restaurantService;
 	
 	@PostMapping
-	public RestaurantResponseDTO addRestaurant(@RequestBody RestaurantSignupDTO restaurant) {
+	public ApiResponse addRestaurant(@RequestBody RestaurantSignupDTO restaurant) {
 		return restaurantService.addRestaurant(restaurant);
 	}
 	
 	@PostMapping("/addmenu/{resId}")
-	public RestaurantResponseDTO addMenu(@PathVariable Long resId,@RequestBody RestaurantNewMenuDTO menu)
+	public ApiResponse addMenu(@PathVariable Long resId,@RequestBody RestaurantNewMenuDTO menu)
     {
 		return restaurantService.addMenu(resId, menu);
 		

@@ -10,14 +10,20 @@ import com.onlinefood.dto.RestaurantSignupDTO;
 
 public interface RestaurantService {
 
-	public RestaurantResponseDTO addRestaurant(RestaurantSignupDTO restaurant);
-	public RestaurantResponseDTO removeRestaurant(Long restaurantId);
-	public RestaurantResponseDTO addMenu(Long restaurantId,RestaurantNewMenuDTO menu);
+	public ApiResponse addRestaurant(RestaurantSignupDTO restaurant);
+	public ApiResponse removeRestaurant(Long restaurantId);
+	public ApiResponse addMenu(Long restaurantId,RestaurantNewMenuDTO menu);
 	public List<GetMenuDTO> getAllMenu();
 	public List<GetMenuDTO> getAllMenuByRestaurantId(Long restaurantId);
 	public GetMenuDTO getMenuById(Long menuId);
 	public ApiResponse updateMenu( RestaurantNewMenuDTO menu,Long menuId);
 	public ApiResponse removeMenu( Long menuId);
-	
+
+
+	public List<RestaurantResponseDTO> pendingRestaurantRequests();
+	public ApiResponse approveRestaurant(Long restaurantId);
+	public ApiResponse rejectRestaurant(Long restaurantId);
+	public List<RestaurantResponseDTO> getAllActiveRestaurants();
+  
 	
 }
