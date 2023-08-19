@@ -33,24 +33,25 @@ public class RestaurantServiceImpl implements RestaurantService {
 	ModelMapper mapper;
 
 	@Override
-	public RestaurantResponseDTO addRestaurant(RestaurantSignupDTO restaurant) {
+	public ApiResponse addRestaurant(RestaurantSignupDTO restaurant) {
 		resRepo.save(mapper.map(restaurant, Restaurant.class));
-		return new RestaurantResponseDTO("Restaurant added Sucessfully");
+		return new ApiResponse("Restaurant added Sucessfully");
 	}
 
 	@Override
-	public RestaurantResponseDTO removeRestaurant(Long restaurantId) {
-		Optional<Restaurant> restaurant = resRepo.findById(restaurantId);
-		return null;
-		// if we restaurant is getting deleted then all its menu should be deleted
+	public ApiResponse removeRestaurant(Long restaurantId) {
+		Restaurant res = resRepo.findById(restaurantId).orElseThrow();
+		res.setDeleted(true);
+		return new ApiResponse("sucessfully removed");	
+		// if we restaurant is getting deleted then all its menu should be deleted	
 	}
 
 	@Override
-	public RestaurantResponseDTO addMenu(Long restaurantId, RestaurantNewMenuDTO menu) {
+	public ApiResponse addMenu(Long restaurantId, RestaurantNewMenuDTO menu) {
 		Restaurant restaurant = resRepo.findById(restaurantId)
 				.orElseThrow(() -> new ResourceNotFoundException("Invalid Restaurant Id"));
 		restaurant.addMenu(mapper.map(menu, Menu.class));
-		return new RestaurantResponseDTO("Menu Added Sucessfully");
+		return new ApiResponse("Menu Added Sucessfully");
 	}
 
 	@Override
@@ -97,4 +98,43 @@ public class RestaurantServiceImpl implements RestaurantService {
 		return new ApiResponse("Menu Deleted Sucessfully");
 	}
 
+	
+	
+	@Override
+	public List<RestaurantResponseDTO> pendingRestaurantRequests() {
+
+		return resRepo.getPendingRestaurants().stream()
+				.map(res->mapper.map(res, RestaurantResponseDTO.class))
+				.collect(Collectors.toList());
+		
+	}
+
+	@Override
+	public List<RestaurantResponseDTO> getAllActiveRestaurants() {
+		return resRepo.getAllActiveRestauraants().stream()
+				.map(res->mapper.map(res, RestaurantResponseDTO.class))
+				.collect(Collectors.toList());
+		
+	}
+
+	@Override
+	public ApiResponse approveRestaurant(Long id) {
+		Restaurant res = resRepo.findById(id).orElseThrow();
+		res.setApproved(true);
+		return new ApiResponse("sucessfully approved");
+	}
+
+	@Override
+	public ApiResponse rejectRestaurant(Long id) {
+		Restaurant res = resRepo.findById(id).orElseThrow();
+		if (!res.isApproved()) {
+			resRepo.delete(res);
+			return new ApiResponse("sucessfully rejected");
+		} else
+			return new ApiResponse("failed to reject");
+	}
+
+
+	
+	
 }
