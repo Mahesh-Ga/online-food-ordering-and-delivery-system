@@ -125,7 +125,7 @@ public class CustomerController {
 	@PostMapping("/orders/{customerId}")
 	public ResponseEntity<String> addOrderToCustomer(@PathVariable Long customerId,
 			@RequestBody CustomerAddOrderDTO order) {
-		customerService.addOrderToCustomer(customerId, order);
+		customerService.placeOrder(customerId, order);
 		return ResponseEntity.ok("Order added to customer.");
 	}
 

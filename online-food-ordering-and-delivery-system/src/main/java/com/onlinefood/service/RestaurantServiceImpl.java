@@ -17,6 +17,7 @@ import com.onlinefood.dto.RestaurantNewMenuDTO;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
 import com.onlinefood.entities.Menu;
+import com.onlinefood.entities.Order;
 import com.onlinefood.entities.Restaurant;
 import com.onlinefood.entities.RestaurantStatus;
 import com.onlinefood.repository.MenuRepo;
@@ -137,6 +138,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 			return new ApiResponse("failed to reject");
 	}
 
-	
+//	@Override
+//	public List<Order> getOrderList() {
+//	
+//	}
+//	
 	
 }
