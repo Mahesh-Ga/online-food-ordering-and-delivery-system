@@ -18,6 +18,7 @@ import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
 import com.onlinefood.entities.Menu;
 import com.onlinefood.entities.Restaurant;
+import com.onlinefood.entities.RestaurantStatus;
 import com.onlinefood.repository.MenuRepo;
 import com.onlinefood.repository.RestaurantRepo;
 
@@ -34,14 +35,16 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 	@Override
 	public ApiResponse addRestaurant(RestaurantSignupDTO restaurant) {
-		resRepo.save(mapper.map(restaurant, Restaurant.class));
+		Restaurant res = mapper.map(restaurant, Restaurant.class);
+		res.setRestaurantStatus(RestaurantStatus.PENDING);
+		resRepo.save(res);
 		return new ApiResponse("Restaurant added Sucessfully");
 	}
 
 	@Override
 	public ApiResponse removeRestaurant(Long restaurantId) {
 		Restaurant res = resRepo.findById(restaurantId).orElseThrow();
-		res.setDeleted(true);
+		res.setRestaurantStatus(RestaurantStatus.DELETED);
 		return new ApiResponse("sucessfully removed");	
 		// if we restaurant is getting deleted then all its menu should be deleted	
 	}
@@ -120,20 +123,19 @@ public class RestaurantServiceImpl implements RestaurantService {
 	@Override
 	public ApiResponse approveRestaurant(Long id) {
 		Restaurant res = resRepo.findById(id).orElseThrow();
-		res.setApproved(true);
+		res.setRestaurantStatus(RestaurantStatus.APPROVED);
 		return new ApiResponse("sucessfully approved");
 	}
 
 	@Override
 	public ApiResponse rejectRestaurant(Long id) {
 		Restaurant res = resRepo.findById(id).orElseThrow();
-		if (!res.isApproved()) {
+		if (res.getRestaurantStatus().equals(RestaurantStatus.PENDING)) {
 			resRepo.delete(res);
 			return new ApiResponse("sucessfully rejected");
 		} else
 			return new ApiResponse("failed to reject");
 	}
-
 
 	
 	

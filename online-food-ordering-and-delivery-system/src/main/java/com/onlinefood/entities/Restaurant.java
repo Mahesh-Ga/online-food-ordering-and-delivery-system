@@ -85,15 +85,9 @@ public class Restaurant extends BaseEntity {
 		o.setRestaurant(null);
 	}
 
-
-	@Column(name="approved")
-	private boolean approved;
-	
-	@Column(name="open")
-	private boolean open;
-	
-	@Column(name="deleted")
-	private boolean deleted;
+	@Enumerated(EnumType.STRING)
+	@Column(length = 20)
+	private RestaurantStatus restaurantStatus;
 
 	
 }
