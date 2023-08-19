@@ -18,6 +18,6 @@ public interface RestaurantService {
 	public GetMenuDTO getMenuById(Long menuId);
 	public ApiResponse updateMenu( RestaurantNewMenuDTO menu,Long menuId);
 	public ApiResponse removeMenu( Long menuId);
-	
-	
+
+		
 }
