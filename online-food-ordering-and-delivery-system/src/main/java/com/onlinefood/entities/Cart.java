@@ -1,10 +1,12 @@
 package com.onlinefood.entities;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -33,8 +35,7 @@ public class Cart extends BaseEntity {
 
 	@Column(name = "cart_timestamp")
 	private LocalDateTime cartTimestamp;
-	
-	@Column(columnDefinition = "boolean default false")
-	private boolean placed;
-	
+
+	@OneToMany(mappedBy = "cartId")
+	private List<CartItem> cartItems;
 }

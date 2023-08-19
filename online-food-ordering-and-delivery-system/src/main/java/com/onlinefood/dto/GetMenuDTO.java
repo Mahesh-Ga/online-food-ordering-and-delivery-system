@@ -1,7 +1,6 @@
 package com.onlinefood.dto;
 
-import java.util.Locale.Category;
-
+import com.onlinefood.entities.Category;
 import com.onlinefood.entities.MenuType;
 
 import lombok.AllArgsConstructor;
@@ -16,6 +15,8 @@ import lombok.Setter;
 public class GetMenuDTO {
 	private Long id;
 
+	private Long restaurant_id;
+	
 	private String name;
 
 	private MenuType menuType;
@@ -25,5 +26,7 @@ public class GetMenuDTO {
 	private double price;
 
 	private int rating;
+	
+
 
 }

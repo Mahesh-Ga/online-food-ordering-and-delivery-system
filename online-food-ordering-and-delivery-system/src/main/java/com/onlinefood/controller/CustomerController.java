@@ -21,6 +21,7 @@ import com.onlinefood.dto.CustomerAddAddressDTO;
 import com.onlinefood.dto.CustomerAddDTO;
 import com.onlinefood.dto.CustomerAddOrderDTO;
 import com.onlinefood.dto.CustomerChangePasswordRequestDTO;
+import com.onlinefood.dto.CustomerPlaceOrderDTO;
 import com.onlinefood.dto.CustomerRespDTO;
 import com.onlinefood.dto.CustomerUpdateDTO;
 import com.onlinefood.entities.CustomerAddress;
@@ -122,10 +123,9 @@ public class CustomerController {
 
 	// -----------------------------------------------------------------
 
-	@PostMapping("/orders/{customerId}")
-	public ResponseEntity<String> addOrderToCustomer(@PathVariable Long customerId,
-			@RequestBody CustomerAddOrderDTO order) {
-		customerService.placeOrder(customerId, order);
+	@PostMapping("/orders/{email}")
+	public ResponseEntity<String> placeOrder(@PathVariable String email, @RequestBody CustomerPlaceOrderDTO customerOrder) {
+		customerService.placeOrder(email,customerOrder);
 		return ResponseEntity.ok("Order added to customer.");
 	}
 

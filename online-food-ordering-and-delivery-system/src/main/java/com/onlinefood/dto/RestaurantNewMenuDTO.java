@@ -1,8 +1,8 @@
 package com.onlinefood.dto;
 
 
-import java.util.Locale.Category;
 
+import com.onlinefood.entities.Category;
 import com.onlinefood.entities.MenuType;
 
 import lombok.AllArgsConstructor;
