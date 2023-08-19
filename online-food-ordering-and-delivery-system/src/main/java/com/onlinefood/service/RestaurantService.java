@@ -20,11 +20,6 @@ public interface RestaurantService {
 	public ApiResponse updateMenu( RestaurantNewMenuDTO menu,Long menuId);
 	public ApiResponse removeMenu( Long menuId);
 
-
-	public List<RestaurantResponseDTO> pendingRestaurantRequests();
-	public ApiResponse approveRestaurant(Long restaurantId);
-	public ApiResponse rejectRestaurant(Long restaurantId);
-	public List<RestaurantResponseDTO> getAllActiveRestaurants();
   
 //	public List<Order> getOrderList();
 }

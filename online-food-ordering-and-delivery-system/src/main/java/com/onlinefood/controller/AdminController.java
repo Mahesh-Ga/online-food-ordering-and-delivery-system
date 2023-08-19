@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.onlinefood.dto.ApiResponse;
+import com.onlinefood.dto.DeliveryPartnerResponceDto;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.entities.Restaurant;
+import com.onlinefood.service.AdminService;
 import com.onlinefood.service.RestaurantService;
 
 @RestController
@@ -26,35 +28,66 @@ public class AdminController {
 // test	
 
 	@Autowired
-	RestaurantService resservice;
+	AdminService adminService;
 
 	@GetMapping("/pending/restaurant")
 	public List<RestaurantResponseDTO> getPendingRestaurants() {
-		return resservice.pendingRestaurantRequests();
+		return adminService.pendingRestaurantRequests();
 	}
 
 	@GetMapping("/restaurant")
 	public List< RestaurantResponseDTO > getAllRestaurants() {
-		return resservice.getAllActiveRestaurants();
+		return adminService.getAllActiveRestaurants();
 	}
 
 	@PutMapping("/approve/restaurant/{id}")
 	public ApiResponse approveRestaurant(@PathVariable Long id) {
 
-		return resservice.approveRestaurant(id);
+		return adminService.approveRestaurant(id);
 	}
 
 	@PutMapping("/remove/restaurant/{id}")
 	public ApiResponse removeRestaurant(@PathVariable Long id) {
 
-		return resservice.removeRestaurant(id);
+		return adminService.removeRestaurant(id);
 	}
 
 	@DeleteMapping("/restaurant/{id}")
 	public ApiResponse rejectRestaurant(@PathVariable Long id) {
 
-		return resservice.rejectRestaurant(id);
+		return adminService.rejectRestaurant(id);
 	}
 
+
+
+	@GetMapping("/pending/deliverypartner")
+	public List<DeliveryPartnerResponceDto> getPendingDeliveryPartner() {
+		return adminService.pendingDeliveryPartnerRequests();
+	}
+
+	@GetMapping("/deliverypartner")
+	public List< DeliveryPartnerResponceDto > getAllDeliveryPartners() {
+		return adminService.getAllActiveDeliveryPartners();
+	}
+
+	@PutMapping("/approve/deliverypartner/{id}")
+	public ApiResponse approveDeliveryPartner(@PathVariable Long id) {
+
+		return adminService.approveDeliveryPartner(id);
+	}
+
+	@PutMapping("/remove/deliverypartner/{id}")
+	public ApiResponse removeDeliveryPartner(@PathVariable Long id) {
+
+		return adminService.removeDeliveryPartner(id);
+	}
+
+	@DeleteMapping("/deliverypartner/{id}")
+	public ApiResponse rejectDeliveryPartner(@PathVariable Long id) {
+
+		return adminService.rejectDeliveryPartner(id);
+	}	
+
+	
 	
 }

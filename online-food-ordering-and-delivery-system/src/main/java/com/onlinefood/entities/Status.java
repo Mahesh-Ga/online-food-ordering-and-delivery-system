@@ -1,6 +1,6 @@
 package com.onlinefood.entities;
 
-public enum RestaurantStatus {
+public enum Status {
 	
 	PENDING,APPROVED,OPEN,SUSPENDED,DELETED
 	
