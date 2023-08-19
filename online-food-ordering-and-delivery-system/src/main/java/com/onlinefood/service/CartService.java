@@ -9,5 +9,5 @@ public interface CartService {
 	Cart getOrCreateCart(String email,LocalDateTime cartTimestamp);
 	void addToCart(Cart cart, Long menuItemId, int quantity);
 	Cart getCart(String email);
-	void removeFromCart();
+	void removeCartItem(String email,Long menuItemId);
 }
