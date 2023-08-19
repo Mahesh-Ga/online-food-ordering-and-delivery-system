@@ -28,7 +28,7 @@ public interface CustomerService {
 	CustomerAddress updateAddress(Long addressId, CustomerAddAddressDTO updatedAddress);
 
 	//order
-	void addOrderToCustomer(Long customerId, CustomerAddOrderDTO order);
+	void placeOrder(Long customerId, CustomerAddOrderDTO order/*, Long selectedAddressId, Long cartId*/);
 		
 	
 

@@ -18,9 +18,11 @@ import com.onlinefood.dto.CustomerRespDTO;
 import com.onlinefood.dto.CustomerUpdateDTO;
 import com.onlinefood.entities.CustomerAddress;
 import com.onlinefood.entities.Order;
+import com.onlinefood.repository.CartRepo;
 import com.onlinefood.repository.CustomerAddressRepo;
 import com.onlinefood.repository.CustomerRepo;
 import com.onlinefood.repository.OrderRepo;
+import com.onlinefood.entities.Cart;
 import com.onlinefood.entities.Customer;
 
 @Service
@@ -41,6 +43,9 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	private CustomerAddressRepo customerAddressRepo;
+
+	@Autowired
+	private CartRepo cartRepo;
 
 	@Override
 	public CustomerRespDTO getCustomer(String email) {
@@ -137,10 +142,14 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public void addOrderToCustomer(Long customerId, CustomerAddOrderDTO order) {
+	public void placeOrder(Long customerId, CustomerAddOrderDTO order/*, Long selectedAddressId, Long cartId*/) {
 		Customer customer = customerRepo.findById(customerId)
 				.orElseThrow(() -> new ResourceNotFoundException("Invalid Customer Id !!!!"));
 		Order o = mapper.map(order, Order.class);
+//		CustomerAddress customerAddress = customerAddressRepo.findAddressById(selectedAddressId);
+//		o.setCustomerAddress(customerAddress);
+//		Cart cart = cartRepo.findById(cartId).orElseThrow(() -> new ResourceNotFoundException("Invalid cart Id !!!!"));
+//		o.setCart(cart);
 		customer.addOrder(o);
 		orderRepo.save(o);
 

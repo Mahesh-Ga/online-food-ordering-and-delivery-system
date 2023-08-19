@@ -67,9 +67,11 @@ public class RestaurantController {
 		return restaurantService.updateMenu(menu, menuId);
 	}
 
+	
 	@DeleteMapping("/menu/{menuId}")
 	public ApiResponse updateMenu(@PathVariable Long menuId) {
 		return restaurantService.removeMenu(menuId);
 	}
+	
 	
 }

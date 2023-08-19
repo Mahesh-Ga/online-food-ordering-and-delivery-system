@@ -89,7 +89,7 @@ public class Restaurant extends BaseEntity {
 	@Column(name="approved")
 	private boolean approved;
 	
-	@Column(name="open")
+	 @Column(name="open")
 	private boolean open;
 	
 	@Column(name="deleted")
