@@ -87,7 +87,7 @@ public class Restaurant extends BaseEntity {
 
 	@Enumerated(EnumType.STRING)
 	@Column(length = 20)
-	private RestaurantStatus restaurantStatus;
+	private Status restaurantStatus;
 
 	
 }

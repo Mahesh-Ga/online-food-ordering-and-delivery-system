@@ -7,6 +7,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -64,4 +66,10 @@ public class DeliveryPartner extends BaseEntity{
 	
     @Embedded
     private Address address;
+    
+	@Enumerated(EnumType.STRING)
+	@Column(length = 20)
+	private Status status;
+
+    
 }
