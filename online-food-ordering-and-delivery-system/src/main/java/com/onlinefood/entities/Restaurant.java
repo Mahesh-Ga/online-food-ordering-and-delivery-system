@@ -84,5 +84,16 @@ public class Restaurant extends BaseEntity {
 		orderList.remove(o);
 		o.setRestaurant(null);
 	}
+
+
+	@Column(name="approved")
+	private boolean approved;
+	
+	@Column(name="open")
+	private boolean open;
+	
+	@Column(name="deleted")
+	private boolean deleted;
+
 	
 }
