@@ -23,7 +23,7 @@ import com.onlinefood.service.RestaurantService;
 @CrossOrigin(origins = "http://localhost:3000")
 public class AdminController {
     // comment 
-	
+// test	
 
 	@Autowired
 	RestaurantService resservice;
