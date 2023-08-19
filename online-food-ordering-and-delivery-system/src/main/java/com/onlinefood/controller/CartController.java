@@ -41,12 +41,12 @@ public class CartController {
 
 		return new ResponseEntity<>("Food item added to the cart", HttpStatus.OK);
 	}
-	
-	@DeleteMapping("/{email}")
-	public ResponseEntity<String> removeFromCart(@PathVariable String email) {
+
+	@DeleteMapping("/{email}/{menuItemId}")
+	public ResponseEntity<String> removeCartItem(@PathVariable String email, @PathVariable Long menuItemId) {
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        String userEmail = authentication.getName();
-
+		cartService.removeCartItem(email, menuItemId);
 		return new ResponseEntity<>("Food item deleted from the cart", HttpStatus.OK);
 	}
 
