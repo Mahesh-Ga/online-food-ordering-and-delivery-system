@@ -9,10 +9,10 @@ import com.onlinefood.entities.Restaurant;
 
 public interface RestaurantRepo extends JpaRepository<Restaurant, Long> {
 	
-	@Query("select r from Restaurant r where r.approved = false")
+	@Query("select r from Restaurant r where r.restaurantStatus = 'PENDING'")
 	List<Restaurant> getPendingRestaurants();
 	
-	@Query("select r from Restaurant r where r.approved = true and r.deleted = false")
+	@Query("select r from Restaurant r where r.restaurantStatus = 'APPROVED' ")
 	List<Restaurant> getAllActiveRestauraants();
 	
 
