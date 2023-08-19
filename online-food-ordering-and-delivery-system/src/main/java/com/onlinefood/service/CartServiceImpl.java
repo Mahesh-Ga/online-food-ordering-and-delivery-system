@@ -75,6 +75,7 @@ public class CartServiceImpl implements CartService {
 	}
 
 	@Override
+
 	public void removeCartItem(String email, Long menuItemId) {
 		Customer customer = customerRepo.findByEmail(email);
 		if (customer != null) {
@@ -90,5 +91,6 @@ public class CartServiceImpl implements CartService {
 		else {
 			throw new ResourceNotFoundException("Invalid customer email");
 		}
-	}
+
+	
 }
