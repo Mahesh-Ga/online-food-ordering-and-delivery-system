@@ -73,11 +73,22 @@ public class CartServiceImpl implements CartService {
 		cartItem.setQuantity(quantity);
 		cartItemRepo.save(cartItem);
 	}
-	
+
 	@Override
-	public void removeFromCart() {
-		// TODO Auto-generated method stub
-		System.out.println("Mahesh");
-		
+	public void removeCartItem(String email, Long menuItemId) {
+		Customer customer = customerRepo.findByEmail(email);
+		if (customer != null) {
+			Cart cart = cartRepo.findByCustomer(customer);
+			if (cart == null)
+				throw new ResourceNotFoundException("No Cart found");
+			Menu menu = menuRepo.findById(menuItemId)
+					.orElseThrow(() -> new ResourceNotFoundException("Invalid menu Id"));
+			CartItem cartItem = cartItemRepo.findByMenuItemIdAndCartId(menu, cart);
+
+			cartItemRepo.delete(cartItem);
+		}
+		else {
+			throw new ResourceNotFoundException("Invalid customer email");
+		}
 	}
 }
