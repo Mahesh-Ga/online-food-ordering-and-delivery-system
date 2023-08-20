@@ -55,7 +55,6 @@ public class CartServiceImpl implements CartService {
 				cart = new Cart();
 				cart.setCustomer(customer);
 				cart.setCartTimestamp(timestamp);
-				cart.setPlaced(false);
 				cartRepo.save(cart);
 			}
 			return cart;

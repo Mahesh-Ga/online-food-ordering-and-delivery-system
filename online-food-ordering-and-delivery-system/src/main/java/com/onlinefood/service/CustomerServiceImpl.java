@@ -1,5 +1,7 @@
 package com.onlinefood.service;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,20 +9,27 @@ import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 
 import com.onlinefood.custom_exceptions.ApiException;
 import com.onlinefood.custom_exceptions.ResourceNotFoundException;
+import com.onlinefood.dto.CartDetails;
 import com.onlinefood.dto.CustomerAddAddressDTO;
 import com.onlinefood.dto.CustomerAddDTO;
-import com.onlinefood.dto.CustomerAddOrderDTO;
+import com.onlinefood.dto.CustomerPlaceOrderDTO;
 import com.onlinefood.dto.CustomerRespDTO;
 import com.onlinefood.dto.CustomerUpdateDTO;
 import com.onlinefood.entities.CustomerAddress;
 import com.onlinefood.entities.Order;
+import com.onlinefood.entities.Restaurant;
+import com.onlinefood.repository.CartItemRepo;
+import com.onlinefood.repository.CartRepo;
 import com.onlinefood.repository.CustomerAddressRepo;
 import com.onlinefood.repository.CustomerRepo;
 import com.onlinefood.repository.OrderRepo;
+import com.onlinefood.repository.RestaurantRepo;
+import com.onlinefood.entities.Cart;
 import com.onlinefood.entities.Customer;
 
 @Service
@@ -41,6 +50,15 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	private CustomerAddressRepo customerAddressRepo;
+
+	@Autowired
+	private CartRepo cartRepo;
+
+	@Autowired
+	private CartItemRepo cartItemRepo;
+
+	@Autowired
+	private RestaurantRepo restaurantRepo;
 
 	@Override
 	public CustomerRespDTO getCustomer(String email) {
@@ -137,13 +155,41 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public void addOrderToCustomer(Long customerId, CustomerAddOrderDTO order) {
-		Customer customer = customerRepo.findById(customerId)
-				.orElseThrow(() -> new ResourceNotFoundException("Invalid Customer Id !!!!"));
-		Order o = mapper.map(order, Order.class);
-		customer.addOrder(o);
-		orderRepo.save(o);
+	public void placeOrder(String email, CustomerPlaceOrderDTO customerOrder) {
 
+		Customer customer = customerRepo.findByEmail(email);
+		if (customer == null)
+			throw new ResourceNotFoundException("Invalid customer Email !!!!");
+		else {
+			Cart customerCart = cartRepo.findByCustomer(customer);
+			Order o = mapper.map(customerOrder, Order.class);
+			CustomerAddress customerAddress = customerAddressRepo
+					.findAddressById(customerOrder.getSelectedCustomerAddressId());
+			o.setCustomerAddress(customerAddress);
+
+//			List<CartDetails> cartDetails = cartItemRepo.getCartDetails(customerCart.getId());
+
+			List<Object[]> results = cartItemRepo.getCartDetails(customerCart.getId());
+			List<CartDetails> cartDetails = new ArrayList<>();
+
+			for (Object[] result : results) {
+				CartDetails cartD = new CartDetails((String) result[0], (double) result[1], (int) result[2],
+						(BigInteger) result[3]);
+				cartDetails.add(cartD);
+			}
+
+			Restaurant restaurant = restaurantRepo.findById(cartDetails.get(0).getRestaurant_id().longValue())
+					.orElseThrow(() -> new ResourceNotFoundException("Invalid restaurant Id !!!!"));
+			o.setRestaurant(restaurant);
+
+			double totalPrice = cartDetails.stream()
+					.mapToDouble(cartDetail -> cartDetail.getPrice() * cartDetail.getQuantity()).sum();
+
+			o.setTotalPrice(totalPrice);
+			customer.addOrder(o);
+			orderRepo.save(o);
+
+		}
 	}
 
 }

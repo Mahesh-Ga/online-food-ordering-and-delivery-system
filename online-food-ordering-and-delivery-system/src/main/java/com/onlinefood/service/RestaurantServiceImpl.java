@@ -17,7 +17,9 @@ import com.onlinefood.dto.RestaurantNewMenuDTO;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
 import com.onlinefood.entities.Menu;
+import com.onlinefood.entities.Order;
 import com.onlinefood.entities.Restaurant;
+import com.onlinefood.entities.Status;
 import com.onlinefood.repository.MenuRepo;
 import com.onlinefood.repository.RestaurantRepo;
 
@@ -34,14 +36,16 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 	@Override
 	public ApiResponse addRestaurant(RestaurantSignupDTO restaurant) {
-		resRepo.save(mapper.map(restaurant, Restaurant.class));
+		Restaurant res = mapper.map(restaurant, Restaurant.class);
+		res.setRestaurantStatus(Status.PENDING);
+		resRepo.save(res);
 		return new ApiResponse("Restaurant added Sucessfully");
 	}
 
 	@Override
 	public ApiResponse removeRestaurant(Long restaurantId) {
 		Restaurant res = resRepo.findById(restaurantId).orElseThrow();
-		res.setDeleted(true);
+		res.setRestaurantStatus(Status.DELETED);
 		return new ApiResponse("sucessfully removed");	
 		// if we restaurant is getting deleted then all its menu should be deleted	
 	}
@@ -99,42 +103,6 @@ public class RestaurantServiceImpl implements RestaurantService {
 	}
 
 	
-	
-	@Override
-	public List<RestaurantResponseDTO> pendingRestaurantRequests() {
-
-		return resRepo.getPendingRestaurants().stream()
-				.map(res->mapper.map(res, RestaurantResponseDTO.class))
-				.collect(Collectors.toList());
-		
-	}
-
-	@Override
-	public List<RestaurantResponseDTO> getAllActiveRestaurants() {
-		return resRepo.getAllActiveRestauraants().stream()
-				.map(res->mapper.map(res, RestaurantResponseDTO.class))
-				.collect(Collectors.toList());
-		
-	}
-
-	@Override
-	public ApiResponse approveRestaurant(Long id) {
-		Restaurant res = resRepo.findById(id).orElseThrow();
-		res.setApproved(true);
-		return new ApiResponse("sucessfully approved");
-	}
-
-	@Override
-	public ApiResponse rejectRestaurant(Long id) {
-		Restaurant res = resRepo.findById(id).orElseThrow();
-		if (!res.isApproved()) {
-			resRepo.delete(res);
-			return new ApiResponse("sucessfully rejected");
-		} else
-			return new ApiResponse("failed to reject");
-	}
-
-
 	
 	
 }

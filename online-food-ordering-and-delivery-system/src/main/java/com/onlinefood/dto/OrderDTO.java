@@ -11,9 +11,12 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class CustomerAddOrderDTO {
-
+public class OrderDTO {
+	
 	private LocalDateTime orderTimestamp;
+
 	private StatusType status;
 
+	private double totalPrice;
+	
 }

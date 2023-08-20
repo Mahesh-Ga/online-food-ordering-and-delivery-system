@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.onlinefood.entities.StatusType;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,8 +12,10 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class CustomerAddOrderDTO {
-
+@AllArgsConstructor
+public class CustomerPlaceOrderDTO {
+	
+	private Long selectedCustomerAddressId;
 	private LocalDateTime orderTimestamp;
 	private StatusType status;
 

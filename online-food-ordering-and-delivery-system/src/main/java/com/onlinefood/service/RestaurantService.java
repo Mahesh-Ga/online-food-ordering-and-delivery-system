@@ -7,6 +7,7 @@ import com.onlinefood.dto.GetMenuDTO;
 import com.onlinefood.dto.RestaurantNewMenuDTO;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
+import com.onlinefood.entities.Order;
 
 public interface RestaurantService {
 
@@ -19,11 +20,6 @@ public interface RestaurantService {
 	public ApiResponse updateMenu( RestaurantNewMenuDTO menu,Long menuId);
 	public ApiResponse removeMenu( Long menuId);
 
-
-	public List<RestaurantResponseDTO> pendingRestaurantRequests();
-	public ApiResponse approveRestaurant(Long restaurantId);
-	public ApiResponse rejectRestaurant(Long restaurantId);
-	public List<RestaurantResponseDTO> getAllActiveRestaurants();
   
-	
+//	public List<Order> getOrderList();
 }

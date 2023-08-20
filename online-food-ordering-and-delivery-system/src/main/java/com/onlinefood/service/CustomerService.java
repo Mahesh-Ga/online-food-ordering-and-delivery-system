@@ -5,6 +5,7 @@ import java.util.List;
 import com.onlinefood.dto.CustomerAddAddressDTO;
 import com.onlinefood.dto.CustomerAddDTO;
 import com.onlinefood.dto.CustomerAddOrderDTO;
+import com.onlinefood.dto.CustomerPlaceOrderDTO;
 import com.onlinefood.dto.CustomerRespDTO;
 import com.onlinefood.dto.CustomerUpdateDTO;
 import com.onlinefood.entities.CustomerAddress;
@@ -28,8 +29,6 @@ public interface CustomerService {
 	CustomerAddress updateAddress(Long addressId, CustomerAddAddressDTO updatedAddress);
 
 	//order
-	void addOrderToCustomer(Long customerId, CustomerAddOrderDTO order);
+	void placeOrder(String email,CustomerPlaceOrderDTO customerPlaceOrder);
 		
-	
-
 }
