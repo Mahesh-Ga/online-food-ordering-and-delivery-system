@@ -28,8 +28,10 @@ import com.onlinefood.dto.customConvetor.MenuToGetMenuConvertor;
 import com.onlinefood.entities.Menu;
 import com.onlinefood.entities.Order;
 import com.onlinefood.entities.Restaurant;
+import com.onlinefood.entities.RoleType;
 import com.onlinefood.entities.Status;
 import com.onlinefood.entities.StatusType;
+import com.onlinefood.entities.User;
 import com.onlinefood.repository.MenuRepo;
 import com.onlinefood.repository.OrderRepo;
 import com.onlinefood.repository.RestaurantRepo;
@@ -48,7 +50,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 	ModelMapper mapper;
 	@Value("${folder.location}")
 	private String folderLocation;
-	
+
+	@Autowired
+	private UserService userService;
+
 	@PostConstruct
 	public void init() {
 		//System.out.println("in init " + folderLocation);
@@ -67,6 +72,14 @@ public class RestaurantServiceImpl implements RestaurantService {
 	public ApiResponse addRestaurant(RestaurantSignupDTO restaurant) {
 		Restaurant res = mapper.map(restaurant, Restaurant.class);
 		res.setRestaurantStatus(Status.PENDING);
+		User user = new User();
+		user.setEmail(res.getEmail());
+		user.setPassword(res.getPassword());
+//		user.setRole(role);
+//		user.setActive(true);
+//		userRepo.save(user);
+		userService.addUser(user, RoleType.ROLE_RESTAURANT);
+		res.setUser(user);
 		resRepo.save(res);
 		return new ApiResponse("Restaurant added Sucessfully");
 	}

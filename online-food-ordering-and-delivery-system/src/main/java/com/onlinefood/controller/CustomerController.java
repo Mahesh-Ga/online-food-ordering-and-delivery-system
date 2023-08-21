@@ -28,7 +28,7 @@ import com.onlinefood.entities.CustomerAddress;
 import com.onlinefood.service.CustomerService;
 
 @RestController
-@RequestMapping("/customers")
+@RequestMapping("/customer")
 @Validated
 public class CustomerController {
 
@@ -36,7 +36,7 @@ public class CustomerController {
 	private CustomerService customerService;
 
 
-	@PostMapping
+	@PostMapping("/signUp")
 	public ResponseEntity<?> addNewCustomer(@RequestBody @Valid CustomerAddDTO dto) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(customerService.addNewCustomer(dto));
 	}

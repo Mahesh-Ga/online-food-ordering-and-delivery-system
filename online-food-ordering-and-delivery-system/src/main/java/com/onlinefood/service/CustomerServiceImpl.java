@@ -9,7 +9,6 @@ import javax.transaction.Transactional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
 
 import com.onlinefood.custom_exceptions.ApiException;
@@ -20,17 +19,20 @@ import com.onlinefood.dto.CustomerAddDTO;
 import com.onlinefood.dto.CustomerPlaceOrderDTO;
 import com.onlinefood.dto.CustomerRespDTO;
 import com.onlinefood.dto.CustomerUpdateDTO;
+import com.onlinefood.entities.Cart;
+import com.onlinefood.entities.Customer;
 import com.onlinefood.entities.CustomerAddress;
 import com.onlinefood.entities.Order;
 import com.onlinefood.entities.Restaurant;
+import com.onlinefood.entities.RoleType;
+import com.onlinefood.entities.User;
 import com.onlinefood.repository.CartItemRepo;
 import com.onlinefood.repository.CartRepo;
 import com.onlinefood.repository.CustomerAddressRepo;
 import com.onlinefood.repository.CustomerRepo;
 import com.onlinefood.repository.OrderRepo;
 import com.onlinefood.repository.RestaurantRepo;
-import com.onlinefood.entities.Cart;
-import com.onlinefood.entities.Customer;
+import com.onlinefood.repository.RoleRepo;
 
 @Service
 @Transactional
@@ -59,6 +61,12 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	private RestaurantRepo restaurantRepo;
+	
+	@Autowired
+	private RoleRepo roleRepo;
+
+	@Autowired
+	private UserService userService;
 
 	@Override
 	public CustomerRespDTO getCustomer(String email) {
@@ -95,6 +103,14 @@ public class CustomerServiceImpl implements CustomerService {
 	public CustomerAddDTO addNewCustomer(CustomerAddDTO cDto) {
 		if (cDto.getConfirmPassword().equals(cDto.getPassword())) {
 			Customer customer = mapper.map(cDto, Customer.class);
+			User user = new User();
+			user.setEmail(customer.getEmail());
+			user.setPassword(customer.getPassword());
+//			user.setRole(role);
+//			user.setActive(true);
+//			userRepo.save(user);
+			userService.addUser(user, RoleType.ROLE_CUSTOMER);
+			customer.setUser(user);
 			Customer persistentCustomer = customerRepo.save(customer);
 			return mapper.map(persistentCustomer, CustomerAddDTO.class);
 		} else

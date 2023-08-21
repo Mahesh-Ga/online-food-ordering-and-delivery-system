@@ -9,7 +9,9 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -60,6 +62,10 @@ public class DeliveryPartner extends BaseEntity{
 //	@OneToOne
 //	@JoinColumn(name = "address_id")
 //	private CustomerAddress address;
+	
+	@OneToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 
 	@OneToMany( mappedBy = "deliveryPartner" , cascade = CascadeType.ALL,  orphanRemoval = true)
 	private Set<Order> orderList =  new HashSet<>();
