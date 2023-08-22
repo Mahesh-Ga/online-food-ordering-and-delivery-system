@@ -2,7 +2,10 @@ package com.onlinefood.controller;
 
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,15 +37,16 @@ public class AdminController {
 	public List<RestaurantResponseDTO> getPendingRestaurants() {
 		return adminService.pendingRestaurantRequests();
 	}
-
+	
 	@GetMapping("/restaurant")
 	public List< RestaurantResponseDTO > getAllRestaurants() {
 		return adminService.getAllActiveRestaurants();
 	}
-
+	
+	
 	@PutMapping("/approve/restaurant/{id}")
 	public ApiResponse approveRestaurant(@PathVariable Long id) {
-
+		System.out.println("in rest put");
 		return adminService.approveRestaurant(id);
 	}
 
