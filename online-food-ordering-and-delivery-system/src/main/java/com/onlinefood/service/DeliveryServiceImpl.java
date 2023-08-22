@@ -66,8 +66,8 @@ public class DeliveryServiceImpl implements DeliveryService{
 		DeliveryPartner deliveryPartner = mapper.map(deliveryPartnerDto, DeliveryPartner.class);
 		deliveryPartner.setStatus(Status.PENDING);
 		User user = new User();
-		user.setEmail(deliveryPartner.getEmail());
-		user.setPassword(deliveryPartner.getPassword());
+		user.setEmail(deliveryPartnerDto.getEmail());
+		user.setPassword(deliveryPartnerDto.getPassword());
 		userService.addUser(user, RoleType.ROLE_DELIVERY_PARTNER);
 		deliveryPartner.setUser(user);
 		deliveryrepo.save(deliveryPartner);

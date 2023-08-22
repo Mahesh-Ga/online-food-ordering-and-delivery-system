@@ -33,6 +33,7 @@ public class User extends BaseEntity{
 	@Column(length = 50, unique = true, nullable = false) 
 	private String email;
 	
+	@JsonProperty(access = Access.WRITE_ONLY)
 	@Column(length = 255, nullable = false) 
 	private String password;
 	

@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.onlinefood.custom_exceptions.ApiException;
@@ -33,6 +35,7 @@ import com.onlinefood.repository.CustomerRepo;
 import com.onlinefood.repository.OrderRepo;
 import com.onlinefood.repository.RestaurantRepo;
 import com.onlinefood.repository.RoleRepo;
+import com.onlinefood.repository.UserRepo;
 
 @Service
 @Transactional
@@ -61,16 +64,23 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	private RestaurantRepo restaurantRepo;
-	
-	@Autowired
-	private RoleRepo roleRepo;
 
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private UserRepo userRepo;
+
+	@Autowired
+	private PasswordEncoder encoder;
+
 	@Override
 	public CustomerRespDTO getCustomer(String email) {
-		Customer customer = customerRepo.findByEmail(email);
+
+		User user = userRepo.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
+		Customer customer = customerRepo.findByUser(user);
+//		Customer customer = customerRepo.findByEmail(email);
 		if (customer != null)
 			return mapper.map(customer, CustomerRespDTO.class);
 		throw new ResourceNotFoundException("Invalid Customer email");
@@ -78,7 +88,10 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public void updateCustomer(String email, CustomerUpdateDTO updateCustomer) {
-		Customer customer = customerRepo.findByEmail(email);
+		User user = userRepo.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
+		Customer customer = customerRepo.findByUser(user);
+		// Customer customer = customerRepo.findByEmail(email);
 		if (customer != null) {
 			mapper.map(updateCustomer, customer);
 			customerRepo.save(customer);
@@ -89,10 +102,18 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public boolean changeCustomerPassword(String email, String oldPassword, String newPassword) {
-		Customer customer = customerRepo.findByEmail(email);
+		User user = userRepo.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
+		Customer customer = customerRepo.findByUser(user);
 
-		if (customer.getPassword().equals(oldPassword) && customer != null) {
-			customer.setPassword(newPassword);
+//		Customer customer = customerRepo.findByEmail(email);
+//		String encodedOldPassword = encoder.encode(oldPassword);
+//		System.out.println(customer.getUser().getPassword());
+//		System.out.println(encodedOldPassword);
+//		System.out.println(encoder.matches(customer.getUser().getPassword(),encodedOldPassword));
+		
+		if (encoder.matches(oldPassword, customer.getUser().getPassword()) && customer != null) {
+			customer.getUser().setPassword(encoder.encode(newPassword));
 			customerRepo.save(customer);
 			return true;
 		}
@@ -101,33 +122,35 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public CustomerAddDTO addNewCustomer(CustomerAddDTO cDto) {
-		if (cDto.getConfirmPassword().equals(cDto.getPassword())) {
-			Customer customer = mapper.map(cDto, Customer.class);
-			User user = new User();
-			user.setEmail(customer.getEmail());
-			user.setPassword(customer.getPassword());
+		Customer customer = mapper.map(cDto, Customer.class);
+		User user = new User();
+		user.setEmail(cDto.getEmail());
+		user.setPassword(cDto.getPassword());
 //			user.setRole(role);
 //			user.setActive(true);
 //			userRepo.save(user);
-			userService.addUser(user, RoleType.ROLE_CUSTOMER);
-			customer.setUser(user);
-			Customer persistentCustomer = customerRepo.save(customer);
-			return mapper.map(persistentCustomer, CustomerAddDTO.class);
-		} else
-			throw new ApiException("Passwords don't match!!!!!");
+		userService.addUser(user, RoleType.ROLE_CUSTOMER);
+		customer.setUser(user);
+		Customer persistentCustomer = customerRepo.save(customer);
+		return mapper.map(persistentCustomer, CustomerAddDTO.class);
+
 	}
 
 	@Override
 	public void removeCustomer(String email) {
 //		 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //	     String userEmail = authentication.getName();
-		Customer customer = customerRepo.findByEmail(email);
+//		Customer customer = customerRepo.findByEmail(email);
 
-		if (customer != null) {
-			customerRepo.delete(customer);
-		} else {
-			throw new ResourceNotFoundException("Invalid customer email");
-		}
+		User user = userRepo.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid customer email"));
+		user.setActive(false);
+		userRepo.save(user);
+//		if (customer != null) {
+//			customerRepo.delete(customer);
+//		} else {
+//			throw new ResourceNotFoundException("Invalid customer email");
+//		}
 
 	}
 
@@ -172,8 +195,9 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public void placeOrder(String email, CustomerPlaceOrderDTO customerOrder) {
-
-		Customer customer = customerRepo.findByEmail(email);
+		User user = userRepo.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
+		Customer customer = customerRepo.findByUser(user);
 		if (customer == null)
 			throw new ResourceNotFoundException("Invalid customer Email !!!!");
 		else {

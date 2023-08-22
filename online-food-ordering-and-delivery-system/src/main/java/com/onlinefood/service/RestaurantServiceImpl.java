@@ -73,9 +73,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 		Restaurant res = mapper.map(restaurant, Restaurant.class);
 		res.setRestaurantStatus(Status.PENDING);
 		User user = new User();
-		user.setEmail(res.getEmail());
-		user.setPassword(res.getPassword());
+		user.setEmail(restaurant.getEmail());
+		user.setPassword(restaurant.getPassword());
 		userService.addUser(user, RoleType.ROLE_RESTAURANT);
+		user.setActive(false);
 		res.setUser(user);
 		resRepo.save(res);
 		return new ApiResponse("Restaurant added Sucessfully");

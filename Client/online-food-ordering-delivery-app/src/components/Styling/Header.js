@@ -1,9 +1,9 @@
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
-    const history = useHistory();    
+    const navigate = useNavigate();    
     const Logout = () => {
-        history.push("/login");
+        navigate.to("/login");
     }
     return (<>
         <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "#333333" , height : "7vh" }}>

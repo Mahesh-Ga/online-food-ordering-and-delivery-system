@@ -40,13 +40,13 @@ public class DeliveryPartner extends BaseEntity{
 	@Column(length = 20)
 	private String lastName;
 	
-	@Column(length = 50, unique = true, nullable = false) 
-	private String email;
-	
-	@Column(length = 20, nullable = false) 
-	@JsonProperty(access = Access.WRITE_ONLY)
-	private String password;
-	
+//	@Column(length = 50, unique = true, nullable = false) 
+//	private String email;
+//	
+//	@Column(length = 20, nullable = false) 
+//	@JsonProperty(access = Access.WRITE_ONLY)
+//	private String password;
+//	
 	@Column(length = 15, unique = true) 
 	private String mobile_no;
 	
