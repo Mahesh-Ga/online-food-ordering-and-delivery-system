@@ -1,5 +1,7 @@
 package com.onlinefood.dto;
 
+import java.math.BigInteger;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +18,6 @@ public class CartDetails {
 	private String product_name;
 	private double price;
 	private int quantity;
-	private Long restaurant_id;
-
+	private BigInteger restaurant_id;
+	
 }

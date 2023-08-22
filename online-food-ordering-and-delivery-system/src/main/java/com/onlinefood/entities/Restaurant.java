@@ -9,7 +9,9 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -60,6 +62,10 @@ public class Restaurant extends BaseEntity {
 //	@JoinColumn(name = "address_id")
 //	private Address address;
     
+	@OneToOne
+	@JoinColumn(name = "user_id")
+	private User user;
+	
 	@Embedded
     private Address address;
 	

@@ -1,16 +1,14 @@
 package com.onlinefood.service;
 
-import java.util.Iterator;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.hibernate.engine.query.spi.sql.NativeSQLQueryCollectionReturn;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.parsing.PassThroughSourceExtractor;
-import org.springframework.scheduling.support.SimpleTriggerContext;
 import org.springframework.stereotype.Service;
 
 import com.onlinefood.custom_exceptions.ApiException;
@@ -18,22 +16,23 @@ import com.onlinefood.custom_exceptions.ResourceNotFoundException;
 import com.onlinefood.dto.CartDetails;
 import com.onlinefood.dto.CustomerAddAddressDTO;
 import com.onlinefood.dto.CustomerAddDTO;
-import com.onlinefood.dto.CustomerAddOrderDTO;
 import com.onlinefood.dto.CustomerPlaceOrderDTO;
 import com.onlinefood.dto.CustomerRespDTO;
 import com.onlinefood.dto.CustomerUpdateDTO;
+import com.onlinefood.entities.Cart;
+import com.onlinefood.entities.Customer;
 import com.onlinefood.entities.CustomerAddress;
-import com.onlinefood.entities.Menu;
 import com.onlinefood.entities.Order;
 import com.onlinefood.entities.Restaurant;
+import com.onlinefood.entities.RoleType;
+import com.onlinefood.entities.User;
 import com.onlinefood.repository.CartItemRepo;
 import com.onlinefood.repository.CartRepo;
 import com.onlinefood.repository.CustomerAddressRepo;
 import com.onlinefood.repository.CustomerRepo;
 import com.onlinefood.repository.OrderRepo;
 import com.onlinefood.repository.RestaurantRepo;
-import com.onlinefood.entities.Cart;
-import com.onlinefood.entities.Customer;
+import com.onlinefood.repository.RoleRepo;
 
 @Service
 @Transactional
@@ -62,6 +61,12 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	private RestaurantRepo restaurantRepo;
+	
+	@Autowired
+	private RoleRepo roleRepo;
+
+	@Autowired
+	private UserService userService;
 
 	@Override
 	public CustomerRespDTO getCustomer(String email) {
@@ -98,6 +103,14 @@ public class CustomerServiceImpl implements CustomerService {
 	public CustomerAddDTO addNewCustomer(CustomerAddDTO cDto) {
 		if (cDto.getConfirmPassword().equals(cDto.getPassword())) {
 			Customer customer = mapper.map(cDto, Customer.class);
+			User user = new User();
+			user.setEmail(customer.getEmail());
+			user.setPassword(customer.getPassword());
+//			user.setRole(role);
+//			user.setActive(true);
+//			userRepo.save(user);
+			userService.addUser(user, RoleType.ROLE_CUSTOMER);
+			customer.setUser(user);
 			Customer persistentCustomer = customerRepo.save(customer);
 			return mapper.map(persistentCustomer, CustomerAddDTO.class);
 		} else
@@ -165,15 +178,23 @@ public class CustomerServiceImpl implements CustomerService {
 			throw new ResourceNotFoundException("Invalid customer Email !!!!");
 		else {
 			Cart customerCart = cartRepo.findByCustomer(customer);
-//			Order o = new Order();
 			Order o = mapper.map(customerOrder, Order.class);
 			CustomerAddress customerAddress = customerAddressRepo
 					.findAddressById(customerOrder.getSelectedCustomerAddressId());
 			o.setCustomerAddress(customerAddress);
 
-			List<CartDetails> cartDetails = cartItemRepo.getCartDetails(customerCart.getId());
+//			List<CartDetails> cartDetails = cartItemRepo.getCartDetails(customerCart.getId());
 
-			Restaurant restaurant = restaurantRepo.findById(cartDetails.get(0).getRestaurant_id())
+			List<Object[]> results = cartItemRepo.getCartDetails(customerCart.getId());
+			List<CartDetails> cartDetails = new ArrayList<>();
+
+			for (Object[] result : results) {
+				CartDetails cartD = new CartDetails((String) result[0], (double) result[1], (int) result[2],
+						(BigInteger) result[3]);
+				cartDetails.add(cartD);
+			}
+
+			Restaurant restaurant = restaurantRepo.findById(cartDetails.get(0).getRestaurant_id().longValue())
 					.orElseThrow(() -> new ResourceNotFoundException("Invalid restaurant Id !!!!"));
 			o.setRestaurant(restaurant);
 
