@@ -75,9 +75,6 @@ public class RestaurantServiceImpl implements RestaurantService {
 		User user = new User();
 		user.setEmail(res.getEmail());
 		user.setPassword(res.getPassword());
-//		user.setRole(role);
-//		user.setActive(true);
-//		userRepo.save(user);
 		userService.addUser(user, RoleType.ROLE_RESTAURANT);
 		res.setUser(user);
 		resRepo.save(res);

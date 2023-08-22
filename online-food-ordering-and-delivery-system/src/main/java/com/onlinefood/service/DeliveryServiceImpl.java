@@ -12,8 +12,10 @@ import com.onlinefood.dto.ApiResponse;
 import com.onlinefood.dto.DeliveryPartnerSignUpRequestDTO;
 import com.onlinefood.entities.DeliveryPartner;
 import com.onlinefood.entities.Order;
+import com.onlinefood.entities.RoleType;
 import com.onlinefood.entities.Status;
 import com.onlinefood.entities.StatusType;
+import com.onlinefood.entities.User;
 import com.onlinefood.repository.DeliveryRepo;
 import com.onlinefood.repository.OrderRepo;
 
@@ -27,7 +29,9 @@ public class DeliveryServiceImpl implements DeliveryService{
 	@Autowired
 	ModelMapper mapper;
 	
-	
+
+	@Autowired
+	private UserService userService;
 	
 	@Override
 	public Order acceptOrder(Long orderId,Long deliveryBoyId) {
@@ -61,6 +65,11 @@ public class DeliveryServiceImpl implements DeliveryService{
 	public ApiResponse addDeliveryPartner(DeliveryPartnerSignUpRequestDTO deliveryPartnerDto) {
 		DeliveryPartner deliveryPartner = mapper.map(deliveryPartnerDto, DeliveryPartner.class);
 		deliveryPartner.setStatus(Status.PENDING);
+		User user = new User();
+		user.setEmail(deliveryPartner.getEmail());
+		user.setPassword(deliveryPartner.getPassword());
+		userService.addUser(user, RoleType.ROLE_DELIVERY_PARTNER);
+		deliveryPartner.setUser(user);
 		deliveryrepo.save(deliveryPartner);
 		return new ApiResponse("sucessfully added");
 	}
