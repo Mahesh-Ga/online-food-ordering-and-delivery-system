@@ -1,4 +1,4 @@
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Footer from "../Styling/Footer";
 import Header from "../Styling/Header";
 import { useState } from "react";
@@ -12,7 +12,7 @@ function Menu() {
         setIsVegMenu(!isVegMenu);
     };
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const buttonClasses = isVegMenu ? 'btn veg-menu' : 'btn all-menu';
 
     return (<>
@@ -242,7 +242,7 @@ function Menu() {
                                     </table>
                                 </div>
                             
-                            <button type="button" className="btn btn-info" onClick={()=>{history.push("/order-details")}}>Add to Cart</button>
+                            <button type="button" className="btn btn-info" onClick={()=>{navigate.to("/order-details")}}>Add to Cart</button>
                             
                     </div>
                 </div>

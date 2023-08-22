@@ -4,13 +4,18 @@ import reportWebVitals from './reportWebVitals';
 import '../node_modules/bootstrap/dist/css/bootstrap.css'
 import '../node_modules/bootstrap/dist/js/bootstrap'
 import { BrowserRouter } from 'react-router-dom';
-import LandingPage from './LandingPage';
+import App from './App';
+import { Provider } from 'react-redux';
+import { store } from './store';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <BrowserRouter>
-    <LandingPage />
-  </BrowserRouter>
+  
+  <Provider store={store}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+   </Provider>
 
 );
 // If you want to start measuring performance in your app, pass a function

@@ -39,7 +39,7 @@ public class CustomerAddDTO {
 					+ "at least one digit, "
 					+ "total length between 8 and 20 characters")
 	private String password;
-	private String confirmPassword;
+
 	private String mobile_no;
 		
 }
