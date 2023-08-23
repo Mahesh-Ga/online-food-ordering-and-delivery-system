@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,11 +52,11 @@ public class AdminServiceImpl implements AdminService{
 	}
 
 	@Override
-	public ApiResponse approveRestaurant(Long id) {
+	public ResponseEntity<?> approveRestaurant(Long id) {
 		Restaurant res = resRepo.findById(id).orElseThrow();
 		res.setRestaurantStatus(Status.APPROVED);
 		res.getUser().setActive(true);
-		return new ApiResponse("sucessfully approved");
+		return  ResponseEntity.status(HttpStatus.ACCEPTED).body("Successfully approved");
 	}
 
 	@Override
