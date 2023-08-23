@@ -2,57 +2,56 @@ import React, { useEffect, useState } from 'react'
 import '../style.css'
 import { approveRestaurant, pendingRestaurants, rejectRestaurant } from '../services/restaurantService';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 
 function ApproveRestaurant() {
 
   const [restaurants, setRestaurant] = useState([])
 
+  const token = useSelector((state)=>state.token.tokenValue)
+
   useEffect(() => {
-
-    loadData();
-
+  
+    debugger
   }, []);
+  
+  useEffect(()=>{
+    if(token!="")
+    loadData();
+  
+  },[token])
 
-  const loadData = () => {
 
-    pendingRestaurants()
-      .then((responce) => {
-        setRestaurant(responce.data);
+  const loadData = async() => {
+    const response =  await pendingRestaurants()
+      if(response.status == 200) {
+        setRestaurant(response.data);
         debugger;
-      })
-      .catch((error) => {
+      }else{
         debugger;
-      });
+      }
   }
 
-  const approve = (id) => {
-    approveRestaurant(id)
-      .then(() => {
+  const approve = async(id) => {
+    const response = await approveRestaurant(id)
+      if(response.status == 200){
         toast.success('successfully approved')
-
         loadData();
-      })
-      .catch(() => {
+      }else {
         toast.error('failed to approved')
-
         debugger
-      });
-
+      }
   }
-  const reject = (id) => {
-    rejectRestaurant(id)
-      .then(() => {
+
+  const reject = async(id) => {
+   const response = await rejectRestaurant(id)
+      if(response.status ==200){
         toast.success('successfully rejected')
-
         loadData();
-      })
-      .catch(() => {
+      }else{
         toast.error('failed to reject')
-
         debugger
-      });
-
-
+      };
   }
 
   return (<>

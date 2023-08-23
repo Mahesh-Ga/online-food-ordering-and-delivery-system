@@ -1,46 +1,55 @@
+import { toast } from 'react-toastify';
 import { getAllActiveRestaurants, removeRestaurant } from '../services/restaurantService';
 import '../style.css'
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux';
 
 
 function Restaurants() {
 
-  const [restaurants, setRestaurant] = useState([])
+const [restaurants, setRestaurant] = useState([])
+
+const token = useSelector((state)=>state.token.tokenValue)
 
   useEffect(() => {
-debugger
-    loadData();
-
+  
+    debugger
   }, []);
+  
+  useEffect(()=>{
+    if(token!="")
+    loadData();
+  
+  },[token])
 
-  const loadData = () => {
+  const loadData = async() => {
 
-    getAllActiveRestaurants()
-      .then((responce) => {
-        setRestaurant(responce.data);
+    const response = await getAllActiveRestaurants(token)
+    debugger  
+    if(response.status == 200) {
         debugger;
-      })
-      .catch((error) => {
+        setRestaurant(response.data);  
+      }
+      else{
         debugger;
-      });
+      }
   }
 
 
-  const remove = (id) => {
-    removeRestaurant(id)
-      .then(() => {
+  const remove = async(id) => {
+   const response = await removeRestaurant(id)
+      if(response.status ==200) {
+       toast.success("successfully removed")
         loadData();
-      })
-      .catch(() => {
-
-      });
-
+      }
+      else {
+        toast.error("failed to remove")
+      }
 
   }
 
   return (<>
     <div class="accordion" id="accordionExample">
-
       {
         restaurants.map((restaurant) => {
 

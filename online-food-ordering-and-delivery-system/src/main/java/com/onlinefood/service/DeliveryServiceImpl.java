@@ -72,6 +72,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 		deliveryPartner.setUser(user);
 		deliveryrepo.save(deliveryPartner);
 		return new ApiResponse("sucessfully added");
+	
 	}
 
 }

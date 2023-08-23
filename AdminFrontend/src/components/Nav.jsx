@@ -1,15 +1,17 @@
 import React from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setToggle } from '../features/toggleSlice';
 
-
-function Nav({ Toggle }) {
+function Nav() {
     const loginStatus = useSelector((state)=>state.auth.status) 
+    const dispatch = useDispatch();
+
     debugger
     return (<div>
         {loginStatus && 
              <nav className="navbar navbar-expand-sm navbar-dark bg-transparent">
         <i className=" bi bi-justify-left fs-5 me-3"
-            onClick={Toggle}>
+            onClick={()=>{dispatch(setToggle())}}>
         </i>
          </nav>
         }
