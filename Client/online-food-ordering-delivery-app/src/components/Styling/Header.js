@@ -1,9 +1,13 @@
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
+import { logout } from "../../features/authSlice"
 function Header() {
+    const dispatch = useDispatch()
     const navigate = useNavigate();    
     const Logout = () => {
-        navigate.to("/login");
+        sessionStorage.removeItem('token');
+        dispatch(logout());
+        navigate("/");
     }
     return (<>
         <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "#333333" , height : "7vh" }}>
@@ -21,13 +25,9 @@ function Header() {
                         </li>
                     </ul>
                 </div>
-            {
-                sessionStorage.getItem("isLoggedin") === 'true' ?
-            <div style={{ display: "flex", justifyContent: "flex-end", marginRight: "2vh" }}>
+                <div style={{ display: "flex", justifyContent: "flex-end", marginRight: "2vh" }}>
                             <button type="button" className="btn btn-danger" onClick={Logout}>Logout</button>
-                        </div>
-                        :<div></div>
-            }
+            </div>
             </div>
         </nav>
     </>);
