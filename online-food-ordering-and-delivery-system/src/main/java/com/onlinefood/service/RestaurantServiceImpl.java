@@ -48,8 +48,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 	OrderRepo orderRepo;
 	@Autowired
 	ModelMapper mapper;
-	@Value("${folder.location}")
-	private String folderLocation;
+	@Value("${folder.MenuImagelocation}")
+	private String menuFolderLocation;
+	@Value("${folder.RestaurantImagelocation}")
+	private String restaurantFolderLocation;
 
 	@Autowired
 	private UserService userService;
@@ -58,12 +60,14 @@ public class RestaurantServiceImpl implements RestaurantService {
 	public void init() {
 		//System.out.println("in init " + folderLocation);
 		// chk if folder exists --yes --continue
-		File folder = new File(folderLocation);
-		if (folder.exists()) {
+		File menuFolder = new File(menuFolderLocation);
+		File restaurantFolder = new File(restaurantFolderLocation);
+		if (restaurantFolder.exists() && menuFolder.exists()) {
 			//System.out.println("folder exists alrdy !");
 		} else {
 			// no --create a folder
-			folder.mkdir();
+			menuFolder.mkdir();
+			restaurantFolder.mkdir();
 			//System.out.println("created a folder !");
 		}
 	}
@@ -199,7 +203,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 				Menu menu = menuRepo.findById(menuId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu ID!!!!"));
 				// menu found --> PERSISTENT
 				// store the image on server side folder
-				String path = folderLocation.concat(image.getOriginalFilename());
+				String path = menuFolderLocation.concat(image.getOriginalFilename());
 				//System.out.println(path);
 				// Use FileUtils method : writeByte[] --> File
 				FileUtils.writeByteArrayToFile(new File(path), image.getBytes());
@@ -216,4 +220,29 @@ public class RestaurantServiceImpl implements RestaurantService {
         return FileUtils.readFileToByteArray(new File(imagePath)); 
 	  
   }
+
+@Override
+public ApiResponse uploadRestaurantImage(Long resId, MultipartFile image) throws IOException {
+	// TODO Auto-generated method stub
+ Restaurant restaurant = resRepo.findById(resId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu ID!!!!"));
+	// menu found --> PERSISTENT
+	// store the image on server side folder
+	String path = restaurantFolderLocation.concat(image.getOriginalFilename());
+	//System.out.println(path);
+	// Use FileUtils method : writeByte[] --> File
+	FileUtils.writeByteArrayToFile(new File(path), image.getBytes());
+	// set image path
+	restaurant.setImagePath(path);
+	// OR to store the img directly in DB as a BLOB
+	// menu.setImage(image.getBytes());
+	return new ApiResponse("Image file uploaded successfully for menu id " + resId);
+	
+}
+
+@Override
+public byte[] getRestaurantImage(Long resId) throws IOException {
+	 Restaurant restaurant = resRepo.findById(resId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu ID!!!!"));
+    String imagePath = restaurant.getImagePath();
+   return FileUtils.readFileToByteArray(new File(imagePath)); 
+}
 }

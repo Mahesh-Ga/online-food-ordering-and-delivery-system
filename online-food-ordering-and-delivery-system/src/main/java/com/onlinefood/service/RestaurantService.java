@@ -40,5 +40,10 @@ public interface RestaurantService {
 	public ApiResponse uploadMenuImage(Long menuId, MultipartFile image) throws IOException;
 
 	public byte[] getMenuImage(Long menuId) throws IOException;
+	
+	public ApiResponse uploadRestaurantImage(Long resId, MultipartFile image) throws IOException;
+
+	public byte[] getRestaurantImage(Long resId) throws IOException;
+
 //	public List<Order> getOrderList();
 }
