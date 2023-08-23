@@ -210,5 +210,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 				return new ApiResponse("Image file uploaded successfully for menu id " + menuId);
 		
 	}
-
+  public byte[] getMenuImage(Long menuId) throws IOException {
+		Menu menu = menuRepo.findById(menuId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu ID!!!!"));
+         String imagePath = menu.getImagePath();
+        return FileUtils.readFileToByteArray(new File(imagePath)); 
+	  
+  }
 }

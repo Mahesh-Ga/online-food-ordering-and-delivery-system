@@ -7,6 +7,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -101,5 +103,9 @@ public class RestaurantController {
 		System.out.println("in upload img " + menuId);
 		return ResponseEntity.status(HttpStatus.CREATED).body(restaurantService.uploadMenuImage(menuId, imageFile));
 	}
-	
+	@GetMapping(value = "/menuImage/{menuId}", produces = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE,MediaType.IMAGE_PNG_VALUE }) 
+	public ResponseEntity<?> getMenuImage(@PathVariable Long menuId) throws IOException {
+		
+		return ResponseEntity.status(HttpStatus.CREATED).body(restaurantService.getMenuImage(menuId));
+	}
 }
