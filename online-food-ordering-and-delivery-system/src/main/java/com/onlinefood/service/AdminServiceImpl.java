@@ -53,6 +53,7 @@ public class AdminServiceImpl implements AdminService{
 	public ApiResponse approveRestaurant(Long id) {
 		Restaurant res = resRepo.findById(id).orElseThrow();
 		res.setRestaurantStatus(Status.APPROVED);
+		res.getUser().setActive(true);
 		return new ApiResponse("sucessfully approved");
 	}
 

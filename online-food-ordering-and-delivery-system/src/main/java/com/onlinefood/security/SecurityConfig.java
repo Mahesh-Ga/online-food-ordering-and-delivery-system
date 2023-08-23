@@ -37,6 +37,7 @@ public class SecurityConfig {
 				"/user/signin", 
 				"/restaurant/menubyResId/*", 
 				"/restaurant/menu",
+				"/restaurant",
 				"/swagger*/**",
 				"/v*/api-docs/**").permitAll()  
 				.antMatchers("/customer/**","/cart/**").hasRole("CUSTOMER")

@@ -12,10 +12,12 @@ import com.onlinefood.entities.Cart;
 import com.onlinefood.entities.CartItem;
 import com.onlinefood.entities.Customer;
 import com.onlinefood.entities.Menu;
+import com.onlinefood.entities.User;
 import com.onlinefood.repository.CartItemRepo;
 import com.onlinefood.repository.CartRepo;
 import com.onlinefood.repository.CustomerRepo;
 import com.onlinefood.repository.MenuRepo;
+import com.onlinefood.repository.UserRepo;
 
 @Service
 @Transactional
@@ -36,9 +38,15 @@ public class CartServiceImpl implements CartService {
 	@Autowired
 	private CartItemRepo cartItemRepo;
 
+	@Autowired
+	private UserRepo userRepo;
+
 	@Override
 	public Cart getCart(String email) {
-		Customer customer = customerRepo.findByEmail(email);
+		User user = userRepo.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
+		Customer customer = customerRepo.findByUser(user);
+		// Customer customer = customerRepo.findByEmail(email);
 		if (customer != null) {
 			Cart cart = cartRepo.findByCustomer(customer);
 			return cart;
@@ -48,7 +56,10 @@ public class CartServiceImpl implements CartService {
 
 	@Override
 	public Cart getOrCreateCart(String email, LocalDateTime timestamp) {
-		Customer customer = customerRepo.findByEmail(email);
+		User user = userRepo.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
+		Customer customer = customerRepo.findByUser(user);
+//		Customer customer = customerRepo.findByEmail(email);
 		if (customer != null) {
 			Cart cart = cartRepo.findByCustomer(customer);
 			if (cart == null) {
@@ -76,7 +87,11 @@ public class CartServiceImpl implements CartService {
 	@Override
 
 	public void removeCartItem(String email, Long menuItemId) {
-		Customer customer = customerRepo.findByEmail(email);
+		User user = userRepo.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
+		Customer customer = customerRepo.findByUser(user);
+
+		// Customer customer = customerRepo.findByEmail(email);
 		if (customer != null) {
 			Cart cart = cartRepo.findByCustomer(customer);
 			if (cart == null)
@@ -86,10 +101,9 @@ public class CartServiceImpl implements CartService {
 			CartItem cartItem = cartItemRepo.findByMenuItemIdAndCartId(menu, cart);
 
 			cartItemRepo.delete(cartItem);
-		}
-		else {
+		} else {
 			throw new ResourceNotFoundException("Invalid customer email");
 		}
 	}
-	
+
 }

@@ -29,7 +29,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString(exclude = { "password", "menuList", "orderList" })
+@ToString(exclude = { "menuList", "orderList" })
 public class Restaurant extends BaseEntity {
 	
 	@Column(name = "restaurant_name", length = 100)
@@ -39,13 +39,13 @@ public class Restaurant extends BaseEntity {
 	@Column(length = 50)
 	private CuisineType cuisine;
 
-	@Column(length = 50, unique = true, nullable = false) 
-	private String email;
-	
-	@Column(length = 20, nullable = false) 
-	@JsonProperty(access = Access.WRITE_ONLY)
-	private String password;
-	
+//	@Column(length = 50, unique = true, nullable = false) 
+//	private String email;
+//	
+//	@Column(length = 20, nullable = false) 
+//	@JsonProperty(access = Access.WRITE_ONLY)
+//	private String password;
+//	
 	@Column(name="mobile_no", length=50)
 	private String mobileNumber;
 
