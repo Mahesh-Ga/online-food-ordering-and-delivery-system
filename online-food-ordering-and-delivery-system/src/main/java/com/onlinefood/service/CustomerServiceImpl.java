@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.onlinefood.custom_exceptions.ApiException;
 import com.onlinefood.custom_exceptions.ResourceNotFoundException;
+import com.onlinefood.dto.ApiResponse;
 import com.onlinefood.dto.CartDetails;
 import com.onlinefood.dto.CustomerAddAddressDTO;
 import com.onlinefood.dto.CustomerAddDTO;
@@ -121,7 +122,7 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public CustomerAddDTO addNewCustomer(CustomerAddDTO cDto) {
+	public ApiResponse addNewCustomer(CustomerAddDTO cDto) {
 		Customer customer = mapper.map(cDto, Customer.class);
 		User user = new User();
 		user.setEmail(cDto.getEmail());
@@ -131,8 +132,8 @@ public class CustomerServiceImpl implements CustomerService {
 //			userRepo.save(user);
 		userService.addUser(user, RoleType.ROLE_CUSTOMER);
 		customer.setUser(user);
-		Customer persistentCustomer = customerRepo.save(customer);
-		return mapper.map(persistentCustomer, CustomerAddDTO.class);
+		customerRepo.save(customer);
+		return new ApiResponse("Sucessfully Registered");
 
 	}
 

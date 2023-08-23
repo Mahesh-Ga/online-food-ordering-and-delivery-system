@@ -38,7 +38,7 @@ public class CustomerController {
 	private CustomerService customerService;
 
 
-	@PostMapping("/signUp")
+	@PostMapping("/signup")
 	public ResponseEntity<?> addNewCustomer(@RequestBody @Valid CustomerAddDTO dto) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(customerService.addNewCustomer(dto));
 	}

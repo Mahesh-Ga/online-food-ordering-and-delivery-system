@@ -103,7 +103,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 	@Override
 	public List<GetMenuDTO> getAllMenu() {
 		List<Menu> menuList = menuRepo.findByIsDeletedFalse();
-//System.out.println(menuList.toString());
+//		System.out.println(menuList.toString());
 		ModelMapper extraMapper = new ModelMapper();
 		extraMapper.addConverter(new MenuToGetMenuConvertor());
 

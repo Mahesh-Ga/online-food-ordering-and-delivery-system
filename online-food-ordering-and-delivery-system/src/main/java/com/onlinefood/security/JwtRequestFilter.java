@@ -35,6 +35,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			System.out.println("got bearer token");
 			String token = authHeadr.substring(7);
 			Claims claims = utils.validateJwtToken(token);
+			
+			
 			String email = utils.getUserNameFromJwtToken(claims);
 			List<GrantedAuthority> authorities = utils.getAuthoritiesFromClaims(claims);
 			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, null,

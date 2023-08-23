@@ -18,14 +18,18 @@ public class GetMenuDTO {
 	private Long restaurant_id;
 	
 	private String name;
-
+	
 	private MenuType menuType;
 
 	private Category category;
 
 	private double price;
 
+	private String imagePath;
+	
 	private int rating;
+	
+	private String restaurantName;
 	
 
 
