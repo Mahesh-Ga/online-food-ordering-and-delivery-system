@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import Sidebar from './components/Sidebar'
 import Home from './components/Home'
-import { useState } from 'react'
 import Nav from './components/Nav'
 import { Route, Routes } from 'react-router-dom'
 import Users from './components/Users'
@@ -15,15 +14,18 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { login } from './features/authSlice'
 import ProtectedRoute from './components/ProtectedRoute'
+import { setToken } from './features/tokenSlice'
 
 function App() {
-  const [toggle, setToggle] = useState(false)
-  const Toggle = () => { setToggle(!toggle) }
   const dispatch = useDispatch()
-  
+  const toggle = useSelector((state)=>state.toggle.status)
+
   useEffect(()=>{
     if(sessionStorage.token != undefined )
-        dispatch(login())   
+    {
+      dispatch(setToken(sessionStorage.token))
+      dispatch(login())   
+    } 
   },[])
 
   return (
@@ -31,7 +33,7 @@ function App() {
       <div className='row'>
         {toggle &&
           <div className='col-4 col-md-2 bg-white vh-100 position-fixed'>
-            <Sidebar Toggle={Toggle}/>
+            <Sidebar/>
           </div>
         }
         {toggle &&
@@ -40,7 +42,7 @@ function App() {
         }
         <div className='col'>
         <div className='px-3' style={{backgroundColor:"brown"}}>
-           <Nav Toggle={Toggle}/>
+           <Nav />
           
             <Routes>
             <Route path="/users" exact element={<ProtectedRoute component={Users}/>}></Route>

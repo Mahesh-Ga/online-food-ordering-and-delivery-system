@@ -119,9 +119,10 @@ public class AdminServiceImpl implements AdminService{
 	public ApiResponse removeDeliveryPartner(Long id) {
 		
 		DeliveryPartner deliveryPartner = deliveryRepo.findById(id).orElseThrow();
-		deliveryPartner.setStatus(Status.DELETED);
-		
+		deliveryPartner.setStatus(Status.DELETED);		
 		return null;
 	}
 
 }
+
+

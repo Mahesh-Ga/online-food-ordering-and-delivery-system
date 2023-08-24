@@ -2,28 +2,40 @@ import React from 'react'
 import '../style.css'
 import { useState , useEffect } from 'react'
 import {getAllActiveRestaurants} from '../services/restaurantService'
+import { useSelector } from 'react-redux'
 function DeliveryBoys() {
 
 
 
   const [restaurants,setRestaurant]  = useState([])
-  useEffect(()=>{
+  
+  
+const token = useSelector((state)=>state.token.tokenValue)
 
-      loadData();
-    
-    },[]);
-    
-    const loadData = ()=>{
-    
-      getAllActiveRestaurants()
-      .then((responce)=>{
-        setRestaurant(responce.data);
-        debugger;
-      })
-      .catch((error)=>{
-        debugger;
-      });
+useEffect(() => {
+
+  debugger
+}, []);
+
+useEffect(()=>{
+  if(token!="")
+  loadData();
+
+},[token])
+
+const loadData = async() => {
+
+  const response = await getAllActiveRestaurants(token)
+  debugger  
+  if(response.status == 200) {
+      debugger;
+      setRestaurant(response.data);  
     }
+    else{
+      debugger;
+    }
+}
+
     
   return (
     <div className="accordion" id="accordionExample">
