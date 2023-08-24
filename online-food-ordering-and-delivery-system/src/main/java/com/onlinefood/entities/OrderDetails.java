@@ -37,7 +37,7 @@ public class OrderDetails extends BaseEntity {
     private int quantity;
 	
 	@Column
-	private String menu_name;
+	private String menuName;
 	
 	 public void setMenu(Menu menu) {
 	        if (this.menu != null) {

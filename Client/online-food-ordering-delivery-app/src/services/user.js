@@ -43,3 +43,21 @@ export async function loginUser(email, password) {
         return ex.response.data
     }
 }
+
+
+export async function getAddresses() {
+    const url = createUrl('/customer/addresses/')
+    const token = sessionStorage.getItem("token")
+    const headers = {
+        Authorization: `Bearer ${token}`,
+    };
+  
+    try {
+        const response = await axios.get(url,{ headers })
+        // log(response.data)
+        return response.data
+    } catch (ex) {
+        // log(ex.response.data)
+        return ex.response.data
+    }
+}

@@ -23,13 +23,13 @@ public interface CustomerService {
 	void removeCustomer(String email);
 	//-------------------------------------------------------
 	//address
-	List<CustomerAddAddressDTO> getAddressesByCustomer(Long customerId);
+	List<CustomerAddAddressDTO> getAddressesByCustomer(String email);
 
-	void addAddressToCustomer(Long customerId, CustomerAddAddressDTO address);
+	void addAddressToCustomer(String email, CustomerAddAddressDTO address);
 	boolean removeAddressToCustomer(Long addressId);
 	CustomerAddress updateAddress(Long addressId, CustomerAddAddressDTO updatedAddress);
 
 	//order
-	void placeOrder(String email,CustomerPlaceOrderDTO customerPlaceOrder);
+	void placeOrder(String email,Long selectedCustomerAddressId);
 		
 }

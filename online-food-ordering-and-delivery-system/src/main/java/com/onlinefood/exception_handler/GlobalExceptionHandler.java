@@ -55,5 +55,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("Invalid Credentials"));
     }
 	
+	@ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<ApiResponse> handleNullPointerException(NullPointerException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("Image not available"));
+    }
+	
 
 }

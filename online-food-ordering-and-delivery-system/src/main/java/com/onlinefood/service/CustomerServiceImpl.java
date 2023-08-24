@@ -1,6 +1,7 @@
 package com.onlinefood.service;
 
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +27,7 @@ import com.onlinefood.entities.Cart;
 import com.onlinefood.entities.Customer;
 import com.onlinefood.entities.CustomerAddress;
 import com.onlinefood.entities.Order;
+import com.onlinefood.entities.OrderDetails;
 import com.onlinefood.entities.Restaurant;
 import com.onlinefood.entities.RoleType;
 import com.onlinefood.entities.User;
@@ -33,6 +35,7 @@ import com.onlinefood.repository.CartItemRepo;
 import com.onlinefood.repository.CartRepo;
 import com.onlinefood.repository.CustomerAddressRepo;
 import com.onlinefood.repository.CustomerRepo;
+import com.onlinefood.repository.OrderDetailsRepo;
 import com.onlinefood.repository.OrderRepo;
 import com.onlinefood.repository.RestaurantRepo;
 import com.onlinefood.repository.RoleRepo;
@@ -74,7 +77,13 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	private PasswordEncoder encoder;
+	
+	@Autowired
+	private CartService cartService;
 
+	@Autowired
+	private OrderDetailsRepo orderDetailsRepo;
+	
 	@Override
 	public CustomerRespDTO getCustomer(String email) {
 
@@ -133,6 +142,8 @@ public class CustomerServiceImpl implements CustomerService {
 		userService.addUser(user, RoleType.ROLE_CUSTOMER);
 		customer.setUser(user);
 		customerRepo.save(customer);
+		cartService.createCart(customer);
+		
 		return new ApiResponse("Sucessfully Registered");
 
 	}
@@ -156,18 +167,20 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public List<CustomerAddAddressDTO> getAddressesByCustomer(Long customerId) {
-		Customer customer = customerRepo.findById(customerId)
-				.orElseThrow(() -> new ResourceNotFoundException("Invalid Customer Id"));
+	public List<CustomerAddAddressDTO> getAddressesByCustomer(String email) {
+		User user = userRepo.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
+		Customer customer = customerRepo.findByUser(user);
 		List<CustomerAddress> customerAddresses = customerAddressRepo.findByCustomer(customer);
 		return customerAddresses.stream().map(adr -> mapper.map(adr, CustomerAddAddressDTO.class))
 				.collect(Collectors.toList());
 	}
 
 	@Override
-	public void addAddressToCustomer(Long customerId, CustomerAddAddressDTO address) {
-		Customer customer = customerRepo.findById(customerId)
-				.orElseThrow(() -> new ResourceNotFoundException("Invalid Customer Id !!!!"));
+	public void addAddressToCustomer(String email, CustomerAddAddressDTO address) {
+		User user = userRepo.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
+		Customer customer = customerRepo.findByUser(user);
 		CustomerAddress addr = mapper.map(address, CustomerAddress.class);
 		customer.addAddress(addr);
 		addressRepo.save(addr);
@@ -195,7 +208,7 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public void placeOrder(String email, CustomerPlaceOrderDTO customerOrder) {
+	public void placeOrder(String email, Long selectedCustomerAddressId) {
 		User user = userRepo.findByEmail(email)
 				.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
 		Customer customer = customerRepo.findByUser(user);
@@ -203,9 +216,9 @@ public class CustomerServiceImpl implements CustomerService {
 			throw new ResourceNotFoundException("Invalid customer Email !!!!");
 		else {
 			Cart customerCart = cartRepo.findByCustomer(customer);
-			Order o = mapper.map(customerOrder, Order.class);
+			Order o = new Order();
 			CustomerAddress customerAddress = customerAddressRepo
-					.findAddressById(customerOrder.getSelectedCustomerAddressId());
+					.findAddressById(selectedCustomerAddressId);
 			o.setCustomerAddress(customerAddress);
 
 //			List<CartDetails> cartDetails = cartItemRepo.getCartDetails(customerCart.getId());
@@ -215,21 +228,31 @@ public class CustomerServiceImpl implements CustomerService {
 
 			for (Object[] result : results) {
 				CartDetails cartD = new CartDetails((String) result[0], (double) result[1], (int) result[2],
-						(BigInteger) result[3]);
+						(BigInteger) result[3], (BigInteger) result[4]);
 				cartDetails.add(cartD);
 			}
 
 			Restaurant restaurant = restaurantRepo.findById(cartDetails.get(0).getRestaurant_id().longValue())
 					.orElseThrow(() -> new ResourceNotFoundException("Invalid restaurant Id !!!!"));
 			o.setRestaurant(restaurant);
-
+			o.setOrderTimestamp(LocalDateTime.now());
 			double totalPrice = cartDetails.stream()
 					.mapToDouble(cartDetail -> cartDetail.getPrice() * cartDetail.getQuantity()).sum();
 
 			o.setTotalPrice(totalPrice);
 			customer.addOrder(o);
 			orderRepo.save(o);
-
+				
+		    List<OrderDetails> orderDetailsList = new ArrayList<>();
+		    for (CartDetails cartDetail : cartDetails) {
+		        OrderDetails orderDetail = new OrderDetails();
+		        orderDetail.setOrder(o); 
+		        orderDetail.setMenuName(cartDetail.getProduct_name());
+		        orderDetail.setPriceAtOrder(cartDetail.getPrice());
+		        orderDetail.setQuantity(cartDetail.getQuantity());
+		        orderDetailsList.add(orderDetail);
+		    }
+		    orderDetailsRepo.saveAll(orderDetailsList);
 		}
 	}
 

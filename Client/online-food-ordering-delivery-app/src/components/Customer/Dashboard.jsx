@@ -1,4 +1,6 @@
+import axios from "axios";
 import { getAllMenu } from "../../services/menu";
+import { getAllRestaurants } from "../../services/restaurant";
 import { log } from "../../utilities/utils";
 import "./Dashboard.css";
 import "./VegToggleButton.css";
@@ -9,7 +11,11 @@ function Dashboard() {
   const [isVegMenu, setIsVegMenu] = useState(false);
   const [menus, setMenus] = useState([]);
   const [restaurants, setRestaurants] = useState([]);
-  
+
+  const [query, setQuery] = useState("");
+  const [menuResults, setMenuResults] = useState([]);
+  const [restaurantResults, setRestaurantResults] = useState([]);
+
   const toggleMenu = () => {
     setIsVegMenu(!isVegMenu);
   };
@@ -17,19 +23,54 @@ function Dashboard() {
   const buttonClasses = isVegMenu ? "btn veg-menu" : "btn all-menu";
   const navigate = useNavigate();
 
-  //   const getAllMenus = async () => {
-  //     const response = await getAllMenu();
-  //     log(response);
-  //     setMenus(response);
-  //   };
+  const handleMenuSearch = async () => {
+    try {
+      const response = await axios.get(
+        `https://localhost:7070/restaurant/menu/search?query=${query}`
+      );
+      setMenuResults(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleRestaurantSearch = async () => {
+    try {
+      const response = await axios.get(
+        `https://localhost:7070/restaurant/search?query=${query}`
+      );
+      setRestaurantResults(response.data);
+    } catch (error) {
+      log(error);
+    }
+  };
   useEffect(() => {
     async function fetchMenus() {
       const response = await getAllMenu();
       log(response);
       setMenus(response);
     }
+
+    async function fetchRestaurants() {
+      const response = await getAllRestaurants();
+      log(response);
+      setRestaurants(response);
+    }
+
     fetchMenus();
+    fetchRestaurants();
   }, []);
+
+  const onChangeQuery = (args) => {
+    setQuery(args.target.value);
+    if (args.target.value.trim() !== "") {
+      handleMenuSearch();
+      handleRestaurantSearch();
+    } else {
+      setMenuResults([]);
+      setRestaurantResults([]);
+    }
+  };
 
   return (
     <>
@@ -53,6 +94,8 @@ function Dashboard() {
                       className="search-input"
                       placeholder="Search..."
                       name=""
+                      value={query}
+                      onChange={onChangeQuery}
                     />
                     <a href="#" className="search-icon">
                       <i className="fa fa-search"></i>
@@ -151,49 +194,111 @@ function Dashboard() {
                 boxShadow: "1px 2px 9    px #F4AAB9",
               }}
             >
-              <div className="d-flex flex-direction-row">
-                {menus.map((menu) => {
-                  return (
-                    <div
-                      className="card"
-                      style={{ width: "18rem" }}
-                      onClick={() => {
-                        navigate("/restaurants");
-                      }}
-                      key={menu.id}
-                    >
-                      <img
-                        src={``}
-                        className="card-img-top"
-                        alt={`${menu.name + " " + "image"}`}
-                      />
-                      <div className="card-body">
-                        <h5 className="card-title">{menu.name}</h5>
-                        <div style={{ display: "flex", justifyContent: "end" }}>
-                          {menu.category === "VEG" ? (
-                            <img
-                              className="menu-type-img"
-                              src="http://localhost:3000/assets/veg_symbol.png"
-                              alt={`${menu.name + " " + "image"}`}
-                            />
-                          ) : (
-                            <img
-                              className="menu-type-img"
-                              src="http://localhost:3000/assets/non-veg.jpg"
-                              alt={`${menu.name + " " + "image"}`}
-                            />
-                          )}
-                        </div>
-                        <p>{menu.menuType} </p>
-                        <p>{ menu.restaurantName }</p>
-                        <div style={{ display: "flex", justifyContent: "end" }}>
-                       <h6>₹{menu.price}</h6> 
+              {query.length === 0 ? (
+                <div className="d-flex flex-direction-row">
+                  {menus.map((menu) => {
+                    return (
+                      <div
+                        className="card"
+                        style={{ width: "18rem" }}
+                        onClick={() => {
+                          navigate(`/menu`, {
+                            state: { restaurantId: menu.restaurant_id },
+                          });
+                        }}
+                        key={menu.id}
+                      >
+                        <img
+                          src={`https://localhost:7070/restaurant/menuImage/${menu.id}`}
+                          className="card-img-top"
+                          alt={`${menu.name + " " + "image"}`}
+                        />
+                        <div className="card-body">
+                          <h5 className="card-title">{menu.name}</h5>
+                          <div
+                            style={{ display: "flex", justifyContent: "end" }}
+                          >
+                            {menu.category === "VEG" ? (
+                              <img
+                                className="menu-type-img"
+                                src="http://localhost:3000/assets/veg_symbol.png"
+                                alt={`${menu.name + " " + "image"}`}
+                              />
+                            ) : (
+                              <img
+                                className="menu-type-img"
+                                src="http://localhost:3000/assets/non-veg.jpg"
+                                alt={`${menu.name + " " + "image"}`}
+                              />
+                            )}
+                          </div>
+                          <p style={{ display: "flex", justifyContent: "end" }}>
+                            {menu.menuType}{" "}
+                          </p>
+                          From <h4>{menu.restaurantName}</h4>
+                          <div
+                            style={{ display: "flex", justifyContent: "end" }}
+                          >
+                            <h6>₹{menu.price}</h6>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="d-flex flex-direction-row">
+                  {menuResults.map((menu) => {
+                    return (
+                      <div
+                        className="card"
+                        style={{ width: "18rem" }}
+                        onClick={() => {
+                          navigate(`/menu`, {
+                            state: { restaurantId: menu.restaurant_id },
+                          });
+                        }}
+                        key={menu.id}
+                      >
+                        <img
+                          src={`https://localhost:7070/restaurant/menuImage/${menu.id}`}
+                          className="card-img-top"
+                          alt={`${menu.name + " " + "image"}`}
+                        />
+                        <div className="card-body">
+                          <h5 className="card-title">{menu.name}</h5>
+                          <div
+                            style={{ display: "flex", justifyContent: "end" }}
+                          >
+                            {menu.category === "VEG" ? (
+                              <img
+                                className="menu-type-img"
+                                src="http://localhost:3000/assets/veg_symbol.png"
+                                alt={`${menu.name + " " + "image"}`}
+                              />
+                            ) : (
+                              <img
+                                className="menu-type-img"
+                                src="http://localhost:3000/assets/non-veg.jpg"
+                                alt={`${menu.name + " " + "image"}`}
+                              />
+                            )}
+                          </div>
+                          <p style={{ display: "flex", justifyContent: "end" }}>
+                            {menu.menuType}{" "}
+                          </p>
+                          From <h4>{menu.restaurantName}</h4>
+                          <div
+                            style={{ display: "flex", justifyContent: "end" }}
+                          >
+                            <h6>₹{menu.price}</h6>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
             <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
           </div>
@@ -214,133 +319,89 @@ function Dashboard() {
                 boxShadow: "1px 2px 9px #F4AAB9",
               }}
             >
-              <div className="d-flex flex-direction-row">
-                <div
-                  className="card"
-                  style={{ width: "18rem" }}
-                  onClick={() => {
-                    navigate("/menu");
-                  }}
-                >
-                  <img
-                    src="http://127.0.0.1:3000/assets/Dishes/Pizza.jpg"
-                    className="card-img-top"
-                    alt="..."
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">Restaurant Name</h5>
-                    <p className="card-text">
-                      Some quick example text to build on the card title and
-                      make up the bulk of the card's content.
-                    </p>
-                  </div>
-                  <div className="card-body">
-                    <a href="#" className="card-link">
-                      Click to proceed
-                    </a>
-                  </div>
+              {query.length === 0 ? (
+                <div className="d-flex flex-direction-row">
+                  {restaurants.map((rest) => {
+                    return (
+                      <div
+                        className="card"
+                        style={{ width: "18rem" }}
+                        onClick={() => {
+                          navigate(`/menu`, {
+                            state: { restaurantId: rest.id },
+                          });
+                        }}
+                        key={rest.id}
+                      >
+                        <img
+                          src={`https://localhost:7070/restaurant/restaurantImage/${rest.id}`}
+                          className="card-img-top"
+                          alt={`image for ${rest.restaurantName}`}
+                        />
+                        <div className="card-body">
+                          <h5 className="card-title">{rest.restaurantName}</h5>
+                          <p
+                            style={{ display: "flex", justifyContent: "end" }}
+                            className="card-text"
+                          >
+                            {rest.cuisine}
+                          </p>
+                          <i
+                            className="fa fa-map-marker"
+                            aria-hidden="true"
+                          ></i>
+                          <p className="card-text">
+                            {rest.address.streetAddressLine1} ,{" "}
+                            {rest.address.streetAddressLine2},{" "}
+                            {rest.address.city}, {rest.address.postalCode}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-                {/* <div
-                  className="card"
-                  style={{ width: "18rem" }}
-                  onClick={() => {
-                    navigate("/menu");
-                  }}
-                >
-                  <img
-                    src="http://127.0.0.1:3000/assets/Dishes/ramen.jpg"
-                    className="card-img-top"
-                    alt="..."
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">Restaurant Name</h5>
-                    <p className="card-text">
-                      Some quick example text to build on the card title and
-                      make up the bulk of the card's content.
-                    </p>
-                  </div>
-                  <div className="card-body">
-                    <a href="#" className="card-link">
-                      Click to proceed
-                    </a>
-                  </div>
+              ) : (
+                <div className="d-flex flex-direction-row">
+                  {restaurantResults.map((rest) => {
+                    return (
+                      <div
+                        className="card"
+                        style={{ width: "18rem" }}
+                        onClick={() => {
+                          navigate(`/menu`, {
+                            state: { restaurantId: rest.id },
+                          });
+                        }}
+                        key={rest.id}
+                      >
+                        <img
+                          src={`https://localhost:7070/restaurant/restaurantImage/${rest.id}`}
+                          className="card-img-top"
+                          alt={`image for ${rest.restaurantName}`}
+                        />
+                        <div className="card-body">
+                          <h5 className="card-title">{rest.restaurantName}</h5>
+                          <p
+                            style={{ display: "flex", justifyContent: "end" }}
+                            className="card-text"
+                          >
+                            {rest.cuisine}
+                          </p>
+                          <i
+                            className="fa fa-map-marker"
+                            aria-hidden="true"
+                          ></i>
+                          <p className="card-text">
+                            {rest.address.streetAddressLine1} ,{" "}
+                            {rest.address.streetAddressLine2},{" "}
+                            {rest.address.city}, {rest.address.postalCode}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-                <div
-                  className="card"
-                  style={{ width: "18rem" }}
-                  onClick={() => {
-                    navigate.to("/menu");
-                  }}
-                >
-                  <img
-                    src="http://127.0.0.1:3000/assets/Dishes/Pizza.jpg"
-                    className="card-img-top"
-                    alt="..."
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">Restaurant Name</h5>
-                    <p className="card-text">
-                      Some quick example text to build on the card title and
-                      make up the bulk of the card's content.
-                    </p>
-                  </div>
-                  <div className="card-body">
-                    <a href="#" className="card-link">
-                      Click to proceed
-                    </a>
-                  </div>
-                </div>
-                <div
-                  className="card"
-                  style={{ width: "18rem" }}
-                  onClick={() => {
-                    navigate.to("/menu");
-                  }}
-                >
-                  <img
-                    src="http://127.0.0.1:3000/assets/Dishes/ramen.jpg"
-                    className="card-img-top"
-                    alt="..."
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">Restaurant Name</h5>
-                    <p className="card-text">
-                      Some quick example text to build on the card title and
-                      make up the bulk of the card's content.
-                    </p>
-                  </div>
-                  <div className="card-body">
-                    <a href="#" className="card-link">
-                      Click to proceed
-                    </a>
-                  </div>
-                </div>
-                <div
-                  className="card"
-                  style={{ width: "18rem" }}
-                  onClick={() => {
-                    navigate.to("/menu");
-                  }}
-                >
-                  <img
-                    src="http://127.0.0.1:3000/assets/Dishes/Pizza.jpg"
-                    className="card-img-top"
-                    alt="..."
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">Restaurant Name</h5>
-                    <p className="card-text">
-                      Some quick example text to build on the card title and
-                      make up the bulk of the card's content.
-                    </p>
-                  </div>
-                  <div className="card-body">
-                    <a href="#" className="card-link">
-                      Click to proceed
-                    </a>
-                  </div>
-                </div> */}
-              </div>
+              )}
             </div>
             <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1 "></div>
           </div>

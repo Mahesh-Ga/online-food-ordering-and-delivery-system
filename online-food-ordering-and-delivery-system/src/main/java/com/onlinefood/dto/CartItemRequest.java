@@ -12,11 +12,11 @@ import lombok.ToString;
 @Setter
 @ToString
 public class CartItemRequest {
-	@NotBlank
-	private Long menuItemId;
+//	@NotBlank
+//	private Long menuItemId;
 
-	private int quantity;
+//	private int quantity;
 	
-	private LocalDateTime cartTimestamp;
+
 	
 }
