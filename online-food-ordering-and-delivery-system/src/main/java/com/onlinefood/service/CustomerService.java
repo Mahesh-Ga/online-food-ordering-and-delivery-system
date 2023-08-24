@@ -2,6 +2,7 @@ package com.onlinefood.service;
 
 import java.util.List;
 
+import com.onlinefood.dto.ApiResponse;
 import com.onlinefood.dto.CustomerAddAddressDTO;
 import com.onlinefood.dto.CustomerAddDTO;
 import com.onlinefood.dto.CustomerAddOrderDTO;
@@ -13,7 +14,7 @@ import com.onlinefood.entities.CustomerAddress;
 public interface CustomerService {
 
 	
-	CustomerAddDTO addNewCustomer(CustomerAddDTO c);
+	ApiResponse addNewCustomer(CustomerAddDTO c);
 	
 	//profile
 	CustomerRespDTO getCustomer(String email);

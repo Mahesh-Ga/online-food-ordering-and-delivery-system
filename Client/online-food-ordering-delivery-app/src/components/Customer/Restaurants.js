@@ -17,7 +17,7 @@ function Restaurants() {
     const buttonClasses = isVegMenu ? 'btn veg-menu' : 'btn all-menu';
     return ( 
         <>  
-        <Header />
+
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
             <div className="body" style={{ minHeight: "100vh" }}>
                 <div className="container mt-4">
@@ -160,10 +160,7 @@ function Restaurants() {
 
 
             </div>
-            <Footer />
-        
-        
-        
+
         </>
      );
 }

@@ -26,7 +26,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString(exclude={ "password", "addrList", "orderList" })
+@ToString(exclude={ "addrList", "orderList" })
 public class Customer extends BaseEntity {
 	
 	@Column(name = "first_name", length = 20)

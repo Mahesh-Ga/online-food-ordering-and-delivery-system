@@ -1,6 +1,10 @@
 .card {
     border: none;
-    background: #eee;
+    background: #eee; 
+}
+
+.card-title {
+    text-align: center;
 }
 
 .search {
@@ -58,9 +62,9 @@ a:link {
     text-decoration: none
 }
 
-img.card-img-top {
+.card-img-top {
     height: 200px;
-    width: 18rem;
+    width: 16.75rem;
 }
 
 .card {
@@ -68,4 +72,9 @@ img.card-img-top {
 }
 .card:hover {
     box-shadow: 1px 2px 9px darkgrey;
+}
+
+.menu-type-img{
+    height: 25px;
+    width: 25px;
 }

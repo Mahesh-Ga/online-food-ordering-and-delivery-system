@@ -23,7 +23,9 @@ public class MenuToGetMenuConvertor implements Converter<Menu, GetMenuDTO> {
         destination.setName(source.getName());
         destination.setPrice(source.getPrice());
         destination.setRating(source.getRating());
+        destination.setImagePath(source.getImagePath());
         destination.setRestaurant_id(source.getRestaurant().getId());
+        destination.setRestaurantName(source.getRestaurant().getRestaurantName());
         // Other mapping logic for other properties of GetMenuDTO
         
         return destination;

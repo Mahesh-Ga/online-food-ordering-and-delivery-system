@@ -26,8 +26,11 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain authorizeRequests(HttpSecurity http) throws Exception {
-		http.cors().and()
-		.exceptionHandling()
+
+			http
+				.cors()
+				.and()
+				.exceptionHandling()
 				.authenticationEntryPoint((request, resp, exc) -> resp
 						.sendError(HttpStatus.UNAUTHORIZED.value(), "Not yet authenticated"))
 				.and()
@@ -35,11 +38,13 @@ public class SecurityConfig {
 				.authorizeRequests()
 				.antMatchers        // Applies to all HTTP methods(GET,PUT,POST,DELETE)
 				(HttpMethod.GET,"/restaurant/menu/*").permitAll()
+				.antMatchers("/images/**").permitAll()
 				.antMatchers( 
-				"/customer/signUp",
+				"/customer/signup",
 				"/user/signin", 
 				"/restaurant/menubyResId/*", 
 				"/restaurant/menu",
+				"/restaurant/getAllRestaurants",
 				"/restaurant",
 				"/delivery",
 				"/swagger*/**",

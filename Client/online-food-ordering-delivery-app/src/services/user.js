@@ -6,24 +6,24 @@ export async function registerUser(
     lastName,
     email,
     password,
-    mobile
+    mobile_no
 ) {
-    const url = createUrl('/user/register')
+    const url = createUrl('/customer/signup')
     const body = {
         firstName,
         lastName,
         email,
         password,
-        mobile,
+        mobile_no
     }
 
     try {
         const response = await axios.post(url, body)
-        log(response.data)
+        // log(response.data)
         return response.data
     } catch (ex) {
-        log(ex)
-        return null
+        // log(ex)
+        return ex.response.data
     }
 }
 
@@ -36,10 +36,10 @@ export async function loginUser(email, password) {
 
     try {
         const response = await axios.post(url, body)
-        log(response.data)
+        // log(response.data)
         return response.data
     } catch (ex) {
-        log(ex)
-        return null
+        // log(ex.response.data)
+        return ex.response.data
     }
 }

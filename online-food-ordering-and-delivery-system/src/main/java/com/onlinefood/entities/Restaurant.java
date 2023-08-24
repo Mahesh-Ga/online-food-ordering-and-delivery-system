@@ -52,6 +52,9 @@ public class Restaurant extends BaseEntity {
 	@Column(name="fssai", length=100)
 	private String fssai;
 	
+	@Column
+    private String imagePath;
+	
 	@OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Menu> menuList = new ArrayList<>();
 
