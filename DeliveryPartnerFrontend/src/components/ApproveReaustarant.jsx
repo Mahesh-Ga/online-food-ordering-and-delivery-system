@@ -54,9 +54,7 @@ function ApproveRestaurant() {
       };
   }
 
-  return (<div>
-     <h2 style={{ textAlign: 'center' }}>Approve Restaurants</h2>
-     <br></br>
+  return (<>
     <div className="accordion" id="accordionExample">
 
       {
@@ -77,16 +75,7 @@ function ApproveRestaurant() {
               <div className="accordion-body">
 
                 <form className="row g-3">
-                <div className="col-md-6">
-                    <label for="email" className="form-label">Email</label>
-                    <input type="email" className="form-control" id="email" value={restaurant.user.email} readOnly />
-                  </div>
 
-                  <div className="col-md-6">
-                    <label for="mobile" className="form-label">Mobile</label>
-                    <input type="text" className="form-control" id="mobile" value={restaurant.mobileNumber} readOnly />
-                  </div>
-              
                   <div className="col-md-6">
                     <label for="inputEmail4" className="form-label">cuisine</label>
                     <input type="text" className="form-control" id="inputEmail4" value={restaurant.cuisine}/>
@@ -140,7 +129,7 @@ function ApproveRestaurant() {
       }
 
     </div>
-  </div>
+  </>
 
   )
 }

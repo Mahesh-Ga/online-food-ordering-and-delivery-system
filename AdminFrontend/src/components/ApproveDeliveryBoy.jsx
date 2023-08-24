@@ -3,10 +3,11 @@ import '../style.css'
 import { approveRestaurant, pendingRestaurants, rejectRestaurant } from '../services/restaurantService';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
+import { approveDeliveryPartner, pendingDeliveryPartners, rejectDeliveryPartner } from '../services/deliveryService';
 
 function ApproveDeliveryBoy() {
 
-  const [restaurants, setRestaurant] = useState([])
+  const [deliveryPartners, setDeliveryPartners] = useState([])
 
   const token = useSelector((state)=>state.token.tokenValue)
 
@@ -24,9 +25,9 @@ function ApproveDeliveryBoy() {
 
 
   const loadData = async() => {
-    const response =  await pendingRestaurants(token)
+    const response =  await pendingDeliveryPartners(token)
       if(response != null && response.status == 200) {
-        setRestaurant(response.data);
+        setDeliveryPartners(response.data);
         debugger;
       }else{
         debugger;
@@ -34,7 +35,7 @@ function ApproveDeliveryBoy() {
   }
 
   const approve = async(id) => {
-    const response = await approveRestaurant(id,token)
+    const response = await approveDeliveryPartner(id,token)
       if(response != null && response.status == 200){
         toast.success('successfully approved')
         loadData();
@@ -45,7 +46,7 @@ function ApproveDeliveryBoy() {
   }
 
   const reject = async(id) => {
-   const response = await rejectRestaurant(id,token)
+   const response = await rejectDeliveryPartner(id,token)
       if(response != null && response.status ==200){
         toast.success('successfully rejected')
         loadData();
@@ -56,69 +57,82 @@ function ApproveDeliveryBoy() {
   }
 
   return (<>
+   <h2 style={{ textAlign: 'center' }}>Approve Delivery Partners</h2>
+     <br></br>
+  
     <div className="accordion" id="accordionExample">
 
       {
-        restaurants.map((restaurant) => {
+        deliveryPartners.map((deliveryPartner) => {
 
-          return <div className="accordion-item" key={restaurant.id}>
+          return <div className="accordion-item" key={deliveryPartner.id}>
             
             <h2 className="accordion-header">
               <button className="accordion-button collapsed" type="button"
-                data-bs-toggle="collapse" data-bs-target={"#" + restaurant.id}
-                aria-expanded="false" aria-controls={restaurant.id}>
-                {restaurant.restaurantName}
+                data-bs-toggle="collapse" data-bs-target={"#" + deliveryPartner.id}
+                aria-expanded="false" aria-controls={deliveryPartner.id}>
+                {deliveryPartner.firstName +" "+ deliveryPartner.lastName}
               </button>
             </h2>
 
-            <div id={restaurant.id} className="accordion-collapse collapse"
+            <div id={deliveryPartner.id} className="accordion-collapse collapse"
               data-bs-parent="#accordionExample">
               <div className="accordion-body">
 
                 <form className="row g-3">
 
                   <div className="col-md-6">
-                    <label for="inputEmail4" className="form-label">cuisine</label>
-                    <input type="text" className="form-control" id="inputEmail4" value={restaurant.cuisine}/>
+                    <label for="inputEmail4" className="form-label">email</label>
+                    <input type="text" className="form-control" id="inputEmail4" value={deliveryPartner.user.email}/>
                   </div>
 
                   <div className="col-md-6">
-                    <label for="inputPassword4" className="form-label">fssai</label>
-                    <input type="text" className="form-control" id="inputPassword4" value={restaurant.fssai} />
+                    <label for="inputMobile4" className="form-label">mobile</label>
+                    <input type="text" className="form-control" id="inputMobile4" value={deliveryPartner.mobile_no} />
+                  </div>
+                  
+                  <div className="col-md-6">
+                    <label for="inputVehicle4" className="form-label">vehicle No</label>
+                    <input type="text" className="form-control" id="inputVehicle4" value={deliveryPartner.vehicleNumber} />
+                  </div>
+                  
+                  <div className="col-md-6">
+                    <label for="inputLicense4" className="form-label">Driving License</label>
+                    <input type="text" className="form-control" id="inputLicense4" value={deliveryPartner.drivingLicense} />
                   </div>
                   
                   <div className="col-12">
                     <label for="inputAddress" className="form-label">Address</label>
-                    <input type="text" className="form-control" id="inputAddress" value={restaurant.address.streetAddressLine1} />
+                    <input type="text" className="form-control" id="inputAddress" value={deliveryPartner.address.streetAddressLine1} />
                   </div>
 
                   <div className="col-12">
                     <label for="inputAddress2" className="form-label">Address 2</label>
-                    <input type="text" className="form-control" id="inputAddress2" value={restaurant.address.streetAddressLine2} />
+                    <input type="text" className="form-control" id="inputAddress2" value={deliveryPartner.address.streetAddressLine2} />
                   </div>
 
                   <div className="col-md-6">
                     <label for="inputCity" className="form-label">City</label>
-                    <input type="text" className="form-control" id="inputCity" value={restaurant.address.city}/>
+                    <input type="text" className="form-control" id="inputCity" value={deliveryPartner.address.city}/>
                   </div>
 
 
                   <div className="col-md-4">
                     <label for="inputState" className="form-label">State</label>
-                    <input type='text' id="inputState" className="form-control" value={restaurant.address.state}/>
+                    <input type='text' id="inputState" className="form-control" value={deliveryPartner.address.state}/>
                   </div>
 
                   <div className="col-md-2">
                     <label for="inputZip" className="form-label">Zip</label>
-                    <input type="text" className="form-control" id="inputZip" value={restaurant.address.postalCode} />
+                    <input type="text" className="form-control" id="inputZip" value={deliveryPartner.address.postalCode} />
                   </div>
 
                   <div className="col-md-6">
-                    <button type="button" className="btn btn-success" onClick={() => { approve(restaurant.id) }}>Approve</button>
+                    <button type="button" className="btn btn-success" onClick={() => { approve(deliveryPartner.id) }}>Approve</button>
                   </div>
 
                   <div className="col-md-6">
-                    <button type="button" className="btn btn-danger" onClick={() => { reject(restaurant.id) }}>Reject</button>
+                    <button type="button" className="btn btn-danger" onClick={() => { reject(deliveryPartner.id) }}>Reject</button>
                   </div>
                 </form>
 

@@ -3,36 +3,21 @@ import '../style.css'
 import { useState , useEffect } from 'react'
 import { getAllActiveRestaurants } from '../services/restaurantService';
 import { useSelector } from 'react-redux';
-import { getTotalSale, percentageChangeInSale, totalOrdersDelivered, totalRestaurantCount } from '../services/homeService';
 function Home() {
 
-  const[restaurantCount,setRestaurantCount] = useState('')  
-  const[orderDelivered,setOrderDelivered] = useState('')
-  const[totalSale,setTotalSale]= useState('')
-  const[growth,setGrowth] = useState('')
-  
-  const [restaurants,setRestaurant]  = useState([])
-
-
+    const [restaurants,setRestaurant]  = useState([])
 
     const token = useSelector((state)=>state.token.tokenValue)
 
     useEffect(() => {
-
-      
+    
       debugger
     }, []);
     
     useEffect(()=>{
-      if(token!=""){
-        loadData()
-
-        loadRestaurantCount()
-        loadOrdersDelivered()
-        loadTotalSale()
-        loadGrowth()
-      }
-      
+      if(token!="")
+      loadData();
+    
     },[token])
   
     const loadData = async() => {
@@ -42,51 +27,6 @@ function Home() {
       if(response != null && response.status == 200) {
           debugger;
           setRestaurant(response.data);  
-        }
-        else{
-          debugger;
-        }
-
-    }
-    const loadRestaurantCount = async()=>{
-      const response = await totalRestaurantCount(token)
-      debugger  
-      if(response != null && response.status == 200) {
-          debugger;
-          setRestaurantCount(response.data);  
-        }
-        else{
-          debugger;
-        }
-    }
-    const loadOrdersDelivered = async()=>{
-      const response = await totalOrdersDelivered(token)
-      debugger  
-      if(response != null && response.status == 200) {
-          debugger;
-          setOrderDelivered(response.data);  
-        }
-        else{
-          debugger;
-        }
-    }
-    const loadTotalSale = async()=>{
-      const response = await getTotalSale(token)
-      debugger  
-      if(response != null && response.status == 200) {
-          debugger;
-          setTotalSale(response.data);  
-        }
-        else{
-          debugger;
-        }
-    }
-    const loadGrowth = async()=>{
-      const response = await percentageChangeInSale(token)
-      debugger  
-      if(response != null && response.status == 200) {
-          debugger;
-          setGrowth(response.data);  
         }
         else{
           debugger;
@@ -101,7 +41,7 @@ function Home() {
                 <div className='col-md-3 p-1'>
                     <div className='p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded'>
                         <div>
-                            <h3 className='fs-2'>{restaurantCount}</h3>
+                            <h3 className='fs-2'>230</h3>
                             <p className='fs-5'>Restaurants</p>
                         </div>
                         <i className='bi bi-buildings p-3 fs-1'></i>
@@ -111,7 +51,7 @@ function Home() {
                 <div className='col-md-3 p-1'>
                     <div className='p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded'>
                         <div>
-                            <h3 className='fs-2'>₹{totalSale}</h3>
+                            <h3 className='fs-2'>2450</h3>
                             <p className='fs-5'>Sales</p>
                         </div>
                         <i className='bi bi-currency-dollar p-3 fs-1'></i>
@@ -121,7 +61,7 @@ function Home() {
                 <div className='col-md-3 p-1'>
                     <div className='p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded'>
                         <div>
-                            <h3 className='fs-2'>{orderDelivered}</h3>
+                            <h3 className='fs-2'>2250</h3>
                             <p className='fs-5'>Delivery</p>
                         </div>
                         <i className='bi bi-truck p-3 fs-1'></i>
@@ -131,7 +71,7 @@ function Home() {
                 <div className='col-md-3 p-1'>
                     <div className='p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded'>
                         <div>
-                            <h3 className='fs-2'>{growth}%</h3>
+                            <h3 className='fs-2'>20%</h3>
                             <p className='fs-5'>Increase</p>
                         </div>
                         <i className='bi bi-graph-up-arrow p-3 fs-1'></i>
@@ -140,9 +80,6 @@ function Home() {
             </div>
             
             <div className="accordion" id="accordionExample">
-            <h2 style={{ textAlign: 'center', margin: 10 }}>Orders</h2>
-           
-            
             {
         restaurants.map((restaurant) => {
 

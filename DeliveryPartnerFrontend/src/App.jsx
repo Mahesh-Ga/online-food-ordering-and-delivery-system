@@ -15,7 +15,6 @@ import 'react-toastify/dist/ReactToastify.css'
 import { login } from './features/authSlice'
 import ProtectedRoute from './components/ProtectedRoute'
 import { setToken } from './features/tokenSlice'
-import { setToggle } from './features/toggleSlice'
 
 function App() {
   const dispatch = useDispatch()
@@ -24,7 +23,6 @@ function App() {
   useEffect(()=>{
     if(sessionStorage.token != undefined )
     {
-    //  dispatch(setToggle())
       dispatch(setToken(sessionStorage.token))
       dispatch(login())   
     } 

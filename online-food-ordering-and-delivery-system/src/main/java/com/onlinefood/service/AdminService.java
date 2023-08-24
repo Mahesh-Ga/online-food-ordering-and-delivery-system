@@ -21,5 +21,11 @@ public interface AdminService {
 	public ApiResponse approveDeliveryPartner(Long id);
 	public ApiResponse removeDeliveryPartner(Long id);
 	public ApiResponse rejectDeliveryPartner(Long id);	
+
+	
+	public Long countRestaurants();
+	public Long getTotalSale();
+	public Long getTotalOrdersDeliverd();
+	public Long getPercentageChangeInSale();
 	
 }

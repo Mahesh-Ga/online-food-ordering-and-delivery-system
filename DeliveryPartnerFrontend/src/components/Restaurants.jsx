@@ -49,9 +49,6 @@ const token = useSelector((state)=>state.token.tokenValue)
   }
 
   return (<>
-     <h2 style={{ textAlign: 'center' }}>Restaurants</h2>
-     <br></br>
-  
     <div class="accordion" id="accordionExample">
       {
         restaurants.map((restaurant) => {
@@ -74,7 +71,7 @@ const token = useSelector((state)=>state.token.tokenValue)
 
                   <div className="col-md-6">
                     <label for="email" className="form-label">Email</label>
-                    <input type="email" className="form-control" id="email" value={restaurant.user.email} readOnly />
+                    <input type="email" className="form-control" id="email" value={restaurant.email} readOnly />
                   </div>
 
                   <div className="col-md-6">

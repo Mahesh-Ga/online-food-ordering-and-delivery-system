@@ -1,6 +1,7 @@
 package com.onlinefood.dto;
 
 import com.onlinefood.entities.Address;
+import com.onlinefood.entities.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeliveryPartnerResponceDto {
-private String firstName;
+
+	private Long id;
+	
+	private String firstName;
 	
 	private String lastName;
 	
@@ -28,5 +32,5 @@ private String firstName;
 	
     private Address address;
 	
-	
+    private User user; 
 }

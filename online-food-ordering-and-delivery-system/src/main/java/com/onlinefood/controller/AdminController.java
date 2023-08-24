@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.security.RolesAllowed;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -31,12 +32,32 @@ import com.onlinefood.service.RestaurantService;
 methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE}, 
 allowedHeaders = {"Authorization", "Content-Type"})
 public class AdminController {
-    // comment 
-// test	
-
+	
 	@Autowired
 	AdminService adminService;
 
+	@GetMapping("/restaurant/count")
+	public ResponseEntity<Long> countRestaurants() {
+		return ResponseEntity.status(HttpStatus.OK).body(adminService.countRestaurants());
+	}
+	
+	@GetMapping("/orders/totalSale")
+	public ResponseEntity<Long> getTotalSale(){
+		return ResponseEntity.status(HttpStatus.OK).body(adminService.getTotalSale());
+	}
+
+	
+	@GetMapping("/orders/delivered")
+	public ResponseEntity<Long> getTotalOrdersDeliverd() {
+		return ResponseEntity.status(HttpStatus.OK).body(adminService.getTotalOrdersDeliverd());
+	}
+	
+	@GetMapping("/growth")
+	public ResponseEntity<Long> getPercentageChange(){
+		return ResponseEntity.status(HttpStatus.OK).body(adminService.getPercentageChangeInSale());
+	}
+	
+	
 	@GetMapping("/pending/restaurant")
 	public List<RestaurantResponseDTO> getPendingRestaurants() {
 		return adminService.pendingRestaurantRequests();
@@ -46,8 +67,7 @@ public class AdminController {
 	public List< RestaurantResponseDTO > getAllRestaurants() {
 		return adminService.getAllActiveRestaurants();
 	}
-	
-	
+		
 	@PutMapping("/approve/restaurant/{id}")
 	public ResponseEntity<?> approveRestaurant(@PathVariable Long id) {
 		System.out.println("in rest put");
@@ -65,8 +85,6 @@ public class AdminController {
 
 		return adminService.rejectRestaurant(id);
 	}
-
-
 
 	@GetMapping("/pending/deliverypartner")
 	public List<DeliveryPartnerResponceDto> getPendingDeliveryPartner() {
@@ -94,8 +112,6 @@ public class AdminController {
 	public ApiResponse rejectDeliveryPartner(@PathVariable Long id) {
 
 		return adminService.rejectDeliveryPartner(id);
-	}	
-
-	
+	}		
 	
 }
