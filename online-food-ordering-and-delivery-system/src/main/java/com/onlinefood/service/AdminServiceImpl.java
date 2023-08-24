@@ -56,7 +56,7 @@ public class AdminServiceImpl implements AdminService{
 		Restaurant res = resRepo.findById(id).orElseThrow();
 		res.setRestaurantStatus(Status.APPROVED);
 		res.getUser().setActive(true);
-		return  ResponseEntity.status(HttpStatus.ACCEPTED).body("Successfully approved");
+		return  ResponseEntity.status(HttpStatus.OK).body("Successfully approved");
 	}
 
 	@Override

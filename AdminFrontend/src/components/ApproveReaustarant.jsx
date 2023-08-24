@@ -23,8 +23,8 @@ function ApproveRestaurant() {
 
 
   const loadData = async() => {
-    const response =  await pendingRestaurants()
-      if(response.status == 200) {
+    const response =  await pendingRestaurants(token)
+      if(response != null && response.status == 200) {
         setRestaurant(response.data);
         debugger;
       }else{
@@ -33,8 +33,8 @@ function ApproveRestaurant() {
   }
 
   const approve = async(id) => {
-    const response = await approveRestaurant(id)
-      if(response.status == 200){
+    const response = await approveRestaurant(id,token)
+      if(response != null && response.status == 200){
         toast.success('successfully approved')
         loadData();
       }else {
@@ -44,8 +44,8 @@ function ApproveRestaurant() {
   }
 
   const reject = async(id) => {
-   const response = await rejectRestaurant(id)
-      if(response.status ==200){
+   const response = await rejectRestaurant(id,token)
+      if(response != null && response.status ==200){
         toast.success('successfully rejected')
         loadData();
       }else{

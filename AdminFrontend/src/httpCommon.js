@@ -1,4 +1,4 @@
-import axios from "axios";
+// import axios from "axios";
 
 
 const appForAdmin=axios.create({
@@ -9,5 +9,4 @@ const appForAdmin=axios.create({
     },
   });
 
-
-  export default appForAdmin;
+//   export default appForAdmin;
