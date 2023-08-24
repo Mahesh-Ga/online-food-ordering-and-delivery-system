@@ -27,7 +27,7 @@ const loadData = async() => {
 
   const response = await getAllActiveRestaurants(token)
   debugger  
-  if(response.status == 200) {
+  if(response != null && response.status == 200) {
       debugger;
       setRestaurant(response.data);  
     }
