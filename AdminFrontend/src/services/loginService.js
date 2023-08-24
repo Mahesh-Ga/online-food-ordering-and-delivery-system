@@ -21,6 +21,7 @@ export const signIn = async(email,password)=>{
   }
 
   }
+}
 
 // export const validateUser = async()=>{
 //     return await appForAdmin.get(`/admin/restaurant`)
