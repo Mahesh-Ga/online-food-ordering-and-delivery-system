@@ -21,14 +21,3 @@ export const signIn = async(email,password)=>{
   }
 
   }
-}
-
-// export const validateUser = async()=>{
-//     return await appForAdmin.get(`/admin/restaurant`)
-
-// }
-
-// later change to validate api 
-// export const signOut = ()=>{
-//     return app
-// }

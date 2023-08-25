@@ -86,6 +86,7 @@ public class AdminController {
 		return adminService.rejectRestaurant(id);
 	}
 
+	
 	@GetMapping("/pending/deliverypartner")
 	public List<DeliveryPartnerResponceDto> getPendingDeliveryPartner() {
 		return adminService.pendingDeliveryPartnerRequests();
