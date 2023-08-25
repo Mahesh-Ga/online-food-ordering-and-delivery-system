@@ -5,6 +5,8 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,10 +38,12 @@ public class DeliveryController {
 		return deliveryservice.getOrdersToBeDeliverd();
 	}
 	
-	@PutMapping("/accept/{deliveryPartnerId}")
-	public Order acceptOrder(@PathVariable Long deliveryPartnerid , @RequestParam Long orderId) {
-		
-		return deliveryservice.acceptOrder(orderId,deliveryPartnerid);
+	@PutMapping("/accept/{orderId}")
+	public Order acceptOrder(@PathVariable Long orderId) {
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String email = authentication.getName();
+		System.out.println(email);
+		return deliveryservice.acceptOrder(orderId,email);
 	}
 	
 	@PutMapping("/delivered/{id}")
@@ -60,4 +64,5 @@ public class DeliveryController {
 		return deliveryservice.addDeliveryPartner(deliverypartner);
 	}
 
+	
 }

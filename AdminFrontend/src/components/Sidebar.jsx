@@ -3,7 +3,9 @@ import '../style.css'
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../features/authSlice';
-function Sidebar({ Toggle }) {
+import { setToggle } from '../features/toggleSlice';
+
+function Sidebar() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -57,7 +59,7 @@ function Sidebar({ Toggle }) {
                 <a className='list-group-item py-2' onClick={()=>{
                     sessionStorage.removeItem('token')
                     sessionStorage.removeItem('email')
-                    Toggle()
+                    dispatch(setToggle())
                     dispatch(logout())
                     }} >
                     <i className='bi bi-power fs-5 me-3'>
@@ -67,6 +69,8 @@ function Sidebar({ Toggle }) {
                         Logout
                     </span>
                 </a>
+
+                
             </div>
         </div>
     )

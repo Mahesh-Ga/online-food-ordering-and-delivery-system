@@ -46,6 +46,8 @@ public interface RestaurantService {
 	public ApiResponse uploadRestaurantImage(Long resId, MultipartFile image) throws IOException;
 
 	public byte[] getRestaurantImage(Long resId) throws IOException;
+	
+	public RestaurantResponseDTO getMyRestaurant(String email);
 
 //	public List<Order> getOrderList();
 	

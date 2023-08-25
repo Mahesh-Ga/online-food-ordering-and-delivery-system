@@ -2,60 +2,61 @@ import React, { useEffect, useState } from 'react'
 import '../style.css'
 import { approveRestaurant, pendingRestaurants, rejectRestaurant } from '../services/restaurantService';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 
 function ApproveRestaurant() {
 
   const [restaurants, setRestaurant] = useState([])
 
+  const token = useSelector((state)=>state.token.tokenValue)
+
   useEffect(() => {
-
-    loadData();
-
+  
+    debugger
   }, []);
+  
+  useEffect(()=>{
+    if(token!="")
+    loadData();
+  
+  },[token])
 
-  const loadData = () => {
 
-    pendingRestaurants()
-      .then((responce) => {
-        setRestaurant(responce.data);
+  const loadData = async() => {
+    const response =  await pendingRestaurants(token)
+      if(response != null && response.status == 200) {
+        setRestaurant(response.data);
         debugger;
-      })
-      .catch((error) => {
+      }else{
         debugger;
-      });
+      }
   }
 
-  const approve = (id) => {
-    approveRestaurant(id)
-      .then(() => {
+  const approve = async(id) => {
+    const response = await approveRestaurant(id,token)
+      if(response != null && response.status == 200){
         toast.success('successfully approved')
-
         loadData();
-      })
-      .catch(() => {
+      }else {
         toast.error('failed to approved')
-
         debugger
-      });
-
+      }
   }
-  const reject = (id) => {
-    rejectRestaurant(id)
-      .then(() => {
+
+  const reject = async(id) => {
+   const response = await rejectRestaurant(id,token)
+      if(response != null && response.status ==200){
         toast.success('successfully rejected')
-
         loadData();
-      })
-      .catch(() => {
+      }else{
         toast.error('failed to reject')
-
         debugger
-      });
-
-
+      };
   }
 
-  return (<>
+  return (<div>
+     <h2 style={{ textAlign: 'center' }}>Approve Restaurants</h2>
+     <br></br>
     <div className="accordion" id="accordionExample">
 
       {
@@ -76,7 +77,16 @@ function ApproveRestaurant() {
               <div className="accordion-body">
 
                 <form className="row g-3">
+                <div className="col-md-6">
+                    <label for="email" className="form-label">Email</label>
+                    <input type="email" className="form-control" id="email" value={restaurant.user.email} readOnly />
+                  </div>
 
+                  <div className="col-md-6">
+                    <label for="mobile" className="form-label">Mobile</label>
+                    <input type="text" className="form-control" id="mobile" value={restaurant.mobileNumber} readOnly />
+                  </div>
+              
                   <div className="col-md-6">
                     <label for="inputEmail4" className="form-label">cuisine</label>
                     <input type="text" className="form-control" id="inputEmail4" value={restaurant.cuisine}/>
@@ -130,7 +140,7 @@ function ApproveRestaurant() {
       }
 
     </div>
-  </>
+  </div>
 
   )
 }

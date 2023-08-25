@@ -1,7 +1,87 @@
-import appForAdmin from "../httpCommon";
+import axios from "axios";
+import { createUrl, log } from '../utils/util';
 
-export const pendingRestaurants = () =>{ return appForAdmin.get(`/admin/pending/restaurant`)}
-export const approveRestaurant = (id)=>{  return appForAdmin.put(`/admin/approve/restaurant/${id}`)}
-export const rejectRestaurant = (id)=>{ return appForAdmin.delete(`/admin/restaurant/${id}`)}
-export const getAllActiveRestaurants = ()=>{ return appForAdmin.get('/admin/restaurant')}
-export const removeRestaurant = (id)=>{ return appForAdmin.put(`/admin/remove/restaurant/${id}`)}
+
+export const pendingRestaurants = async(token) =>{
+  
+  const url = createUrl('/admin/pending/restaurant')  
+    const headers = {
+      Authorization: token==""? '':`Bearer ${token}`,
+    };
+  try{
+    debugger
+     const response =  await axios.get(url,{headers})
+     log(response.data)
+     return response
+  }catch(ex) {
+    log(ex)
+    return null
+  }
+
+}
+export const approveRestaurant = async(id,token)=>{
+  
+  const url = createUrl(`/admin/approve/restaurant/${id}`)  
+  const headers = {
+    'Content-Type': 'application/json',   
+    Authorization: token==""? '':'Bearer '+token,
+  };
+try{
+  debugger
+   const response =  await axios.put(url,{},{headers})
+   log(response.data)
+   return response
+}catch(ex) {
+debugger
+  log(ex)
+  return null
+}
+}
+export const rejectRestaurant = async(id,token)=>{ 
+  
+  const url = createUrl(`/admin/restaurant/${id}`)  
+  const headers = {
+    Authorization: token==""? '':`Bearer ${token}`,
+  };
+try{
+   const response =  await axios.delete(url,{headers})
+   log(response.data)
+   return response
+}catch(ex) {
+  log(ex)
+  return null
+}
+}
+
+
+export const getAllActiveRestaurants = async (token)=>{ 
+  const url = createUrl('/admin/restaurant')
+    const headers = {
+    Authorization: token==""? '':`Bearer ${token}`,
+  };
+
+  try {
+    const response = await axios.get(url, { headers })
+    log(response.data)
+    return response
+  } catch (ex) {
+    log(ex)
+    return null
+  }
+}
+
+export const removeRestaurant = async(id,token)=>{ 
+
+  const url = createUrl(`/admin/remove/restaurant/${id}`)  
+  const headers = {
+    Authorization: token==""? '':`Bearer ${token}`,
+  };
+try{
+   const response =  await axios.put(url,{},{headers})
+   log(response.data)
+   return response
+}catch(ex) {
+  log(ex)
+  return null
+}
+}

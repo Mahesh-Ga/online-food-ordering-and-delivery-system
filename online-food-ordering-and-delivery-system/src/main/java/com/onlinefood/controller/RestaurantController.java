@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.onlinefood.dto.ApiResponse;
+import com.onlinefood.dto.CustomerRespDTO;
 import com.onlinefood.dto.GetMenuDTO;
 import com.onlinefood.dto.OrderDTOforRestaurant;
 import com.onlinefood.dto.RestaurantNewMenuDTO;
@@ -146,6 +147,15 @@ public class RestaurantController {
 	public ResponseEntity<?> getRestaurantImage(@PathVariable Long resId) throws IOException {
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(restaurantService.getRestaurantImage(resId));
+	}
+	@GetMapping("/{email}")
+	public ResponseEntity<RestaurantResponseDTO> getRestaurantProfile(@PathVariable String email) {
+//	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//		String userEmail = authentication.getName();
+
+		RestaurantResponseDTO restaurant = restaurantService.getMyRestaurant(email);
+
+		return new ResponseEntity<>(restaurant, HttpStatus.OK);
 	}
 
 	@GetMapping("/search")

@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useDispatch } from "react-redux"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 import { login } from "../features/authSlice"
 import { signIn } from "../services/loginService"
+import { setToken } from "../features/tokenSlice"
+import { setToggle } from "../features/toggleSlice"
 
 function Login(){
 
@@ -26,17 +28,19 @@ function Login(){
         const response = await signIn(email,password);
         
         debugger;
-        if (response['status'] == 200) {
+        if (response != null && response['status'] == 200) {
         const { jwt } = response['data']
   
            sessionStorage['token'] = jwt
            sessionStorage['email'] = email
-       
-        await dispatch(login())
+       debugger
+         dispatch(login())
+         dispatch(setToken(jwt))
          debugger
         toast.success(`Welcome ${email} to online food ordering and delivery application`)
-  
+          dispatch(setToggle())
           navigate('/home')
+
         } else {
           toast.error('Invalid user name or password')
         }
@@ -46,8 +50,11 @@ function Login(){
 
     return <>
         <div>
-      <h1 style={{ textAlign: 'center', margin: 10 }}>Login</h1>
-
+      <h1 style={{ textAlign: 'center', margin: 10, marginTop: 40 }}>Welcome To Admin Page</h1>
+      <br></br>
+      <br></br>
+      
+      
       <div className='row'>
         <div className='col'></div>
         <div className='col'>
@@ -73,9 +80,6 @@ function Login(){
               />
             </div>
             <div className='mb-3'>
-              <div className='mb-3'>
-                Don't have an account? <Link to='/register'>Register here</Link>
-              </div>
               <button onClick={loginUser} className='btn btn-success'>
                 Login
               </button>
