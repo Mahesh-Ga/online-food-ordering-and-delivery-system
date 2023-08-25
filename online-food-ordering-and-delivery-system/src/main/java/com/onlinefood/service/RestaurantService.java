@@ -31,8 +31,10 @@ public interface RestaurantService {
 
 	public ApiResponse removeMenu(Long menuId);
 
-	public OrderDTOforRestaurant getMyPendingOrder(Long restaurantId);
+	public List<OrderDTOforRestaurant> getMyPendingOrder(Long restaurantId);
 	
+	public List<OrderDTOforRestaurant> getMyPastOrder(Long restaurantId);
+
 	public ApiResponse changeOrderStatus(Long orderId);
 	
 	public ApiResponse OrderReadyForPickUp(Long orderId);

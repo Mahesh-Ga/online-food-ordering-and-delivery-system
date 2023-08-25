@@ -44,6 +44,7 @@ public class SecurityConfig {
 				"/user/signin", 
 				"/restaurant/menubyResId/*", 
 				"/restaurant/menu",
+				"/restaurant/orderByResId/*",
 				"/restaurant/getAllRestaurants",
 				"/restaurant",
 				"/delivery",
