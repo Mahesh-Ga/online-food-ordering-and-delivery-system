@@ -16,6 +16,8 @@ import com.onlinefood.entities.Order;
 public interface RestaurantService {
 
 	public ApiResponse addRestaurant(RestaurantSignupDTO restaurant);
+	
+	public RestaurantResponseDTO getRestaurantById(Long restId);
 
 	public ApiResponse removeRestaurant(Long restaurantId);
 
@@ -48,4 +50,8 @@ public interface RestaurantService {
 	public RestaurantResponseDTO getMyRestaurant(String email);
 
 //	public List<Order> getOrderList();
+	
+	List<RestaurantResponseDTO> searchRestaurant(String query);
+	List<GetMenuDTO> searchMenu(String query);
+	
 }

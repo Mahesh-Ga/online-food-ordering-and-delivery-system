@@ -18,10 +18,8 @@ export async function getMenuByRestId(id) {
     const url = createUrl("/restaurant/menubyResId/" + id)
     try {
         const response = await axios.get(url)
-        // log(response.data)
         return response.data
     } catch (ex) {
-        // log(ex.response.data)
         return ex.response.data
     }
 }

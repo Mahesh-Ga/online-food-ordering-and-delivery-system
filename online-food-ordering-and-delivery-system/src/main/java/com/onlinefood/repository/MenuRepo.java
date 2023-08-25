@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.onlinefood.dto.GetMenuDTO;
 import com.onlinefood.entities.Menu;
 
 public interface MenuRepo extends JpaRepository<Menu, Long>{
@@ -17,7 +18,7 @@ public interface MenuRepo extends JpaRepository<Menu, Long>{
 	List<Menu> findByRestaurantIdAndIsDeletedFalse(Long restaurantId);
 	Optional<Menu> findByIdAndIsDeletedFalse(Long menuId);
 	   
-	
+	List<Menu> findByNameContaining(String query);
 
 	
 }

@@ -9,7 +9,6 @@ import org.apache.commons.io.FileUtils;
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +46,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 	RestaurantRepo resRepo;
 	@Autowired
 	MenuRepo menuRepo;
-	@Autowired 
+	@Autowired
 	OrderRepo orderRepo;
 	@Autowired
 	UserRepo userRepo;
@@ -63,18 +62,25 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 	@PostConstruct
 	public void init() {
-		//System.out.println("in init " + folderLocation);
+		// System.out.println("in init " + folderLocation);
 		// chk if folder exists --yes --continue
 		File menuFolder = new File(menuFolderLocation);
 		File restaurantFolder = new File(restaurantFolderLocation);
 		if (restaurantFolder.exists() && menuFolder.exists()) {
-			//System.out.println("folder exists alrdy !");
+			// System.out.println("folder exists alrdy !");
 		} else {
 			// no --create a folder
 			menuFolder.mkdir();
 			restaurantFolder.mkdir();
-			//System.out.println("created a folder !");
+			// System.out.println("created a folder !");
 		}
+	}
+
+	@Override
+	public RestaurantResponseDTO getRestaurantById(Long restId) {
+		Restaurant restaurant = resRepo.findById(restId)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid restaurant Id"));
+		return mapper.map(restaurant, RestaurantResponseDTO.class);
 	}
 
 	@Override
@@ -178,72 +184,99 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 	@Override
 	public OrderDTOforRestaurant getMyPendingOrder(Long restaurantId) {
-		 Order pendingOrder = orderRepo.findByRestaurantIdAndStatus(restaurantId, StatusType.PENDING);
+		Order pendingOrder = orderRepo.findByRestaurantIdAndStatus(restaurantId, StatusType.PENDING);
 		System.out.println(pendingOrder.getId());
 		OrderDTOforRestaurant orderPending = mapper.map(pendingOrder, OrderDTOforRestaurant.class);
 		orderPending.setOrderId(pendingOrder.getId());
-		
+
 		return orderPending;
 	}
 
 	@Override
 	public ApiResponse changeOrderStatus(Long orderId) {
-		     Order order=orderRepo.findById(orderId).orElseThrow(()-> new ResourceNotFoundException("Invalid Menu Id"));
-		      order.setStatus(StatusType.CONFIRMED);
-		     return new ApiResponse("Order accepted by Restaurant");
+		Order order = orderRepo.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu Id"));
+		order.setStatus(StatusType.CONFIRMED);
+		return new ApiResponse("Order accepted by Restaurant");
 	}
 
 	@Override
 	public ApiResponse OrderReadyForPickUp(Long orderId) {
-	     Order order=orderRepo.findById(orderId).orElseThrow(()-> new ResourceNotFoundException("Invalid Menu Id"));
-	     order.setStatus(StatusType.READY_FOR_PICKUP);
+		Order order = orderRepo.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu Id"));
+		order.setStatus(StatusType.READY_FOR_PICKUP);
 		// TODO Auto-generated method stub
-	     return new ApiResponse("Order is Ready for Pickup");
+		return new ApiResponse("Order is Ready for Pickup");
 
 	}
 
 	@Override
 	public ApiResponse uploadMenuImage(Long menuId, MultipartFile image) throws IOException {
 		// get menu from menu id
-				Menu menu = menuRepo.findById(menuId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu ID!!!!"));
-				// menu found --> PERSISTENT
-				// store the image on server side folder
-				String path = menuFolderLocation.concat(image.getOriginalFilename());
-				//System.out.println(path);
-				// Use FileUtils method : writeByte[] --> File
-				FileUtils.writeByteArrayToFile(new File(path), image.getBytes());
-				// set image path
-				menu.setImagePath(path);
-				// OR to store the img directly in DB as a BLOB
-				// menu.setImage(image.getBytes());
-				return new ApiResponse("Image file uploaded successfully for menu id " + menuId);
-		
-	}
-  public byte[] getMenuImage(Long menuId) throws IOException {
 		Menu menu = menuRepo.findById(menuId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu ID!!!!"));
-         String imagePath = menu.getImagePath();
-        return FileUtils.readFileToByteArray(new File(imagePath)); 
-	  
-  }
+		// menu found --> PERSISTENT
+		// store the image on server side folder
+		String path = menuFolderLocation.concat(image.getOriginalFilename());
+		// System.out.println(path);
+		// Use FileUtils method : writeByte[] --> File
+		FileUtils.writeByteArrayToFile(new File(path), image.getBytes());
+		// set image path
+		menu.setImagePath(path);
+		// OR to store the img directly in DB as a BLOB
+		// menu.setImage(image.getBytes());
+		return new ApiResponse("Image file uploaded successfully for menu id " + menuId);
 
-@Override
-public ApiResponse uploadRestaurantImage(Long resId, MultipartFile image) throws IOException {
-	// TODO Auto-generated method stub
- Restaurant restaurant = resRepo.findById(resId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu ID!!!!"));
-	// menu found --> PERSISTENT
-	// store the image on server side folder
-	String path = restaurantFolderLocation.concat(image.getOriginalFilename());
-	//System.out.println(path);
-	// Use FileUtils method : writeByte[] --> File
-	FileUtils.writeByteArrayToFile(new File(path), image.getBytes());
-	// set image path
-	restaurant.setImagePath(path);
-	// OR to store the img directly in DB as a BLOB
-	// menu.setImage(image.getBytes());
-	return new ApiResponse("Image file uploaded successfully for menu id " + resId);
+	}
+
+	public byte[] getMenuImage(Long menuId) throws IOException {
+		Menu menu = menuRepo.findById(menuId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu ID!!!!"));
+		String imagePath = menu.getImagePath();
+		return FileUtils.readFileToByteArray(new File(imagePath));
+	}
+
+	@Override
+	public ApiResponse uploadRestaurantImage(Long resId, MultipartFile image) throws IOException {
+		// TODO Auto-generated method stub
+		Restaurant restaurant = resRepo.findById(resId)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid Menu ID!!!!"));
+		// menu found --> PERSISTENT
+		// store the image on server side folder
+		String path = restaurantFolderLocation.concat(image.getOriginalFilename());
+		// System.out.println(path);
+		// Use FileUtils method : writeByte[] --> File
+		FileUtils.writeByteArrayToFile(new File(path), image.getBytes());
+		// set image path
+		restaurant.setImagePath(path);
+		// OR to store the img directly in DB as a BLOB
+		// menu.setImage(image.getBytes());
+		return new ApiResponse("Image file uploaded successfully for menu id " + resId);
+
+	}
+
+	@Override
+	public byte[] getRestaurantImage(Long resId) throws IOException {
+		Restaurant restaurant = resRepo.findById(resId)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid Menu ID!!!!"));
+		String imagePath = restaurant.getImagePath();
+
+		return FileUtils.readFileToByteArray(new File(imagePath));
+	}
+
+	@Override
+	public List<RestaurantResponseDTO> searchRestaurant(String query) {
+		List<Restaurant> restaurants = resRepo.findByRestaurantNameContaining(query);
+		return 	restaurants.stream()
+				.map(res -> mapper.map(res, RestaurantResponseDTO.class))
+				.collect(Collectors.toList());
+	}
 	
-}
-
+	@Override
+	public List<GetMenuDTO> searchMenu(String query) {
+		List<Menu> menus = menuRepo.findByNameContaining(query);
+		return 	menus.stream()
+				.map(res -> mapper.map(res, GetMenuDTO.class))
+				.collect(Collectors.toList());
+	}
+	
+	
 @Override
 public byte[] getRestaurantImage(Long resId) throws IOException {
 	 Restaurant restaurant = resRepo.findById(resId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu ID!!!!"));
