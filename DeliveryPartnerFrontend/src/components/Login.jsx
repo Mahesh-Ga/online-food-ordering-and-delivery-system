@@ -90,8 +90,6 @@ function Login(){
         <div className='col'></div>
       </div>
     </div>
-
-    
     
     </>
 }

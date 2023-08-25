@@ -2,9 +2,9 @@ import axios from "axios";
 import { createUrl, log } from '../utils/util';
 
 
-export const pendingRestaurants = async(token) =>{
+export const pendingOrders = async(token) =>{
   
-  const url = createUrl('/admin/pending/restaurant')  
+  const url = createUrl('/delivery/orders')  
     const headers = {
       Authorization: token==""? '':`Bearer ${token}`,
     };
@@ -19,9 +19,10 @@ export const pendingRestaurants = async(token) =>{
   }
 
 }
-export const approveRestaurant = async(id,token)=>{
+
+export const acceptOrder = async(id,token)=>{
   
-  const url = createUrl(`/admin/approve/restaurant/${id}`)  
+  const url = createUrl(`/delivery/accept/${id}`)  
   const headers = {
     'Content-Type': 'application/json',   
     Authorization: token==""? '':'Bearer '+token,
@@ -37,14 +38,14 @@ debugger
   return null
 }
 }
-export const rejectRestaurant = async(id,token)=>{ 
+export const orderDelivered = async(id,token)=>{ 
   
-  const url = createUrl(`/admin/restaurant/${id}`)  
+  const url = createUrl(`/delivery/delivered/${id}`)  
   const headers = {
     Authorization: token==""? '':`Bearer ${token}`,
   };
 try{
-   const response =  await axios.delete(url,{headers})
+   const response =  await axios.put(url,{},{headers})
    log(response.data)
    return response
 }catch(ex) {
@@ -54,14 +55,14 @@ try{
 }
 
 
-export const getAllActiveRestaurants = async (token)=>{ 
-  const url = createUrl('/admin/restaurant')
+export const cancelOrder = async (id,token)=>{ 
+  const url = createUrl(`/delivery/cancelled/${id}`)
     const headers = {
     Authorization: token==""? '':`Bearer ${token}`,
   };
 
   try {
-    const response = await axios.get(url, { headers })
+    const response = await axios.put(url,{}, { headers })
     log(response.data)
     return response
   } catch (ex) {
@@ -70,14 +71,11 @@ export const getAllActiveRestaurants = async (token)=>{
   }
 }
 
-export const removeRestaurant = async(id,token)=>{ 
+export const registerDeliveryPartner = async(body)=>{ 
 
-  const url = createUrl(`/admin/remove/restaurant/${id}`)  
-  const headers = {
-    Authorization: token==""? '':`Bearer ${token}`,
-  };
+  const url = createUrl(`/delivery`)
 try{
-   const response =  await axios.put(url,{},{headers})
+   const response =  await axios.post(url,{body})
    log(response.data)
    return response
 }catch(ex) {

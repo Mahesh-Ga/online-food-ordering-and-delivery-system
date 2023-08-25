@@ -10,4 +10,5 @@ import com.onlinefood.entities.User;
 public interface UserRepo extends JpaRepository<User, Long> {
 
 	Optional<User> findByEmail(String email);
+	
 }

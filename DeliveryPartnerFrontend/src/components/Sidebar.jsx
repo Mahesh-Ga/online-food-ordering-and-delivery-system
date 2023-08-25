@@ -19,20 +19,22 @@ function Sidebar() {
             </div>
             <hr className='text-dark' />
             <div className='list-group list-group-flush'>
-                <a className='list-group-item py-2' onClick={()=>{navigate('/Home')}} >
+                <a className='list-group-item py-2' onClick={()=>{navigate('/home')}} >
                     <i className='bi bi-table fs-5 me-3'>
                     </i>
                     <span >
                         Dashboard
                     </span>
                 </a>
-                <a className='list-group-item py-2' onClick={()=>{navigate('/users');}}>
+                
+                {/* <a className='list-group-item py-2' onClick={()=>{navigate('/users');}}>
                     <i className='bi bi-people fs-5 me-3'>
 
                     </i>
                     <span >Customers</span>
-                </a>
-                <a className='list-group-item py-2' onClick={()=>{navigate('/reaustarants')}} >
+                </a> */}
+                
+                {/* <a className='list-group-item py-2' onClick={()=>{navigate('/reaustarants')}} >
                     <i className='bi-r-square-fill fs-5 me-3'>
                     </i>
                     <span >Reaustarants</span>
@@ -41,20 +43,23 @@ function Sidebar() {
                 <a className='list-group-item py-2' onClick={()=>{navigate('/deliveryboys')}}>
                     <i className='bi bi-people fs-5 me-3'>
                     </i>
-                    <span >DeliveryBoys</span>
-                </a>
+                    <span >Orders</span>
+                </a> */}
                
-                <a className='list-group-item py-2' onClick={()=>{navigate('/approvedeliveryboy')}}>
-                    <i className='bi bi-person-add fs-5 me-3'>
-                    </i>
-                    <span >Approve DeliveryBoys</span>
-                </a>
-               
-                <a className='list-group-item py-2' onClick={()=>{navigate('/approvereaustarant')}} > 
+                <a className='list-group-item py-2' onClick={()=>{navigate('/pastOrders')}} > 
                     <i className='bi bi-check-square fs-5 me-3'>
                     </i>
-                    <span >Approve Reaustarant</span>
+                    <span >Past Orders</span>
                 </a>
+
+   
+                <a className='list-group-item py-2' onClick={()=>{navigate('/profile')}}>
+                    <i className='bi bi-person-add fs-5 me-3'>
+                    </i>
+                    <span >Profile</span>
+                </a>
+            
+
 
                 <a className='list-group-item py-2' onClick={()=>{
                     sessionStorage.removeItem('token')

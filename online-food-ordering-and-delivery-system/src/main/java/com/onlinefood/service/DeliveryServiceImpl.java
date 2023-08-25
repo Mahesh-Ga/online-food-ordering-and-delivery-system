@@ -21,6 +21,7 @@ import com.onlinefood.entities.User;
 import com.onlinefood.repository.DeliveryRepo;
 import com.onlinefood.repository.OrderRepo;
 import com.onlinefood.repository.RoleRepo;
+import com.onlinefood.repository.UserRepo;
 
 @Service
 @Transactional
@@ -31,6 +32,9 @@ public class DeliveryServiceImpl implements DeliveryService{
 	DeliveryRepo deliveryrepo;
 	@Autowired
 	ModelMapper mapper;
+
+	@Autowired
+	UserRepo userRepo;
 	
 	@Autowired
 	RoleRepo roleRepo;
@@ -39,9 +43,12 @@ public class DeliveryServiceImpl implements DeliveryService{
 	private UserService userService;
 	
 	@Override
-	public Order acceptOrder(Long orderId,Long deliveryBoyId) {
+	public Order acceptOrder(Long orderId,String email) {
 		Order order = orderrepo.findById(orderId).orElseThrow();
-		order.setDeliveryPartner(deliveryrepo.findById(deliveryBoyId).orElseThrow());
+		User user = userRepo.findByEmail(email).orElseThrow();
+		DeliveryPartner delivery = deliveryrepo.findByUser(user);
+		order.setDeliveryPartner(delivery);
+		System.out.println();
 		return order;
 		}
 
