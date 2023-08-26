@@ -17,6 +17,8 @@ import javax.validation.constraints.Max;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,6 +31,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString(exclude = {"restaurant","orderDetails"})
+@EqualsAndHashCode(of = "category")
 public class Menu extends BaseEntity {
 
 	@Column(name = "product_name", length = 100)

@@ -2,6 +2,8 @@ package com.onlinefood.service;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+
 import com.onlinefood.dto.ApiResponse;
 import com.onlinefood.dto.CustomerAddAddressDTO;
 import com.onlinefood.dto.CustomerAddDTO;
@@ -19,17 +21,17 @@ public interface CustomerService {
 	//profile
 	CustomerRespDTO getCustomer(String email);
 	void updateCustomer(String email, CustomerUpdateDTO customer);
-	boolean changeCustomerPassword(String email, String oldPassword, String newPassword);
+	ResponseEntity<String> changeCustomerPassword(String email, String oldPassword, String newPassword);
 	void removeCustomer(String email);
 	//-------------------------------------------------------
 	//address
-	List<CustomerAddAddressDTO> getAddressesByCustomer(Long customerId);
+	List<CustomerAddAddressDTO> getAddressesByCustomer(String email);
 
-	void addAddressToCustomer(Long customerId, CustomerAddAddressDTO address);
+	void addAddressToCustomer(String email, CustomerAddAddressDTO address);
 	boolean removeAddressToCustomer(Long addressId);
 	CustomerAddress updateAddress(Long addressId, CustomerAddAddressDTO updatedAddress);
 
 	//order
-	void placeOrder(String email,CustomerPlaceOrderDTO customerPlaceOrder);
+	void placeOrder(String email,Long selectedCustomerAddressId);
 		
 }

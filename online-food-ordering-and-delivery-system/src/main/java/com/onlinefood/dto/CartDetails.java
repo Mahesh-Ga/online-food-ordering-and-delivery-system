@@ -19,5 +19,6 @@ public class CartDetails {
 	private double price;
 	private int quantity;
 	private BigInteger restaurant_id;
-	
+	private BigInteger menu_id;
+
 }

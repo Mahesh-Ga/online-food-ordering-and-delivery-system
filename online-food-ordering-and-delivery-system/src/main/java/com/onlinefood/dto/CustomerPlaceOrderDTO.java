@@ -16,7 +16,6 @@ import lombok.ToString;
 public class CustomerPlaceOrderDTO {
 	
 	private Long selectedCustomerAddressId;
-	private LocalDateTime orderTimestamp;
-	private StatusType status;
+
 
 }

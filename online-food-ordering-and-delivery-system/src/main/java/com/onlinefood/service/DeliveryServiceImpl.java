@@ -8,16 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.onlinefood.custom_exceptions.ResourceNotFoundException;
 import com.onlinefood.dto.ApiResponse;
 import com.onlinefood.dto.DeliveryPartnerSignUpRequestDTO;
 import com.onlinefood.entities.DeliveryPartner;
 import com.onlinefood.entities.Order;
+import com.onlinefood.entities.Role;
 import com.onlinefood.entities.RoleType;
 import com.onlinefood.entities.Status;
 import com.onlinefood.entities.StatusType;
 import com.onlinefood.entities.User;
 import com.onlinefood.repository.DeliveryRepo;
 import com.onlinefood.repository.OrderRepo;
+import com.onlinefood.repository.RoleRepo;
+import com.onlinefood.repository.UserRepo;
 
 @Service
 @Transactional
@@ -28,15 +32,23 @@ public class DeliveryServiceImpl implements DeliveryService{
 	DeliveryRepo deliveryrepo;
 	@Autowired
 	ModelMapper mapper;
+
+	@Autowired
+	UserRepo userRepo;
 	
+	@Autowired
+	RoleRepo roleRepo;
 
 	@Autowired
 	private UserService userService;
 	
 	@Override
-	public Order acceptOrder(Long orderId,Long deliveryBoyId) {
+	public Order acceptOrder(Long orderId,String email) {
 		Order order = orderrepo.findById(orderId).orElseThrow();
-		order.setDeliveryPartner(deliveryrepo.findById(deliveryBoyId).orElseThrow());
+		User user = userRepo.findByEmail(email).orElseThrow();
+		DeliveryPartner delivery = deliveryrepo.findByUser(user);
+		order.setDeliveryPartner(delivery);
+		System.out.println();
 		return order;
 		}
 
@@ -68,7 +80,12 @@ public class DeliveryServiceImpl implements DeliveryService{
 		User user = new User();
 		user.setEmail(deliveryPartnerDto.getEmail());
 		user.setPassword(deliveryPartnerDto.getPassword());
-		userService.addUser(user, RoleType.ROLE_DELIVERY_PARTNER);
+		user.setActive(false);
+		Role role = roleRepo.findByUserRole(RoleType.ROLE_DELIVERY_PARTNER)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid role"));
+
+		user.setRole(role);
+	//	userService.addUser(user, RoleType.ROLE_DELIVERY_PARTNER);
 		deliveryPartner.setUser(user);
 		deliveryrepo.save(deliveryPartner);
 		return new ApiResponse("sucessfully added");

@@ -30,7 +30,12 @@ import com.onlinefood.dto.OrderDetailsDTO;
 import com.onlinefood.dto.RestaurantNewMenuDTO;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
+import com.onlinefood.entities.Category;
+import com.onlinefood.entities.Menu;
 import com.onlinefood.entities.Order;
+import com.onlinefood.entities.Restaurant;
+import com.onlinefood.repository.MenuRepo;
+import com.onlinefood.repository.RestaurantRepo;
 import com.onlinefood.service.AdminService;
 import com.onlinefood.service.RestaurantService;
 
@@ -42,8 +47,15 @@ allowedHeaders = {"Authorization","Content-Type","Origin","X-Auth-Token"})
 public class RestaurantController {
 	@Autowired
 	RestaurantService restaurantService;
+
 	@Autowired
 	AdminService adminService;
+
+	@Autowired
+	private MenuRepo menuRepo;
+
+	@Autowired
+	private RestaurantRepo restaurantRepo;
 
 	@PostMapping
 	public ResponseEntity<?> addRestaurant(@RequestBody @Valid RestaurantSignupDTO restaurant) {
@@ -65,6 +77,11 @@ public class RestaurantController {
 	@GetMapping("/getAllRestaurants")
 	public List<RestaurantResponseDTO> getAllRestaurants() {
 		return adminService.getAllActiveRestaurants();
+	}
+
+	@GetMapping("/getRestaurant/{restId}")
+	public RestaurantResponseDTO getRestaurantById(@PathVariable Long restId) {
+		return restaurantService.getRestaurantById(restId);
 	}
 
 	@GetMapping("/menubyResId/{resId}")
@@ -115,7 +132,6 @@ public class RestaurantController {
 		return ResponseEntity.ok(restaurantService.OrderReadyForPickUp(orderId));
 	}
 
-
 	@PostMapping(value = "/menuImage/{menuId}", consumes = "multipart/form-data")
 	public ResponseEntity<?> uploadMenuImage(@PathVariable Long menuId, @RequestParam MultipartFile imageFile)
 			throws IOException {
@@ -123,20 +139,25 @@ public class RestaurantController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(restaurantService.uploadMenuImage(menuId, imageFile));
 	}
 
-	@GetMapping(value = "/menuImage/{menuId}", produces = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE,MediaType.IMAGE_PNG_VALUE }) 
+	@GetMapping(value = "/menuImage/{menuId}", produces = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE,
+			MediaType.IMAGE_PNG_VALUE })
 	public ResponseEntity<?> getMenuImage(@PathVariable Long menuId) throws IOException {
-		
+
 		return ResponseEntity.status(HttpStatus.CREATED).body(restaurantService.getMenuImage(menuId));
 	}
+
 	@PostMapping(value = "/restaurantImage/{resId}", consumes = "multipart/form-data")
 	public ResponseEntity<?> uploadRestaurantImage(@PathVariable Long resId, @RequestParam MultipartFile imageFile)
 			throws IOException {
 		System.out.println("in upload img " + resId);
-		return ResponseEntity.status(HttpStatus.CREATED).body(restaurantService.uploadRestaurantImage(resId, imageFile));
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(restaurantService.uploadRestaurantImage(resId, imageFile));
 	}
-	@GetMapping(value = "/restaurantImage/{resId}", produces = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE,MediaType.IMAGE_PNG_VALUE }) 
+
+	@GetMapping(value = "/restaurantImage/{resId}", produces = { MediaType.IMAGE_GIF_VALUE, MediaType.IMAGE_JPEG_VALUE,
+			MediaType.IMAGE_PNG_VALUE })
 	public ResponseEntity<?> getRestaurantImage(@PathVariable Long resId) throws IOException {
-		
+
 		return ResponseEntity.status(HttpStatus.CREATED).body(restaurantService.getRestaurantImage(resId));
 	}
 	@GetMapping("/{email}")
@@ -148,10 +169,28 @@ public class RestaurantController {
 
 		return new ResponseEntity<>(restaurant, HttpStatus.OK);
 	}
+
+
+	@GetMapping("/search")
+	public List<RestaurantResponseDTO> searchRestaurant(@RequestParam String query) {
+		return restaurantService.searchRestaurant(query);
+	}
+
+	@GetMapping("/menu/search")
+	public List<GetMenuDTO> searchMenu(@RequestParam String query,@RequestParam(required = false) Category category) {
+		return restaurantService.searchMenu(query,category);
+	}
+
+	@GetMapping("/menu/category/{categoryType}")
+	public List<GetMenuDTO> searchMenu(@PathVariable Category categoryType) {
+		return restaurantService.getMenuByCategory(categoryType);
+	}
+
 	
 	@GetMapping("/orderMenuItems/{orderId}")
 	public ResponseEntity<?> getOrderMenuItems(@PathVariable Long orderId) {
 		List<OrderDetailsDTO> myOrderDetails = restaurantService.getOrderDetails(orderId);
 		return ResponseEntity.ok(myOrderDetails);
 }
+
 }

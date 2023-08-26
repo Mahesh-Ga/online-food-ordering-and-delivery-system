@@ -38,6 +38,10 @@ public class SecurityConfig {
 				.authorizeRequests()
 				.antMatchers        // Applies to all HTTP methods(GET,PUT,POST,DELETE)
 				(HttpMethod.GET,"/restaurant/menu/*").permitAll()
+				.antMatchers      
+				(HttpMethod.GET,"/restaurant/menuImage/*").permitAll()
+				.antMatchers      
+				(HttpMethod.GET,"/restaurant/restaurantImage/*").permitAll()
 				.antMatchers("/images/**").permitAll()
 				.antMatchers( 
 				"/customer/signup",
@@ -47,10 +51,14 @@ public class SecurityConfig {
 				"/restaurant/orderByResId/*",
 				"/restaurant/getAllRestaurants",
 				"/restaurant",
+				"/restaurant/getRestaurant/*",
 				"/delivery",
 				"/swagger*/**",
-				"/v*/api-docs/**").permitAll()  
-				.antMatchers("/customer/**","/cart/**").hasRole("CUSTOMER")
+				"/v*/api-docs/**",
+				"/restaurant/search",
+				"/restaurant/menu/search").permitAll()  
+				.antMatchers("/customer/**","/cart/add/*").hasRole("CUSTOMER")
+				.antMatchers("/restaurant/menu/*/*").permitAll()
 				.antMatchers("/admin/**").hasRole("ADMIN")
 				.antMatchers("/restaurant/**").hasRole("RESTAURANT")
 				.antMatchers("/delivery/**").hasRole("DELIVERY_PARTNER")

@@ -8,15 +8,16 @@ export const signIn = async(email,password)=>{
         email,
         password
     } 
-    return await axios.post(`https://localhost:7070/user/signin`,body)
-}
 
-// export const validateUser = async()=>{
-//     return await appForAdmin.get(`/admin/restaurant`)
+  try{
+     const response =  await axios.post(url,body)
+     log(response.data)
+     return response
+  }catch(ex) {
+    log(ex)
+    return null
+  }
 
-// }
+  }
 
-// later change to validate api 
-// export const signOut = ()=>{
-//     return app
-// }
+

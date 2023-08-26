@@ -1,6 +1,4 @@
 import { useState } from "react";
-import Footer from "../Styling/Footer";
-import Header from "../Styling/Header";
 import "./Dashboard.css"
 import "./VegToggleButton.css"
 import { useNavigate } from "react-router-dom";

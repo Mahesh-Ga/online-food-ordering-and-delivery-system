@@ -10,7 +10,8 @@ import lombok.ToString;
 @Setter
 @ToString
 public class CustomerAddAddressDTO {
-
+	
+	private String id;
 	private String streetAddressLine1;
 	private String streetAddressLine2;
 	private String state;

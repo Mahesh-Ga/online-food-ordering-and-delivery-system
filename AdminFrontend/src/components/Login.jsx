@@ -50,11 +50,10 @@ function Login(){
 
     return <>
         <div>
-      <h1 style={{ textAlign: 'center', margin: 10 }}>Welcome To Admin Page</h1>
+      <h1 style={{ textAlign: 'center', margin: 10, marginTop: 40 }}>Welcome To Admin Page</h1>
       <br></br>
       <br></br>
-      <br></br>
-      <br></br>
+      
       
       <div className='row'>
         <div className='col'></div>

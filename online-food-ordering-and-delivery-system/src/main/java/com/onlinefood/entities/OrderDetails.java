@@ -37,26 +37,26 @@ public class OrderDetails extends BaseEntity {
     private int quantity;
 	
 	@Column
-	private String menu_name;
+	private String menuName;
 	
-	 public void setMenu(Menu menu) {
-	        if (this.menu != null) {
-	            this.menu.getOrderDetails().remove(this); // Remove from the old menu's orderDetails collection
-	        }
-	        this.menu = menu;
-	        if (menu != null) {
-	            menu.getOrderDetails().add(this); // Add to the new menu's orderDetails collection
-	        }
-	    }
-	 
-	 public void setOrder(Order order) {
-	        if (this.order != null) {
-	            this.order.getOrderDetails().remove(this); // Remove from the old order's orderDetails collection
-	        }
-	        this.order = order;
-	        if (order != null) {
-	            order.getOrderDetails().add(this); // Add to the new order's orderDetails collection
-	        }
-	    }
+//	 public void setMenu(Menu menu) {
+//	        if (this.menu != null) {
+//	            this.menu.getOrderDetails().remove(this); // Remove from the old menu's orderDetails collection
+//	        }
+//	        this.menu = menu;
+//	        if (menu != null) {
+//	            menu.getOrderDetails().add(this); // Add to the new menu's orderDetails collection
+//	        }
+//	    }
+//	 
+//	 public void setOrder(Order order) {
+//	        if (this.order != null) {
+//	            this.order.getOrderDetails().remove(this); // Remove from the old order's orderDetails collection
+//	        }
+//	        this.order = order;
+//	        if (order != null) {
+//	            order.getOrderDetails().add(this); // Add to the new order's orderDetails collection
+//	        }
+//	    }
 	
 }

@@ -5,7 +5,7 @@ import { setToggle } from '../features/toggleSlice';
 function Nav() {
     const loginStatus = useSelector((state)=>state.auth.status) 
     const dispatch = useDispatch();
-
+    
     debugger
     return (<div>
         {loginStatus && 
