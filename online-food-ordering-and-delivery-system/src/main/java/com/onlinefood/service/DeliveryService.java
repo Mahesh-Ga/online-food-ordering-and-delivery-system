@@ -10,7 +10,7 @@ import com.onlinefood.entities.Order;
 public interface DeliveryService {
 	public List<Order> getOrdersToBeDeliverd();	
 	
-	public Order acceptOrder(Long OrderId, Long DeliveryBoyId);
+	public Order acceptOrder(Long OrderId, String email);
 	
 	public Order changeOrderStatusToDeliverd(Long id);	
 	

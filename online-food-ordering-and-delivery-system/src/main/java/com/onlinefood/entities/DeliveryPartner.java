@@ -63,8 +63,8 @@ public class DeliveryPartner extends BaseEntity{
 //	@JoinColumn(name = "address_id")
 //	private CustomerAddress address;
 	
-	@OneToOne
-	@JoinColumn(name = "user_id")
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_id" )
 	private User user;
 
 	@OneToMany( mappedBy = "deliveryPartner" , cascade = CascadeType.ALL,  orphanRemoval = true)

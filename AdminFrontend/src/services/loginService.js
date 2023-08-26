@@ -1,20 +1,23 @@
-import appForAdmin from "../httpCommon"
+import axios from "axios"
+import { createUrl, log } from "../utils/util";
 
 
-export const signIn = (email,password)=>{ 
-    const body = {
+export const signIn = async(email,password)=>{ 
+  debugger
+
+  const url = createUrl(`/user/signin`);  
+    
+  const body = {
         email,
         password
     } 
-    return appForAdmin.post(`/user/signin`,body)
-}
+  try{
+     const response =  await axios.post(url,body)
+     log(response.data)
+     return response
+  }catch(ex) {
+    log(ex)
+    return null
+  }
 
-export const validateUser = ()=>{
-    return appForAdmin.get(`/admin/restaurant`)
-
-}
-
-// later change to validate api 
-// export const signOut = ()=>{
-//     return app
-// }
+  }

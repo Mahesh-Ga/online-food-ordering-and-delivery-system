@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.onlinefood.custom_exceptions.ResourceNotFoundException;
 import com.onlinefood.dto.ApiResponse;
+import com.onlinefood.dto.CustomerRespDTO;
 import com.onlinefood.dto.GetMenuDTO;
 import com.onlinefood.dto.OrderDTO;
 import com.onlinefood.dto.OrderDTOforRestaurant;
@@ -28,6 +29,7 @@ import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
 import com.onlinefood.dto.customConvetor.MenuToGetMenuConvertor;
 import com.onlinefood.entities.Category;
+import com.onlinefood.entities.Customer;
 import com.onlinefood.entities.Menu;
 import com.onlinefood.entities.Order;
 import com.onlinefood.entities.Restaurant;
@@ -38,6 +40,7 @@ import com.onlinefood.entities.User;
 import com.onlinefood.repository.MenuRepo;
 import com.onlinefood.repository.OrderRepo;
 import com.onlinefood.repository.RestaurantRepo;
+import com.onlinefood.repository.UserRepo;
 
 @Service
 @Transactional
@@ -49,6 +52,8 @@ public class RestaurantServiceImpl implements RestaurantService {
 	MenuRepo menuRepo;
 	@Autowired
 	OrderRepo orderRepo;
+	@Autowired
+	UserRepo userRepo;
 	@Autowired
 	ModelMapper mapper;
 	@Value("${folder.MenuImagelocation}")
@@ -299,4 +304,24 @@ public class RestaurantServiceImpl implements RestaurantService {
 				.collect(Collectors.toList());
 	}
 	
+@Override
+public byte[] getRestaurantImage(Long resId) throws IOException {
+	 Restaurant restaurant = resRepo.findById(resId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu ID!!!!"));
+    String imagePath = restaurant.getImagePath();
+   return FileUtils.readFileToByteArray(new File(imagePath)); 
+}
+
+@Override
+public RestaurantResponseDTO getMyRestaurant(String email) {
+	User user = userRepo.findByEmail(email)
+			.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
+	
+	 Restaurant restaurant = resRepo.findByUser(user);
+	//Customer customer = customerRepo.findByUser(user);
+//	Customer customer = customerRepo.findByEmail(email);
+	if (restaurant != null)
+		return mapper.map(restaurant, RestaurantResponseDTO.class);
+	throw new ResourceNotFoundException("Invalid Customer email");
+	
+}
 }
