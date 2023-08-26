@@ -2,10 +2,13 @@ package com.onlinefood.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
@@ -25,6 +28,7 @@ import com.onlinefood.dto.RestaurantNewMenuDTO;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
 import com.onlinefood.dto.customConvetor.MenuToGetMenuConvertor;
+import com.onlinefood.entities.Category;
 import com.onlinefood.entities.Customer;
 import com.onlinefood.entities.Menu;
 import com.onlinefood.entities.Order;
@@ -269,13 +273,36 @@ public class RestaurantServiceImpl implements RestaurantService {
 	}
 	
 	@Override
-	public List<GetMenuDTO> searchMenu(String query) {
-		List<Menu> menus = menuRepo.findByNameContaining(query);
+	public List<GetMenuDTO> searchMenu(String query, Category category) {
+		List<Menu> menus = new ArrayList<>(); 
+		List<Menu> vegMenus = new ArrayList<>(); 
+//		menus = menuRepo.findByNameContaining(query);
+		if(category == Category.VEG) {
+			menus = menuRepo.findByNameContaining(query);
+			vegMenus = menuRepo.findAllByCategory(category);
+			menus.retainAll(vegMenus);
+		}
+		else {
+			menus = menuRepo.findByNameContaining(query);	
+		}
+		
+		ModelMapper extraMapper = new ModelMapper();
+		extraMapper.addConverter(new MenuToGetMenuConvertor());
+
+		
 		return 	menus.stream()
-				.map(res -> mapper.map(res, GetMenuDTO.class))
+				.map(res -> extraMapper.map(res, GetMenuDTO.class))
 				.collect(Collectors.toList());
 	}
 	
+	public List<GetMenuDTO> getMenuByCategory(Category category) {
+		List<Menu> menus = menuRepo.findAllByCategory(category);
+		ModelMapper extraMapper = new ModelMapper();
+		extraMapper.addConverter(new MenuToGetMenuConvertor());
+		return 	menus.stream()
+				.map(res -> extraMapper.map(res, GetMenuDTO.class))
+				.collect(Collectors.toList());
+	}
 	
 @Override
 public byte[] getRestaurantImage(Long resId) throws IOException {

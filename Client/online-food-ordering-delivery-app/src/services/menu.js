@@ -23,3 +23,13 @@ export async function getMenuByRestId(id) {
         return ex.response.data
     }
 }
+
+export async function getMenuByCategory(category) {
+    const url = createUrl("/restaurant/menu/category/" + category)
+    try {
+        const response = await axios.get(url)
+        return response.data
+    } catch (ex) {
+        return ex.response.data
+    }
+}

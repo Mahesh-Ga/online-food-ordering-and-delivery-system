@@ -65,3 +65,20 @@ export async function deleteItemFromCart(menuItemId) {
         return ex.response.data
     }
 }
+
+export async function resetCart() {
+    const url = createUrl('/cart/reset')
+    const token = sessionStorage.getItem("token")
+
+    const headers = {
+        Authorization: `Bearer ${token}`,
+    };
+
+    try {
+        const response = await axios.get(url, { headers })
+        // log(response)
+        return response.data
+    } catch (ex) {
+        return ex.response.data
+    }
+}

@@ -57,8 +57,7 @@ public class SecurityConfig {
 				"/restaurant/search",
 				"/restaurant/menu/search").permitAll()  
 				.antMatchers("/customer/**","/cart/add/*").hasRole("CUSTOMER")
-//				.antMatchers      
-//				(HttpMethod.POST,"/cart/add/*").permitAll()
+				.antMatchers("/restaurant/menu/*/*").permitAll()
 				.antMatchers("/admin/**").hasRole("ADMIN")
 				.antMatchers("/restaurant/**").hasRole("RESTAURANT")
 				.antMatchers("/delivery/**").hasRole("DELIVERY_PARTNER")

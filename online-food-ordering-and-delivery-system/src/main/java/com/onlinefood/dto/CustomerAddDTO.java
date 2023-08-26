@@ -32,7 +32,7 @@ public class CustomerAddDTO {
 	private String email;
 	
 	@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,20}$",
-			message = "Invalid password format : "
+			 message = "Invalid password format : "
 					+ "Password should contain "
 					+ "at least one lowercase letter, "
 					+ "at least one uppercase letter, "

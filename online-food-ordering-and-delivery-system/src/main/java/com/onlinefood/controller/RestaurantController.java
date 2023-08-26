@@ -28,6 +28,7 @@ import com.onlinefood.dto.OrderDTOforRestaurant;
 import com.onlinefood.dto.RestaurantNewMenuDTO;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
+import com.onlinefood.entities.Category;
 import com.onlinefood.entities.Menu;
 import com.onlinefood.entities.Order;
 import com.onlinefood.entities.Restaurant;
@@ -42,7 +43,7 @@ import com.onlinefood.service.RestaurantService;
 public class RestaurantController {
 	@Autowired
 	RestaurantService restaurantService;
-	
+
 	@Autowired
 	AdminService adminService;
 
@@ -164,7 +165,12 @@ public class RestaurantController {
 	}
 
 	@GetMapping("/menu/search")
-	public List<GetMenuDTO> searchMenu(@RequestParam String query) {
-		return restaurantService.searchMenu(query);
+	public List<GetMenuDTO> searchMenu(@RequestParam String query,@RequestParam(required = false) Category category) {
+		return restaurantService.searchMenu(query,category);
+	}
+
+	@GetMapping("/menu/category/{categoryType}")
+	public List<GetMenuDTO> searchMenu(@PathVariable Category categoryType) {
+		return restaurantService.getMenuByCategory(categoryType);
 	}
 }
