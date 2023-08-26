@@ -15,7 +15,7 @@ public interface OrderRepo extends JpaRepository<Order, Long> {
 //		@Query(value = "select  from ",nativeQuery = true)
 	List<Order> findByStatus(StatusType status);
 	
-    Order findByRestaurantIdAndStatus(Long restaurantId, StatusType status);
+    List<Order> findByRestaurantIdAndStatusIn(Long restaurantId, List<StatusType> statuses);
 
     @Query("select sum(o.totalPrice) from Order o")
     Long getTotalSale();

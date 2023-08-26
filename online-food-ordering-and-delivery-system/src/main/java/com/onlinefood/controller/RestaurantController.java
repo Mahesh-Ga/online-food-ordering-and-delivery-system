@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +26,7 @@ import com.onlinefood.dto.ApiResponse;
 import com.onlinefood.dto.CustomerRespDTO;
 import com.onlinefood.dto.GetMenuDTO;
 import com.onlinefood.dto.OrderDTOforRestaurant;
+import com.onlinefood.dto.OrderDetailsDTO;
 import com.onlinefood.dto.RestaurantNewMenuDTO;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
@@ -39,7 +41,9 @@ import com.onlinefood.service.RestaurantService;
 
 @RestController
 @RequestMapping("/restaurant")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000",
+methods = { RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT,RequestMethod.DELETE},
+allowedHeaders = {"Authorization","Content-Type","Origin","X-Auth-Token"})
 public class RestaurantController {
 	@Autowired
 	RestaurantService restaurantService;
@@ -102,13 +106,19 @@ public class RestaurantController {
 
 	@DeleteMapping("/menu/{menuId}")
 	public ResponseEntity<?> removeMenu(@PathVariable Long menuId) {
+		System.out.println("inside delete menu ");
 		return ResponseEntity.ok(restaurantService.removeMenu(menuId));
 	}
 
 	@GetMapping("/orderByRestaurant/{resId}")
 	public ResponseEntity<?> getPendingOrders(@PathVariable Long resId) {
-		OrderDTOforRestaurant myPendingOrder = restaurantService.getMyPendingOrder(resId);
-		return ResponseEntity.ok(myPendingOrder);
+		List<OrderDTOforRestaurant> myPendingOrders = restaurantService.getMyPendingOrder(resId);
+		return ResponseEntity.ok(myPendingOrders);
+	}
+		@GetMapping("/pastOrderByRestaurant/{resId}")
+		public ResponseEntity<?> getPastOrders(@PathVariable Long resId) {
+			List<OrderDTOforRestaurant> myPendingOrders = restaurantService.getMyPastOrder(resId);
+			return ResponseEntity.ok(myPendingOrders);
 	}
 
 	@GetMapping("/confirmOrder/{orderId}")
@@ -116,6 +126,7 @@ public class RestaurantController {
 		return ResponseEntity.ok(restaurantService.changeOrderStatus(orderId));
 	}
 
+	
 	@GetMapping("/orderReadyForPickup/{orderId}")
 	public ResponseEntity<?> OrderReadyForPickup(@PathVariable Long orderId) {
 		return ResponseEntity.ok(restaurantService.OrderReadyForPickUp(orderId));
@@ -159,6 +170,7 @@ public class RestaurantController {
 		return new ResponseEntity<>(restaurant, HttpStatus.OK);
 	}
 
+
 	@GetMapping("/search")
 	public List<RestaurantResponseDTO> searchRestaurant(@RequestParam String query) {
 		return restaurantService.searchRestaurant(query);
@@ -173,4 +185,12 @@ public class RestaurantController {
 	public List<GetMenuDTO> searchMenu(@PathVariable Category categoryType) {
 		return restaurantService.getMenuByCategory(categoryType);
 	}
+
+	
+	@GetMapping("/orderMenuItems/{orderId}")
+	public ResponseEntity<?> getOrderMenuItems(@PathVariable Long orderId) {
+		List<OrderDetailsDTO> myOrderDetails = restaurantService.getOrderDetails(orderId);
+		return ResponseEntity.ok(myOrderDetails);
+}
+
 }

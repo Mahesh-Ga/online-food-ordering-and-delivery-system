@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
@@ -24,6 +26,7 @@ import com.onlinefood.dto.CustomerRespDTO;
 import com.onlinefood.dto.GetMenuDTO;
 import com.onlinefood.dto.OrderDTO;
 import com.onlinefood.dto.OrderDTOforRestaurant;
+import com.onlinefood.dto.OrderDetailsDTO;
 import com.onlinefood.dto.RestaurantNewMenuDTO;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
@@ -32,6 +35,7 @@ import com.onlinefood.entities.Category;
 import com.onlinefood.entities.Customer;
 import com.onlinefood.entities.Menu;
 import com.onlinefood.entities.Order;
+import com.onlinefood.entities.OrderDetails;
 import com.onlinefood.entities.Restaurant;
 import com.onlinefood.entities.RoleType;
 import com.onlinefood.entities.Status;
@@ -187,15 +191,43 @@ public class RestaurantServiceImpl implements RestaurantService {
 	}
 
 	@Override
-	public OrderDTOforRestaurant getMyPendingOrder(Long restaurantId) {
-		Order pendingOrder = orderRepo.findByRestaurantIdAndStatus(restaurantId, StatusType.PENDING);
-		System.out.println(pendingOrder.getId());
-		OrderDTOforRestaurant orderPending = mapper.map(pendingOrder, OrderDTOforRestaurant.class);
-		orderPending.setOrderId(pendingOrder.getId());
 
-		return orderPending;
+	public List<OrderDTOforRestaurant> getMyPendingOrder(Long restaurantId) {
+		List<StatusType> statusList=new ArrayList<StatusType>();
+		statusList.add(StatusType.PENDING);
+		statusList.add(StatusType.CONFIRMED);
+		statusList.add(StatusType.READY_FOR_PICKUP);
+		 List<Order> orderList = orderRepo.findByRestaurantIdAndStatusIn(restaurantId, statusList);
+		
+//		 .stream()
+//			.map(menu -> extraMapper.map(menu, GetMenuDTO.class)).collect(Collectors.toList())
+//		System.out.println(pendingOrder.getId());
+		List<OrderDTOforRestaurant> ordersPending =orderList.stream().map(m->mapper.map(m, OrderDTOforRestaurant.class)).collect(Collectors.toList());
+				
+		IntStream.range(0, orderList.size())
+	    .forEach(index -> ordersPending.get(index).setOrderId(orderList.get(index).getId()));
+		System.out.println(ordersPending.toString());
+		return ordersPending;
+		
 	}
-
+	@Override
+	public List<OrderDTOforRestaurant> getMyPastOrder(Long restaurantId) {
+		List<StatusType> statusList=new ArrayList<StatusType>();
+		statusList.add(StatusType.DELIVERED);
+		
+		 List<Order> orderList = orderRepo.findByRestaurantIdAndStatusIn(restaurantId, statusList);
+		
+//		 .stream()
+//			.map(menu -> extraMapper.map(menu, GetMenuDTO.class)).collect(Collectors.toList())
+//		System.out.println(pendingOrder.getId());
+		List<OrderDTOforRestaurant> ordersPending =orderList.stream().map(m->mapper.map(m, OrderDTOforRestaurant.class)).collect(Collectors.toList());
+				
+		IntStream.range(0, orderList.size())
+	    .forEach(index -> ordersPending.get(index).setOrderId(orderList.get(index).getId()));
+		System.out.println(ordersPending.toString());
+		return ordersPending;
+		
+	}
 	@Override
 	public ApiResponse changeOrderStatus(Long orderId) {
 		Order order = orderRepo.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu Id"));
@@ -323,5 +355,16 @@ public RestaurantResponseDTO getMyRestaurant(String email) {
 		return mapper.map(restaurant, RestaurantResponseDTO.class);
 	throw new ResourceNotFoundException("Invalid Customer email");
 	
+}
+
+@Override
+public List<OrderDetailsDTO> getOrderDetails(Long OrderId) {
+	
+	Order order=orderRepo.findById(OrderId).orElseThrow(() -> new ResourceNotFoundException("Invalid order ID!!!!"));
+	System.out.println(order.toString());
+	List<OrderDetails> orderDetails = order.getOrderDetails();
+	List<OrderDetailsDTO> orderDetailsList =orderDetails.stream().map(m->mapper.map(m, OrderDetailsDTO.class)).collect(Collectors.toList());
+    // System.out.println(orderDetailsList.toString());
+	return orderDetailsList;
 }
 }
