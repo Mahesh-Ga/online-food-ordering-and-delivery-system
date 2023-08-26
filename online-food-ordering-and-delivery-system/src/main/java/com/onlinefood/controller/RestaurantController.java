@@ -26,6 +26,7 @@ import com.onlinefood.dto.ApiResponse;
 import com.onlinefood.dto.CustomerRespDTO;
 import com.onlinefood.dto.GetMenuDTO;
 import com.onlinefood.dto.OrderDTOforRestaurant;
+import com.onlinefood.dto.OrderDetailsDTO;
 import com.onlinefood.dto.RestaurantNewMenuDTO;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
@@ -108,6 +109,7 @@ public class RestaurantController {
 		return ResponseEntity.ok(restaurantService.changeOrderStatus(orderId));
 	}
 
+	
 	@GetMapping("/orderReadyForPickup/{orderId}")
 	public ResponseEntity<?> OrderReadyForPickup(@PathVariable Long orderId) {
 		return ResponseEntity.ok(restaurantService.OrderReadyForPickUp(orderId));
@@ -146,5 +148,10 @@ public class RestaurantController {
 
 		return new ResponseEntity<>(restaurant, HttpStatus.OK);
 	}
-
+	
+	@GetMapping("/orderMenuItems/{orderId}")
+	public ResponseEntity<?> getOrderMenuItems(@PathVariable Long orderId) {
+		List<OrderDetailsDTO> myOrderDetails = restaurantService.getOrderDetails(orderId);
+		return ResponseEntity.ok(myOrderDetails);
+}
 }

@@ -25,6 +25,7 @@ import com.onlinefood.dto.CustomerRespDTO;
 import com.onlinefood.dto.GetMenuDTO;
 import com.onlinefood.dto.OrderDTO;
 import com.onlinefood.dto.OrderDTOforRestaurant;
+import com.onlinefood.dto.OrderDetailsDTO;
 import com.onlinefood.dto.RestaurantNewMenuDTO;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
@@ -32,6 +33,7 @@ import com.onlinefood.dto.customConvetor.MenuToGetMenuConvertor;
 import com.onlinefood.entities.Customer;
 import com.onlinefood.entities.Menu;
 import com.onlinefood.entities.Order;
+import com.onlinefood.entities.OrderDetails;
 import com.onlinefood.entities.Restaurant;
 import com.onlinefood.entities.RoleType;
 import com.onlinefood.entities.Status;
@@ -293,5 +295,16 @@ public RestaurantResponseDTO getMyRestaurant(String email) {
 		return mapper.map(restaurant, RestaurantResponseDTO.class);
 	throw new ResourceNotFoundException("Invalid Customer email");
 	
+}
+
+@Override
+public List<OrderDetailsDTO> getOrderDetails(Long OrderId) {
+	
+	Order order=orderRepo.findById(OrderId).orElseThrow(() -> new ResourceNotFoundException("Invalid order ID!!!!"));
+	System.out.println(order.toString());
+	List<OrderDetails> orderDetails = order.getOrderDetails();
+	List<OrderDetailsDTO> orderDetailsList =orderDetails.stream().map(m->mapper.map(m, OrderDetailsDTO.class)).collect(Collectors.toList());
+    // System.out.println(orderDetailsList.toString());
+	return orderDetailsList;
 }
 }
