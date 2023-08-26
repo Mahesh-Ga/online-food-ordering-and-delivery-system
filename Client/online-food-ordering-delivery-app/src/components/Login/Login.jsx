@@ -16,6 +16,7 @@ function Login() {
   const validateData = async () => {
     const response = await loginUser(cred.email, cred.password);
     // log(response.jwt)
+    if(response){
     if (response.jwt !== null && response.jwt !== undefined) {
       sessionStorage.setItem("token", response.jwt);
       dispatch(login());
@@ -27,7 +28,10 @@ function Login() {
       } else {
         toast.error(response.email || response.password);
       }
+    }}else{
+      toast.error("Server Error")
     }
+    
   };
 
   const textChange = (args) => {

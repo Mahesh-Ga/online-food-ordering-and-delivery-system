@@ -42,25 +42,20 @@ public class CustomerController {
 
 	@Autowired
 	private CustomerService customerService;
-	
-	
+
 	@PostMapping("/signup")
 	public ResponseEntity<?> addNewCustomer(@RequestBody @Valid CustomerAddDTO dto) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(customerService.addNewCustomer(dto));
 	}
 
 	@PutMapping("/password")
-	public ResponseEntity<String> changePassword(@RequestBody CustomerChangePasswordRequestDTO changePasswordRequest) {
+	public ResponseEntity<String> changePassword(@RequestBody @Valid CustomerChangePasswordRequestDTO changePasswordRequest) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String userEmail = authentication.getName();
-		boolean isPasswordChanged = customerService.changeCustomerPassword(userEmail,
-				changePasswordRequest.getOldPassword(), changePasswordRequest.getNewPassword());
 
-		if (isPasswordChanged) {
-			return ResponseEntity.status(HttpStatus.OK).body("Password changed successfully.");
-		} else {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to change password.");
-		}
+		return customerService.changeCustomerPassword(userEmail, changePasswordRequest.getOldPassword(),
+				changePasswordRequest.getNewPassword());
+
 	}
 	// -------------------------------------------------------------------------
 
@@ -100,8 +95,7 @@ public class CustomerController {
 	}
 
 	@PostMapping("/addresses")
-	public ResponseEntity<String> addAddressToCustomer(
-			@RequestBody CustomerAddAddressDTO address) {
+	public ResponseEntity<String> addAddressToCustomer(@RequestBody CustomerAddAddressDTO address) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String email = authentication.getName();
 		customerService.addAddressToCustomer(email, address);
@@ -131,14 +125,12 @@ public class CustomerController {
 
 	// -----------------------------------------------------------------
 
-	@PostMapping("/order/{selectedCustomerId}")
-	public ResponseEntity<String> placeOrder(@PathVariable Long selectedCustomerId) {
+	@PostMapping("/order/{selectedCustomerAddressId}")
+	public ResponseEntity<String> placeOrder(@PathVariable Long selectedCustomerAddressId) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String userEmail = authentication.getName();
-		customerService.placeOrder(userEmail, selectedCustomerId);
+		customerService.placeOrder(userEmail, selectedCustomerAddressId);
 		return ResponseEntity.ok("Order Successfully Placed.");
 	}
-	
-
 
 }

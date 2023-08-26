@@ -3,13 +3,13 @@ import { useEffect, useState } from "react";
 import "./Menu.css";
 import "./rating.css";
 import { getRestaurantById } from "../../services/restaurant";
-import { log } from "../../utilities/utils";
 import { getMenuByRestId } from "../../services/menu";
 import {
   addCartItem,
   deleteItemFromCart,
   getCustomerCart,
   removeCartItem,
+  resetCart,
 } from "../../services/cart";
 import { toast } from "react-toastify";
 
@@ -49,46 +49,57 @@ function Menu() {
 
   const fetchMenuByRestaurant = async () => {
     const response = await getMenuByRestId(location.state.restaurantId);
-    log(response);
     setMenu(response);
   };
 
   const fetchCartItems = async () => {
     const response = await getCustomerCart();
-    log(response);
     setCartItems(response);
   };
 
   const addToCart = async (menuId) => {
     const response = await addCartItem(menuId);
     fetchCartItems();
-    toast.success(response);
+    toast.success(response, {
+      autoClose :500
+    });
   };
 
   const removeFromCart = async (menuId) => {
     const response = await removeCartItem(menuId);
     fetchCartItems();
-    toast.success(response);
+    toast.success(response,{
+      autoClose :500
+    });
   };
 
   const deleteFromCart = async (menuId) => {
     const response = await deleteItemFromCart(menuId);
     fetchCartItems();
-    toast.success(response);
+    toast.success(response,{
+      autoClose :500
+    });
   };
 
-  useEffect(() => {
-    fetchRestaurant();
-    fetchMenuByRestaurant();
-    fetchCartItems();
-  }, []);
+
+  const resetEntireCart = async () => {
+     await resetCart();
+  }
+
+  useEffect(()=>{
+    if(cartItems.length === 0) {
+      resetEntireCart()
+    }
+  },[cartItems])
+
+  useEffect( () => {
+     fetchRestaurant();
+     fetchMenuByRestaurant();
+     fetchCartItems();
+  },[]);
 
   return (
     <>
-      <link
-        href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
-        rel="stylesheet"
-      ></link>
       <div className="body" style={{ minHeight: "100vh" }}>
         <div className="container mt-4">
           <div className="row d-flex justify-content-center">
@@ -123,7 +134,7 @@ function Menu() {
                       <img
                         src={`https://localhost:7070/restaurant/restaurantImage/${restaurant.id}`}
                         className="d-block w-100"
-                        alt={`image for ${restaurant.restaurantName}`}
+                        alt={`for ${restaurant.restaurantName}`}
                         height="500"
                         style={{ opacity: 0.75 }}
                       />
@@ -147,6 +158,7 @@ function Menu() {
                             <img
                               src="http://localhost:3000/assets/FSSAI_logo.png"
                               className="fssai-logo"
+                              alt="fssai"
                             ></img>{" "}
                           </div>
                         )}
@@ -256,7 +268,7 @@ function Menu() {
                         <img
                           src={`https://localhost:7070/restaurant/menuImage/${menu.id}`}
                           className="img-fluid rounded-start"
-                          alt="..."
+                          alt={`${menu.name}`}
                           style={{ height: "250px", width: "350px" }}
                         />
                       </div>
@@ -270,13 +282,13 @@ function Menu() {
                               <img
                                 className="menu-type-img"
                                 src="http://localhost:3000/assets/veg_symbol.png"
-                                alt={`${menu.name + " " + "image"}`}
+                                alt={`${menu.name}`}
                               />
                             ) : (
                               <img
                                 className="menu-type-img"
                                 src="http://localhost:3000/assets/non-veg.jpg"
-                                alt={`${menu.name + " " + "image"}`}
+                                alt={`${menu.name}`}
                               />
                             )}
                           </p>
@@ -311,6 +323,7 @@ function Menu() {
                               <i
                                 className="fa fa-shopping-cart"
                                 aria-hidden="true"
+                                
                               ></i>{" "}
                               Add to Cart
                             </button>
@@ -326,26 +339,28 @@ function Menu() {
               <p>
                 <button
                   type="button"
-                  class="btn btn-primary position-relative"
+                  className="btn btn-primary position-relative"
                   data-bs-toggle="collapse"
                   data-bs-target="#collapseWidthExample"
                   aria-expanded="false"
                   aria-controls="collapseWidthExample"
                 >
-                  <i class="fa fa-shopping-cart fa-lg"></i>
-                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                  <i className="fa fa-shopping-cart fa-lg"> View cart</i>
+                  <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                     {cartItems.length}
-                    <span class="visually-hidden">unread messages</span>
+                    <span className="visually-hidden">unread messages</span>
                   </span>
                 </button>
               </p>
               <div style={{ minHeight: "120px" }}>
                 <div
-                  class="collapse collapse-horizontal"
+                  className="collapse"
                   id="collapseWidthExample"
                 >
-                  <div class="card card-body">
+                  <div className="card card-body">
+                  {cartItems.length === 0 ? <h6 style={{textAlign : "center"}}>Empty Cart</h6> :
                     <div className="table-responsive">
+                    
                       <table className="table table-hover table-striped">
                         <thead>
                           <tr>
@@ -356,9 +371,10 @@ function Menu() {
                           </tr>
                         </thead>
                         <tbody>
-                          {cartItems.map((cartItem) => {
+                         {
+                          cartItems.map((cartItem) => {
                             return (
-                              <tr key={cartItem.restaurant_id}>
+                              <tr key={cartItem.menu_id}>
                                 <td>{cartItem.product_name}</td>
                                 <td>{cartItem.quantity}</td>
                                 <td>{cartItem.price}</td>
@@ -405,7 +421,7 @@ function Menu() {
                                         }}
                                       >
                                         <i
-                                          class="fa fa-trash"
+                                          className="fa fa-trash"
                                           aria-hidden="true"
                                         ></i>
                                       </button>
@@ -417,11 +433,12 @@ function Menu() {
                           })}
                         </tbody>
                       </table>
+                    {/* } */}
                       <h5>
                         Total Price : ₹
-                        {
+                       {
                         cartItems.reduce((total, cartItem) => {
-                          return total + cartItem.price * cartItem.quantity;
+                          return total + cartItem.price * cartItem.quantity
                         },0)
                         }
                       </h5>
@@ -435,6 +452,7 @@ function Menu() {
                         Place Order
                       </button>
                     </div>
+                    }
                   </div>
                 </div>
               </div>

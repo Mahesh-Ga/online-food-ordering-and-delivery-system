@@ -70,4 +70,10 @@ public class CartController {
         String email = authentication.getName();
 		return cartService.getCartItemsByCustomer(email);
 	}
+	@GetMapping("/reset")
+	public void resetCart() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+		cartService.resetCart(email);
+	}
 }
