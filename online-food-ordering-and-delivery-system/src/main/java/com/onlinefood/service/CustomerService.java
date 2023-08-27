@@ -2,6 +2,8 @@ package com.onlinefood.service;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+
 import com.onlinefood.dto.ApiResponse;
 import com.onlinefood.dto.CustomerAddAddressDTO;
 import com.onlinefood.dto.CustomerAddDTO;
@@ -19,7 +21,7 @@ public interface CustomerService {
 	//profile
 	CustomerRespDTO getCustomer(String email);
 	void updateCustomer(String email, CustomerUpdateDTO customer);
-	boolean changeCustomerPassword(String email, String oldPassword, String newPassword);
+	ResponseEntity<String> changeCustomerPassword(String email, String oldPassword, String newPassword);
 	void removeCustomer(String email);
 	//-------------------------------------------------------
 	//address

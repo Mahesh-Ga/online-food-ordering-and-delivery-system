@@ -2,10 +2,15 @@ package com.onlinefood.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.util.StringBuilderFormattable;
+
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
@@ -21,19 +26,23 @@ import com.onlinefood.dto.CustomerRespDTO;
 import com.onlinefood.dto.GetMenuDTO;
 import com.onlinefood.dto.OrderDTO;
 import com.onlinefood.dto.OrderDTOforRestaurant;
+import com.onlinefood.dto.OrderDetailsDTO;
 import com.onlinefood.dto.RestaurantNewMenuDTO;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
 import com.onlinefood.dto.customConvetor.MenuToGetMenuConvertor;
+import com.onlinefood.entities.Category;
 import com.onlinefood.entities.Customer;
 import com.onlinefood.entities.Menu;
 import com.onlinefood.entities.Order;
+import com.onlinefood.entities.OrderDetails;
 import com.onlinefood.entities.Restaurant;
 import com.onlinefood.entities.RoleType;
 import com.onlinefood.entities.Status;
 import com.onlinefood.entities.StatusType;
 import com.onlinefood.entities.User;
 import com.onlinefood.repository.MenuRepo;
+import com.onlinefood.repository.OrderDetailsRepo;
 import com.onlinefood.repository.OrderRepo;
 import com.onlinefood.repository.RestaurantRepo;
 import com.onlinefood.repository.UserRepo;
@@ -50,6 +59,9 @@ public class RestaurantServiceImpl implements RestaurantService {
 	OrderRepo orderRepo;
 	@Autowired
 	UserRepo userRepo;
+	@Autowired
+	OrderDetailsRepo orderDetailsRepo;
+	
 	@Autowired
 	ModelMapper mapper;
 	@Value("${folder.MenuImagelocation}")
@@ -183,15 +195,43 @@ public class RestaurantServiceImpl implements RestaurantService {
 	}
 
 	@Override
-	public OrderDTOforRestaurant getMyPendingOrder(Long restaurantId) {
-		Order pendingOrder = orderRepo.findByRestaurantIdAndStatus(restaurantId, StatusType.PENDING);
-		System.out.println(pendingOrder.getId());
-		OrderDTOforRestaurant orderPending = mapper.map(pendingOrder, OrderDTOforRestaurant.class);
-		orderPending.setOrderId(pendingOrder.getId());
 
-		return orderPending;
+	public List<OrderDTOforRestaurant> getMyPendingOrder(Long restaurantId) {
+		List<StatusType> statusList=new ArrayList<StatusType>();
+		statusList.add(StatusType.PENDING);
+		statusList.add(StatusType.CONFIRMED);
+		statusList.add(StatusType.READY_FOR_PICKUP);
+		 List<Order> orderList = orderRepo.findByRestaurantIdAndStatusIn(restaurantId, statusList);
+		
+//		 .stream()
+//			.map(menu -> extraMapper.map(menu, GetMenuDTO.class)).collect(Collectors.toList())
+//		System.out.println(pendingOrder.getId());
+		List<OrderDTOforRestaurant> ordersPending =orderList.stream().map(m->mapper.map(m, OrderDTOforRestaurant.class)).collect(Collectors.toList());
+				
+		IntStream.range(0, orderList.size())
+	    .forEach(index -> ordersPending.get(index).setOrderId(orderList.get(index).getId()));
+		System.out.println(ordersPending.toString());
+		return ordersPending;
+		
 	}
-
+	@Override
+	public List<OrderDTOforRestaurant> getMyPastOrder(Long restaurantId) {
+		List<StatusType> statusList=new ArrayList<StatusType>();
+		statusList.add(StatusType.DELIVERED);
+		
+		 List<Order> orderList = orderRepo.findByRestaurantIdAndStatusIn(restaurantId, statusList);
+		
+//		 .stream()
+//			.map(menu -> extraMapper.map(menu, GetMenuDTO.class)).collect(Collectors.toList())
+//		System.out.println(pendingOrder.getId());
+		List<OrderDTOforRestaurant> ordersPending =orderList.stream().map(m->mapper.map(m, OrderDTOforRestaurant.class)).collect(Collectors.toList());
+				
+		IntStream.range(0, orderList.size())
+	    .forEach(index -> ordersPending.get(index).setOrderId(orderList.get(index).getId()));
+		System.out.println(ordersPending.toString());
+		return ordersPending;
+		
+	}
 	@Override
 	public ApiResponse changeOrderStatus(Long orderId) {
 		Order order = orderRepo.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu Id"));
@@ -268,10 +308,43 @@ public class RestaurantServiceImpl implements RestaurantService {
 	}
 
 	@Override
-	public List<GetMenuDTO> searchMenu(String query) {
-		List<Menu> menus = menuRepo.findByNameContaining(query);
-		return menus.stream().map(res -> mapper.map(res, GetMenuDTO.class)).collect(Collectors.toList());
+	public List<GetMenuDTO> searchMenu(String query, Category category) {
+		List<Menu> menus = new ArrayList<>(); 
+		List<Menu> vegMenus = new ArrayList<>(); 
+//		menus = menuRepo.findByNameContaining(query);
+		if(category == Category.VEG) {
+			menus = menuRepo.findByNameContaining(query);
+			vegMenus = menuRepo.findAllByCategory(category);
+			menus.retainAll(vegMenus);
+		}
+		else {
+			menus = menuRepo.findByNameContaining(query);	
+		}
+		
+		ModelMapper extraMapper = new ModelMapper();
+		extraMapper.addConverter(new MenuToGetMenuConvertor());
+
+		
+		return 	menus.stream()
+				.map(res -> extraMapper.map(res, GetMenuDTO.class))
+				.collect(Collectors.toList());
 	}
+	
+	public List<GetMenuDTO> getMenuByCategory(Category category) {
+		List<Menu> menus = menuRepo.findAllByCategory(category);
+		ModelMapper extraMapper = new ModelMapper();
+		extraMapper.addConverter(new MenuToGetMenuConvertor());
+		return 	menus.stream()
+				.map(res -> extraMapper.map(res, GetMenuDTO.class))
+				.collect(Collectors.toList());
+	}
+	
+//@Override
+//public byte[] getRestaurantImage(Long resId) throws IOException {
+//	 Restaurant restaurant = resRepo.findById(resId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu ID!!!!"));
+//    String imagePath = restaurant.getImagePath();
+//   return FileUtils.readFileToByteArray(new File(imagePath)); 
+//}
 
 	@Override
 	public RestaurantResponseDTO getMyRestaurant(String email) {
@@ -281,9 +354,21 @@ public class RestaurantServiceImpl implements RestaurantService {
 		Restaurant restaurant = resRepo.findByUser(user);
 		// Customer customer = customerRepo.findByUser(user);
 //	Customer customer = customerRepo.findByEmail(email);
-		if (restaurant != null)
-			return mapper.map(restaurant, RestaurantResponseDTO.class);
-		throw new ResourceNotFoundException("Invalid Customer email");
+	if (restaurant != null)
+		return mapper.map(restaurant, RestaurantResponseDTO.class);
+	throw new ResourceNotFoundException("Invalid Customer email");
+	
+}
 
-	}
+@Override
+public List<OrderDetailsDTO> getOrderDetails(Long OrderId) {
+	System.out.println("inside getOrderDetails" + OrderId);
+	Order order=orderRepo.findById(OrderId).orElseThrow(() -> new ResourceNotFoundException("Invalid order ID!!!!"));
+    //List<OrderDetails> orderDt=orderDetailsRepo.findByOrder(order);
+	//System.out.println(order.toString());
+	List<OrderDetails> orderDetails = order.getOrderDetails();
+	List<OrderDetailsDTO> orderDetailsList =orderDetails.stream().map(m->mapper.map(m, OrderDetailsDTO.class)).collect(Collectors.toList());
+     System.out.println(orderDetailsList.toString());
+	return orderDetailsList;
+}
 }

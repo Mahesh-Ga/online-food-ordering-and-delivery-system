@@ -17,7 +17,6 @@ function ApproveDeliveryBoy() {
   }, []);
   
   useEffect(()=>{
-    debugger
     if(token!="")
     loadData();
   
@@ -25,9 +24,11 @@ function ApproveDeliveryBoy() {
 
 
   const loadData = async() => {
+
     const response =  await pendingDeliveryPartners(token)
       if(response != null && response.status == 200) {
         setDeliveryPartners(response.data);
+
         debugger;
       }else{
         debugger;
@@ -35,8 +36,10 @@ function ApproveDeliveryBoy() {
   }
 
   const approve = async(id) => {
+
     const response = await approveDeliveryPartner(id,token)
       if(response != null && response.status == 200){
+
         toast.success('successfully approved')
         loadData();
       }else {
@@ -46,8 +49,10 @@ function ApproveDeliveryBoy() {
   }
 
   const reject = async(id) => {
+
    const response = await rejectDeliveryPartner(id,token)
       if(response != null && response.status ==200){
+
         toast.success('successfully rejected')
         loadData();
       }else{

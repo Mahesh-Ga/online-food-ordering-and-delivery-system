@@ -11,6 +11,8 @@ import javax.transaction.Transactional;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,15 +28,18 @@ import com.onlinefood.dto.CustomerUpdateDTO;
 import com.onlinefood.entities.Cart;
 import com.onlinefood.entities.Customer;
 import com.onlinefood.entities.CustomerAddress;
+import com.onlinefood.entities.Menu;
 import com.onlinefood.entities.Order;
 import com.onlinefood.entities.OrderDetails;
 import com.onlinefood.entities.Restaurant;
 import com.onlinefood.entities.RoleType;
+import com.onlinefood.entities.StatusType;
 import com.onlinefood.entities.User;
 import com.onlinefood.repository.CartItemRepo;
 import com.onlinefood.repository.CartRepo;
 import com.onlinefood.repository.CustomerAddressRepo;
 import com.onlinefood.repository.CustomerRepo;
+import com.onlinefood.repository.MenuRepo;
 import com.onlinefood.repository.OrderDetailsRepo;
 import com.onlinefood.repository.OrderRepo;
 import com.onlinefood.repository.RestaurantRepo;
@@ -83,6 +88,9 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	private OrderDetailsRepo orderDetailsRepo;
+
+	@Autowired
+	private MenuRepo menuRepo;
 	
 	@Override
 	public CustomerRespDTO getCustomer(String email) {
@@ -91,8 +99,10 @@ public class CustomerServiceImpl implements CustomerService {
 				.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
 		Customer customer = customerRepo.findByUser(user);
 //		Customer customer = customerRepo.findByEmail(email);
+		CustomerRespDTO customerResponse = mapper.map(customer, CustomerRespDTO.class);
+		customerResponse.setEmail(email);
 		if (customer != null)
-			return mapper.map(customer, CustomerRespDTO.class);
+			return customerResponse;
 		throw new ResourceNotFoundException("Invalid Customer email");
 	}
 
@@ -111,7 +121,7 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public boolean changeCustomerPassword(String email, String oldPassword, String newPassword) {
+	public ResponseEntity<String> changeCustomerPassword(String email, String oldPassword, String newPassword) {
 		User user = userRepo.findByEmail(email)
 				.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
 		Customer customer = customerRepo.findByUser(user);
@@ -125,9 +135,9 @@ public class CustomerServiceImpl implements CustomerService {
 		if (encoder.matches(oldPassword, customer.getUser().getPassword()) && customer != null) {
 			customer.getUser().setPassword(encoder.encode(newPassword));
 			customerRepo.save(customer);
-			return true;
+			return ResponseEntity.status(HttpStatus.OK).body("Password changed successfully.");
 		}
-		return false;
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You have entered the wrong current password. Please double-check your password and try again");
 	}
 
 	@Override
@@ -240,19 +250,25 @@ public class CustomerServiceImpl implements CustomerService {
 					.mapToDouble(cartDetail -> cartDetail.getPrice() * cartDetail.getQuantity()).sum();
 
 			o.setTotalPrice(totalPrice);
+			o.setStatus(StatusType.PENDING);
 			customer.addOrder(o);
 			orderRepo.save(o);
 				
 		    List<OrderDetails> orderDetailsList = new ArrayList<>();
 		    for (CartDetails cartDetail : cartDetails) {
 		        OrderDetails orderDetail = new OrderDetails();
+		        Menu menu = menuRepo.findById(cartDetail.getMenu_id().longValue()).orElseThrow(()-> new ResourceNotFoundException("Invalid menu id"));
 		        orderDetail.setOrder(o); 
 		        orderDetail.setMenuName(cartDetail.getProduct_name());
 		        orderDetail.setPriceAtOrder(cartDetail.getPrice());
 		        orderDetail.setQuantity(cartDetail.getQuantity());
+		        orderDetail.setMenu(menu);
 		        orderDetailsList.add(orderDetail);
 		    }
 		    orderDetailsRepo.saveAll(orderDetailsList);
+		    
+		    customerCart.setRestaurant(null);
+		    cartItemRepo.deleteAllByCartId(customerCart);
 		}
 	}
 

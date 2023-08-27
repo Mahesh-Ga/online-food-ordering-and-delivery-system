@@ -1,16 +1,14 @@
 import axios from "axios"
-import { createUrl, log } from "../utils/util";
+import appForAdmin from "../httpCommon"
 
 
 export const signIn = async(email,password)=>{ 
   debugger
-
-  const url = createUrl(`/user/signin`);  
-    
-  const body = {
+    const body = {
         email,
         password
     } 
+
   try{
      const response =  await axios.post(url,body)
      log(response.data)
@@ -21,3 +19,5 @@ export const signIn = async(email,password)=>{
   }
 
   }
+
+

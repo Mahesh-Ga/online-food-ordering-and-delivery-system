@@ -18,5 +18,5 @@ public interface CartService {
 	ResponseEntity<?> deleteCartItem(String email,Long menuItemId);
 	ResponseEntity<?> removeCartItem(String email,Long menuItemId);
 	List<CartDetails> getCartItemsByCustomer(String email);
-	
+	void resetCart(String email);
 }

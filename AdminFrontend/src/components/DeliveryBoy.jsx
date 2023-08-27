@@ -29,7 +29,7 @@ const loadData = async() => {
 
   const response = await getAllActiveDeliveryPartner(token)
   debugger  
-  if(response != null && response.status == 200) {
+  if(response.status == 200) {
       debugger;
       setDeliveryPartners(response.data);  
     }

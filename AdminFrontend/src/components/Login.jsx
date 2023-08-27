@@ -28,7 +28,7 @@ function Login(){
         const response = await signIn(email,password);
         
         debugger;
-        if (response != null && response['status'] == 200) {
+        if (response['status'] == 200) {
         const { jwt } = response['data']
   
            sessionStorage['token'] = jwt

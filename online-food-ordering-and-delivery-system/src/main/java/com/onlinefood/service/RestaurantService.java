@@ -8,10 +8,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.onlinefood.dto.ApiResponse;
 import com.onlinefood.dto.GetMenuDTO;
 import com.onlinefood.dto.OrderDTOforRestaurant;
+import com.onlinefood.dto.OrderDetailsDTO;
 import com.onlinefood.dto.RestaurantNewMenuDTO;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
+import com.onlinefood.entities.Category;
 import com.onlinefood.entities.Order;
+import com.onlinefood.entities.OrderDetails;
 
 public interface RestaurantService {
 
@@ -33,8 +36,10 @@ public interface RestaurantService {
 
 	public ApiResponse removeMenu(Long menuId);
 
-	public OrderDTOforRestaurant getMyPendingOrder(Long restaurantId);
+	public List<OrderDTOforRestaurant> getMyPendingOrder(Long restaurantId);
 	
+	public List<OrderDTOforRestaurant> getMyPastOrder(Long restaurantId);
+
 	public ApiResponse changeOrderStatus(Long orderId);
 	
 	public ApiResponse OrderReadyForPickUp(Long orderId);
@@ -49,9 +54,12 @@ public interface RestaurantService {
 	
 	public RestaurantResponseDTO getMyRestaurant(String email);
 
+	public List<OrderDetailsDTO> getOrderDetails(Long OrderId);
 //	public List<Order> getOrderList();
 	
 	List<RestaurantResponseDTO> searchRestaurant(String query);
-	List<GetMenuDTO> searchMenu(String query);
+	List<GetMenuDTO> searchMenu(String query, Category category);
+	
+	List<GetMenuDTO> getMenuByCategory(Category category);
 	
 }

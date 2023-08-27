@@ -9,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 
 import com.onlinefood.dto.GetMenuDTO;
 import com.onlinefood.entities.Menu;
+import com.onlinefood.entities.Category;
+
 
 public interface MenuRepo extends JpaRepository<Menu, Long>{
 
@@ -20,5 +22,8 @@ public interface MenuRepo extends JpaRepository<Menu, Long>{
 	   
 	List<Menu> findByNameContaining(String query);
 
+	List<Menu> findByNameContainingAndCategory(String query,Category isVeg);
+	
+	List<Menu> findAllByCategory(Category category);
 	
 }

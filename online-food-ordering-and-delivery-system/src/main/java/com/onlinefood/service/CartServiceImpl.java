@@ -118,14 +118,14 @@ public class CartServiceImpl implements CartService {
 
 		CartItem cartItem = cartItemRepo.findByMenuItemIdAndCartId(menuItem, cart);
 		if (cartItem != null) {
-			if (cartItem.getQuantity() == 1)
+			if (cartItem.getQuantity() == 1) {
 				cartItemRepo.delete(cartItem);
+			}
 			else
 				cartItem.setQuantity(cartItem.getQuantity() - 1);
 		}
 
 		return new ResponseEntity<>("Food item removed/decremented from cart", HttpStatus.OK);
-
 	}
 
 	@Override
@@ -161,5 +161,14 @@ public class CartServiceImpl implements CartService {
 
 		return cartDetails;
 	}
-
+	
+	@Override
+	public void resetCart(String email) {
+		User user = userRepo.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
+		Customer customer = customerRepo.findByUser(user);
+		Cart customerCart = cartRepo.findByCustomer(customer);
+		customerCart.setRestaurant(null);
+		cartRepo.save(customerCart);
+	}
 }

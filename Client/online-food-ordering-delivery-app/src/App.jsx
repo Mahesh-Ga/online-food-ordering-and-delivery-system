@@ -14,6 +14,7 @@ import { login } from "./features/authSlice";
 import { useEffect } from "react";
 import Header from "./components/Styling/Header";
 import Footer from "./components/Styling/Footer";
+import Profile from "./components/Customer/Profile";
 
 function App() {
   const loginStatus = useSelector((state) => state.auth.status);
@@ -35,6 +36,7 @@ function App() {
         <Route path="/menu" exact element={<Menu />}></Route>
         <Route path="/order-details" exact element={<OrderDetails />}></Route>
         <Route path="/register-customer" exact element={<Register />}></Route>
+        <Route path="/profile" exact element={<Profile />}></Route>
         <Route path="*" exact element={<Login />}></Route>
       </Routes>
       <ToastContainer />

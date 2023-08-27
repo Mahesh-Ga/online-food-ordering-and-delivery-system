@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getAllMenu } from "../../services/menu";
+import { getAllMenu, getMenuByCategory } from "../../services/menu";
 import { getAllRestaurants } from "../../services/restaurant";
 import { log } from "../../utilities/utils";
 import "./Dashboard.css";
@@ -19,20 +19,28 @@ function Dashboard() {
   const toggleMenu = () => {
     setIsVegMenu(!isVegMenu);
   };
+     
+  useEffect(()=>{
+    handleMenuSearch();
+  },[isVegMenu])
+     
 
   const buttonClasses = isVegMenu ? "btn veg-menu" : "btn all-menu";
   const navigate = useNavigate();
 
   const handleMenuSearch = async () => {
     try {
-      const response = await axios.get(
-        `https://localhost:7070/restaurant/menu/search?query=${query}`
-      );
+      let url = `https://localhost:7070/restaurant/menu/search?query=${query}`;
+ 
+      if (isVegMenu) {
+        url += "&category=VEG";
+      }
+      const response = await axios.get(url);
       setMenuResults(response.data);
     } catch (error) {
-      console.error(error);
+      log(error)
     }
-  };
+  }
 
   const handleRestaurantSearch = async () => {
     try {
@@ -44,16 +52,26 @@ function Dashboard() {
       log(error);
     }
   };
+
+  // const fetchRestaurantsByCategory = async (category) => {
+  //   setIsVegMenu(!isVegMenu);
+  //   try {
+  //     const response = await getMenuByCategory(category);
+  //     setVegMenu(response);
+  //     handleMenuSearch()  
+  //   } catch (error) {
+  //     log(error);
+  //   }
+  // };
+
   useEffect(() => {
     async function fetchMenus() {
       const response = await getAllMenu();
-      log(response);
       setMenus(response);
     }
 
     async function fetchRestaurants() {
       const response = await getAllRestaurants();
-      log(response);
       setRestaurants(response);
     }
 
@@ -74,10 +92,6 @@ function Dashboard() {
 
   return (
     <>
-      <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-      ></link>
       <div className="body" style={{ minHeight: "100vh" }}>
         <div className="container mt-4">
           <div className="row d-flex justify-content-center">
@@ -108,45 +122,7 @@ function Dashboard() {
               <div
                 className="collapse collapse-horizontal"
                 id="collapseWidthExample"
-              >
-                <div className="list-group" style={{ width: "300px" }}>
-                  <h4>- Filters</h4>
-                  <a
-                    href="#"
-                    className="list-group-item list-group-item-action"
-                    aria-current="true"
-                  >
-                    <div className="d-flex w-100 justify-content-between">
-                      <h6 className="mb-1">Location</h6>
-                      <small></small>
-                    </div>
-                    <p className="mb-1"></p>
-                    <small></small>
-                  </a>
-                  <a
-                    href="#"
-                    className="list-group-item list-group-item-action"
-                  >
-                    <div className="d-flex w-100 justify-content-between">
-                      <h6 className="mb-1">Rating</h6>
-                      <small className="text-body-secondary"></small>
-                    </div>
-                    <p className="mb-1"></p>
-                    <small className="text-body-secondary"></small>
-                  </a>
-                  <a
-                    href="#"
-                    className="list-group-item list-group-item-action"
-                  >
-                    <div className="d-flex w-100 justify-content-between">
-                      <h6 className="mb-1">Price Range</h6>
-                      <small className="text-body-secondary"></small>
-                    </div>
-                    <p className="mb-1"></p>
-                    <small className="text-body-secondary"></small>
-                  </a>
-                </div>
-              </div>
+              ></div>
             </div>
           </div>
           <div className="row d-flex justify-content-center">
@@ -155,22 +131,11 @@ function Dashboard() {
                 <div className=" d-flex flex-row-reverse">
                   <div className="p-2">
                     <button
-                      type="button"
-                      className="btn btn-primary position-relative"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#collapseWidthExample"
-                      aria-expanded="false"
-                      aria-controls="collapseWidthExample"
+                      className={buttonClasses}
+                      onClick={() => {
+                        toggleMenu();
+                      }}
                     >
-                      Filter
-                      <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        2
-                        <span className="visually-hidden">unread messages</span>
-                      </span>
-                    </button>
-                  </div>
-                  <div className="p-2">
-                    <button className={buttonClasses} onClick={toggleMenu}>
                       Pure Veg
                     </button>
                   </div>
@@ -194,9 +159,9 @@ function Dashboard() {
                 boxShadow: "1px 2px 9    px #F4AAB9",
               }}
             >
-              {query.length === 0 ? (
+              {/* {isVegMenu ? (
                 <div className="d-flex flex-direction-row">
-                  {menus.map((menu) => {
+                  {vegMenus.map((menu) => {
                     return (
                       <div
                         className="card"
@@ -247,58 +212,265 @@ function Dashboard() {
                   })}
                 </div>
               ) : (
-                <div className="d-flex flex-direction-row">
-                  {menuResults.map((menu) => {
-                    return (
-                      <div
-                        className="card"
-                        style={{ width: "18rem" }}
-                        onClick={() => {
-                          navigate(`/menu`, {
-                            state: { restaurantId: menu.restaurant_id },
-                          });
-                        }}
-                        key={menu.id}
-                      >
-                        <img
-                          src={`https://localhost:7070/restaurant/menuImage/${menu.id}`}
-                          className="card-img-top"
-                          alt={`${menu.name + " " + "image"}`}
-                        />
-                        <div className="card-body">
-                          <h5 className="card-title">{menu.name}</h5>
+                <>
+                  {query.length === 0 ? (
+                    <div className="d-flex flex-direction-row">
+                      {menus.map((menu) => {
+                        return (
                           <div
-                            style={{ display: "flex", justifyContent: "end" }}
+                            className="card"
+                            style={{ width: "18rem" }}
+                            onClick={() => {
+                              navigate(`/menu`, {
+                                state: { restaurantId: menu.restaurant_id },
+                              });
+                            }}
+                            key={menu.id}
                           >
-                            {menu.category === "VEG" ? (
-                              <img
-                                className="menu-type-img"
-                                src="http://localhost:3000/assets/veg_symbol.png"
-                                alt={`${menu.name + " " + "image"}`}
-                              />
-                            ) : (
-                              <img
-                                className="menu-type-img"
-                                src="http://localhost:3000/assets/non-veg.jpg"
-                                alt={`${menu.name + " " + "image"}`}
-                              />
-                            )}
+                            <img
+                              src={`https://localhost:7070/restaurant/menuImage/${menu.id}`}
+                              className="card-img-top"
+                              alt={`${menu.name + " " + "image"}`}
+                            />
+                            <div className="card-body">
+                              <h5 className="card-title">{menu.name}</h5>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "end",
+                                }}
+                              >
+                                {menu.category === "VEG" ? (
+                                  <img
+                                    className="menu-type-img"
+                                    src="http://localhost:3000/assets/veg_symbol.png"
+                                    alt={`${menu.name + " " + "image"}`}
+                                  />
+                                ) : (
+                                  <img
+                                    className="menu-type-img"
+                                    src="http://localhost:3000/assets/non-veg.jpg"
+                                    alt={`${menu.name + " " + "image"}`}
+                                  />
+                                )}
+                              </div>
+                              <p
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "end",
+                                }}
+                              >
+                                {menu.menuType}{" "}
+                              </p>
+                              From <h4>{menu.restaurantName}</h4>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "end",
+                                }}
+                              >
+                                <h6>₹{menu.price}</h6>
+                              </div>
+                            </div>
                           </div>
-                          <p style={{ display: "flex", justifyContent: "end" }}>
-                            {menu.menuType}{" "}
-                          </p>
-                          From <h4>{menu.restaurantName}</h4>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="d-flex flex-direction-row">
+                      {menuResults.map((menu) => {
+                        return (
                           <div
-                            style={{ display: "flex", justifyContent: "end" }}
+                            className="card"
+                            style={{ width: "18rem" }}
+                            onClick={() => {
+                              navigate(`/menu`, {
+                                state: { restaurantId: menu.restaurant_id },
+                              });
+                            }}
+                            key={menu.id}
                           >
-                            <h6>₹{menu.price}</h6>
+                            <img
+                              src={`https://localhost:7070/restaurant/menuImage/${menu.id}`}
+                              className="card-img-top"
+                              alt={`${menu.name + " " + "image"}`}
+                            />
+                            <div className="card-body">
+                              <h5 className="card-title">{menu.name}</h5>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "end",
+                                }}
+                              >
+                                {menu.category === "VEG" ? (
+                                  <img
+                                    className="menu-type-img"
+                                    src="http://localhost:3000/assets/veg_symbol.png"
+                                    alt={`${menu.name + " " + "image"}`}
+                                  />
+                                ) : (
+                                  <img
+                                    className="menu-type-img"
+                                    src="http://localhost:3000/assets/non-veg.jpg"
+                                    alt={`${menu.name + " " + "image"}`}
+                                  />
+                                )}
+                              </div>
+                              <p
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "end",
+                                }}
+                              >
+                                {menu.menuType}{" "}
+                              </p>
+                              From <h4>{menu.restaurantName}</h4>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "end",
+                                }}
+                              >
+                                <h6>₹{menu.price}</h6>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
+                        );
+                      })}
+                    </div>
+                  )}
+                </>
+              )} */}
+
+              {query.length === 0 && !isVegMenu ? (
+                    <div className="d-flex flex-direction-row">
+                      {menus.map((menu) => {
+                        return (
+                          <div
+                            className="card"
+                            style={{ width: "18rem" }}
+                            onClick={() => {
+                              navigate(`/menu`, {
+                                state: { restaurantId: menu.restaurant_id },
+                              });
+                            }}
+                            key={menu.id}
+                          >
+                            <img
+                              src={`https://localhost:7070/restaurant/menuImage/${menu.id}`}
+                              className="card-img-top"
+                              alt={`${menu.name + " " + "image"}`}
+                            />
+                            <div className="card-body">
+                              <h5 className="card-title">{menu.name}</h5>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "end",
+                                }}
+                              >
+                                {menu.category === "VEG" ? (
+                                  <img
+                                    className="menu-type-img"
+                                    src="http://localhost:3000/assets/veg_symbol.png"
+                                    alt={`${menu.name + " " + "image"}`}
+                                  />
+                                ) : (
+                                  <img
+                                    className="menu-type-img"
+                                    src="http://localhost:3000/assets/non-veg.jpg"
+                                    alt={`${menu.name + " " + "image"}`}
+                                  />
+                                )}
+                              </div>
+                              <p
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "end",
+                                }}
+                              >
+                                {menu.menuType}{" "}
+                              </p>
+                              From <h4>{menu.restaurantName}</h4>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "end",
+                                }}
+                              >
+                                <h6>₹{menu.price}</h6>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="d-flex flex-direction-row">
+                      {menuResults.map((menu) => {
+                        return (
+                          <div
+                            className="card"
+                            style={{ width: "18rem" }}
+                            onClick={() => {
+                              navigate(`/menu`, {
+                                state: { restaurantId: menu.restaurant_id },
+                              });
+                            }}
+                            key={menu.id}
+                          >
+                            <img
+                              src={`https://localhost:7070/restaurant/menuImage/${menu.id}`}
+                              className="card-img-top"
+                              alt={`${menu.name + " " + "image"}`}
+                            />
+                            <div className="card-body">
+                              <h5 className="card-title">{menu.name}</h5>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "end",
+                                }}
+                              >
+                                {menu.category === "VEG" ? (
+                                  <img
+                                    className="menu-type-img"
+                                    src="http://localhost:3000/assets/veg_symbol.png"
+                                    alt={`${menu.name + " " + "image"}`}
+                                  />
+                                ) : (
+                                  <img
+                                    className="menu-type-img"
+                                    src="http://localhost:3000/assets/non-veg.jpg"
+                                    alt={`${menu.name + " " + "image"}`}
+                                  />
+                                )}
+                              </div>
+                              <p
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "end",
+                                }}
+                              >
+                                {menu.menuType}{" "}
+                              </p>
+                              From <h4>{menu.restaurantName}</h4>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "end",
+                                }}
+                              >
+                                <h6>₹{menu.price}</h6>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+            
             </div>
             <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
           </div>
