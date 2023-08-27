@@ -303,11 +303,10 @@ public class RestaurantServiceImpl implements RestaurantService {
 	@Override
 	public List<RestaurantResponseDTO> searchRestaurant(String query) {
 		List<Restaurant> restaurants = resRepo.findByRestaurantNameContaining(query);
-		return 	restaurants.stream()
-				.map(res -> mapper.map(res, RestaurantResponseDTO.class))
+		return restaurants.stream().map(res -> mapper.map(res, RestaurantResponseDTO.class))
 				.collect(Collectors.toList());
 	}
-	
+
 	@Override
 	public List<GetMenuDTO> searchMenu(String query, Category category) {
 		List<Menu> menus = new ArrayList<>(); 
@@ -347,13 +346,13 @@ public class RestaurantServiceImpl implements RestaurantService {
 //   return FileUtils.readFileToByteArray(new File(imagePath)); 
 //}
 
-@Override
-public RestaurantResponseDTO getMyRestaurant(String email) {
-	User user = userRepo.findByEmail(email)
-			.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
-	
-	 Restaurant restaurant = resRepo.findByUser(user);
-	//Customer customer = customerRepo.findByUser(user);
+	@Override
+	public RestaurantResponseDTO getMyRestaurant(String email) {
+		User user = userRepo.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
+
+		Restaurant restaurant = resRepo.findByUser(user);
+		// Customer customer = customerRepo.findByUser(user);
 //	Customer customer = customerRepo.findByEmail(email);
 	if (restaurant != null)
 		return mapper.map(restaurant, RestaurantResponseDTO.class);

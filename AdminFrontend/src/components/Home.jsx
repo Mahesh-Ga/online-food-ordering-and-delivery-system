@@ -99,7 +99,7 @@ function Home() {
             <div className='row g-3 my-2'>
                 
                 <div className='col-md-3 p-1'>
-                    <div className='p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded'>
+                    <div className='backgroundStyle p-3 shadow-sm d-flex justify-content-around align-items-center rounded'>
                         <div>
                             <h3 className='fs-2'>{restaurantCount}</h3>
                             <p className='fs-5'>Restaurants</p>
@@ -109,7 +109,7 @@ function Home() {
                 </div>
                 
                 <div className='col-md-3 p-1'>
-                    <div className='p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded'>
+                    <div className='backgroundStyle p-3 shadow-sm d-flex justify-content-around align-items-center rounded'>
                         <div>
                             <h3 className='fs-2'>₹{totalSale}</h3>
                             <p className='fs-5'>Sales</p>
@@ -119,7 +119,7 @@ function Home() {
                 </div>
                 
                 <div className='col-md-3 p-1'>
-                    <div className='p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded'>
+                    <div className='backgroundStyle p-3 shadow-sm d-flex justify-content-around align-items-center rounded'>
                         <div>
                             <h3 className='fs-2'>{orderDelivered}</h3>
                             <p className='fs-5'>Delivery</p>
@@ -129,7 +129,7 @@ function Home() {
                 </div>
                 
                 <div className='col-md-3 p-1'>
-                    <div className='p-3 bg-white shadow-sm d-flex justify-content-around align-items-center rounded'>
+                    <div className='backgroundStyle p-3 shadow-sm d-flex justify-content-around align-items-center rounded'>
                         <div>
                             <h3 className='fs-2'>{growth}%</h3>
                             <p className='fs-5'>Increase</p>
@@ -139,19 +139,19 @@ function Home() {
                 </div>
             </div>
             
-            <div className="accordion" id="accordionExample">
+            <div className="accordion" id="accordionExample" >
             <h2 style={{ textAlign: 'center', margin: 10 }}>Orders</h2>
            
             
             {
         restaurants.map((restaurant) => {
 
-          return <div className="accordion-item" key={restaurant.id}>
+          return <div className="accordion-item backgroundStyle" key={restaurant.id}>
             
-            <h2 className="accordion-header">
-              <button className="accordion-button collapsed" type="button"
+            <h2 className="accordion-header" >
+              <button className="accordion-button collapsed backgroundStyle" type="button"
                 data-bs-toggle="collapse" data-bs-target={"#" + restaurant.id}
-                aria-expanded="false" aria-controls={restaurant.id}>
+                aria-expanded="false" aria-controls={restaurant.id} >
                 {restaurant.restaurantName}
               </button>
             </h2>
