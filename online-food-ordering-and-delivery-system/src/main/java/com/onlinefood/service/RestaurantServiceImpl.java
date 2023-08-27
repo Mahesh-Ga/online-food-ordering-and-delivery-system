@@ -42,6 +42,7 @@ import com.onlinefood.entities.Status;
 import com.onlinefood.entities.StatusType;
 import com.onlinefood.entities.User;
 import com.onlinefood.repository.MenuRepo;
+import com.onlinefood.repository.OrderDetailsRepo;
 import com.onlinefood.repository.OrderRepo;
 import com.onlinefood.repository.RestaurantRepo;
 import com.onlinefood.repository.UserRepo;
@@ -58,6 +59,9 @@ public class RestaurantServiceImpl implements RestaurantService {
 	OrderRepo orderRepo;
 	@Autowired
 	UserRepo userRepo;
+	@Autowired
+	OrderDetailsRepo orderDetailsRepo;
+	
 	@Autowired
 	ModelMapper mapper;
 	@Value("${folder.MenuImagelocation}")
@@ -336,12 +340,12 @@ public class RestaurantServiceImpl implements RestaurantService {
 				.collect(Collectors.toList());
 	}
 	
-@Override
-public byte[] getRestaurantImage(Long resId) throws IOException {
-	 Restaurant restaurant = resRepo.findById(resId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu ID!!!!"));
-    String imagePath = restaurant.getImagePath();
-   return FileUtils.readFileToByteArray(new File(imagePath)); 
-}
+//@Override
+//public byte[] getRestaurantImage(Long resId) throws IOException {
+//	 Restaurant restaurant = resRepo.findById(resId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu ID!!!!"));
+//    String imagePath = restaurant.getImagePath();
+//   return FileUtils.readFileToByteArray(new File(imagePath)); 
+//}
 
 @Override
 public RestaurantResponseDTO getMyRestaurant(String email) {
@@ -359,12 +363,13 @@ public RestaurantResponseDTO getMyRestaurant(String email) {
 
 @Override
 public List<OrderDetailsDTO> getOrderDetails(Long OrderId) {
-	
+	System.out.println("inside getOrderDetails" + OrderId);
 	Order order=orderRepo.findById(OrderId).orElseThrow(() -> new ResourceNotFoundException("Invalid order ID!!!!"));
-	System.out.println(order.toString());
+    //List<OrderDetails> orderDt=orderDetailsRepo.findByOrder(order);
+	//System.out.println(order.toString());
 	List<OrderDetails> orderDetails = order.getOrderDetails();
 	List<OrderDetailsDTO> orderDetailsList =orderDetails.stream().map(m->mapper.map(m, OrderDetailsDTO.class)).collect(Collectors.toList());
-    // System.out.println(orderDetailsList.toString());
+     System.out.println(orderDetailsList.toString());
 	return orderDetailsList;
 }
 }

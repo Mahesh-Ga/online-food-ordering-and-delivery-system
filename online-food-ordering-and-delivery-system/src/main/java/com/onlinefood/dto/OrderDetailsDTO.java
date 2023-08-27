@@ -16,8 +16,12 @@ public class OrderDetailsDTO {
 	
 	
 
-	private Menu menu;
+	
 
 	private  int quantity;
+	
+	private double priceAtOrder;
+	private String menuName;
+
 	
 }
