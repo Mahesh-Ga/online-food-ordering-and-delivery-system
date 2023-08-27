@@ -31,10 +31,10 @@ function App() {
   },[])
 
   return (
-    <div className='container-fluid .bg-transparent min-vh-100 ' style={{backgroundColor: 'brown'}}>
+    <div className='container-fluid .bg-transparent min-vh-100 ' style={{backgroundColor: 'gray'}}>
       <div className='row'>
         {toggle &&
-          <div className='col-4 col-md-2 bg-white vh-100 position-fixed'>
+          <div className='col-4 col-md-2  vh-100 position-fixed' style={{backgroundColor:"lightgrey"}} >
             <Sidebar/>
           </div>
         }
@@ -43,7 +43,7 @@ function App() {
           </div>
         }
         <div className='col'>
-        <div className='px-3' style={{backgroundColor:"brown"}}>
+        <div className='px-3' style={{backgroundColor:"gray"}}>
            <Nav />
           
             <Routes>

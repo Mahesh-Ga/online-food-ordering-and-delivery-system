@@ -15,6 +15,7 @@ import com.onlinefood.dto.ApiResponse;
 import com.onlinefood.dto.DeliveryPartnerResponceDto;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.entities.DeliveryPartner;
+import com.onlinefood.entities.Order;
 import com.onlinefood.entities.Restaurant;
 import com.onlinefood.entities.Status;
 import com.onlinefood.entities.User;
@@ -160,5 +161,17 @@ public class AdminServiceImpl implements AdminService {
 			return ((currentMonthSale-previousMonthSale)/previousMonthSale)*100;
 		
 	}
+	
+//	@Override
+//	public List<adminCurrentOrderDTO> getCurrentOrders() {
+//	
+//		List <Order> currentOrders = orderRepo.getCurrentOrder();
+//	
+//		return currentOrders.stream()
+//	 .map((order)->mapper.map(order,adminCurrentOrderDTO.class))
+//	 .collect(Collectors.toList());
+//	}
+	
+	
 
 }

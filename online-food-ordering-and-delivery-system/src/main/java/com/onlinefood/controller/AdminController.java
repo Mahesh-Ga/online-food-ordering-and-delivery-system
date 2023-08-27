@@ -114,5 +114,13 @@ public class AdminController {
 
 		return adminService.rejectDeliveryPartner(id);
 	}		
-	
+
+//	@GetMapping("/currentorders")
+//	public ResponseEntity<List<adminCurrentOrderDTO>> getAllCurrentOrders(){
+//		
+//		return ResponseEntity
+//				.status(HttpStatus.OK)
+//				.body(adminService.getCurrentOrders());
+//
+//	}
 }

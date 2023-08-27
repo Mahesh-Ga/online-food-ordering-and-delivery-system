@@ -13,7 +13,7 @@ function ProtectedRoute(prop){
     else
     {
         debugger
-         return <prop.component/>
+        return <prop.component/>
     }
 
 }

@@ -7,7 +7,6 @@ export const store = configureStore({
     reducer: {
         auth: authSlice ,
         token : tokenSlice,
-        toggle : toggleSlice,
     }
 
 })

@@ -26,5 +26,7 @@ public interface OrderRepo extends JpaRepository<Order, Long> {
     @Query("select sum(o.totalPrice) from Order o where o.orderTimestamp between :startDate and :endDate")
     Long getSaleBetweenDate(@Param("startDate") LocalDateTime startDate,@Param("endDate") LocalDateTime endDate);
     
+    @Query("select o from Order o where o.status != 'COMPLETED'")
+    List<Order> getCurrentOrder();
     
 }

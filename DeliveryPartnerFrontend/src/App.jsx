@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import Sidebar from './components/Sidebar'
 import Home from './components/Home'
 import Nav from './components/Nav'
 import { Route, Routes } from 'react-router-dom'
@@ -15,8 +14,7 @@ import Profile from './components/Profile'
 
 function App() {
   const dispatch = useDispatch()
-  const toggle = useSelector((state)=>state.toggle.status)
-
+  const status = useSelector((state)=>state.auth.status)
   useEffect(()=>{
     if(sessionStorage.token != undefined )
     {
@@ -26,28 +24,22 @@ function App() {
   },[])
 
   return (
-    <div className='container-fluid .bg-transparent min-vh-100 ' style={{backgroundColor: 'brown'}}>
+    <div className='container-fluid .bg-transparent min-vh-100 ' style={{backgroundColor: 'gray'}}>
       <div className='row'>
-        {toggle &&
-          <div className='col-4 col-md-2 bg-white vh-100 position-fixed'>
-            <Sidebar/>
-          </div>
-        }
-        {toggle &&
-          <div className='col-4 col-md-2'>
-          </div>
-        }
         <div className='col'>
-        <div className='px-3' style={{backgroundColor:"brown"}}>
+        <div className='px-3' style={{backgroundColor:"gray"}}>
+        
            <Nav />
           
             <Routes>
+    
             <Route path="/profile" exact element={<ProtectedRoute component={Profile}/>}></Route>
             <Route path="/pastOrders" exact element={<ProtectedRoute component={PastOrders}/>}></Route>
             <Route path="/home" exact element={<ProtectedRoute component={Home}/>}></Route>
             
             <Route path="/*" Component={Login}></Route>
             </Routes>
+
           </div>
           <ToastContainer />
 
