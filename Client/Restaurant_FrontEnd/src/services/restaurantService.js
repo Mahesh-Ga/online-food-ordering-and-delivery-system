@@ -101,6 +101,94 @@ try{
 }
 }
 
+export const updateReataurant= async(
+  resId,
+  token,
+  restaurantName,
+  cuisine,
+  email,
+  password,
+  mobileNumber,
+  fssai,
+  streetAddressLine1,
+  streetAddressLine2,
+  city,
+  state,
+  postalCode,
+  country
+  )=>{ 
+  debugger;
+  const url = createUrl(`/restaurant/${resId}`)  
+  const headers = {
+    Authorization: token==""? '':`Bearer ${token}`,
+  }
+  const body = {
+    restaurantName,
+    cuisine,
+    email,
+    password,
+    mobileNumber,
+    fssai,
+    address :{
+      streetAddressLine1,
+      streetAddressLine2,
+      city,
+      state,
+      postalCode,
+      country
+    }
+  }
+try{
+   const response =  await axios.put(url,body,{headers})
+   log(response.data)
+   return response
+}catch(ex) {
+  log(ex)
+  return null
+}
+}
+export const addRestaurantImage= async(resId,token,formData)=>{
+  const urlImage= createUrl(`/restaurant/restaurantImage/${resId}`)  
+   const headers = {
+    Authorization: token==""? '':`Bearer ${token}`,
+    'Content-Type': 'multipart/form-data',
+  }
+  const body = {
+        formData
+  }
+  try{
+    debugger
+    const response =  await axios.post(urlImage,formData,{headers})
+
+     log(response.data)
+     
+     return response
+  }catch(ex) {
+    debugger
+    log(ex)
+    return null
+  }
+ }
+ export const updateRestaurantPassword= async(token,oldPassword,newPassword)=>{ 
+  debugger;
+  const url = createUrl(`/restaurant/password`)  
+  const headers = {
+    Authorization: token==""? '':`Bearer ${token}`,
+  }
+  const body = {
+    oldPassword,
+    newPassword
+}
+try{
+   const response =  await axios.put(url,body,{headers})
+   log(response.data)
+   return response
+}catch(ex) {
+  log(ex)
+  return null
+}
+}
+
 export const getPendingOrder =async(resId,token)=>{ 
   const url = createUrl(`/restaurant/orderByRestaurant/${resId}`)  
   const headers = {
@@ -210,6 +298,23 @@ try{
   return null
 }
  }
+ export const cancelOrder=async(orderId,token)=>{ 
+  const url = createUrl(`/restaurant/cancelOrder/${orderId}`)  
+  const headers = {
+    Authorization: token==""? '':`Bearer ${token}`,
+  };
+try{
+  debugger
+   const response =  await axios.get(url,{headers})
+   log(response.data)
+   return response
+}catch(ex) {
+  debugger
+  log(ex)
+  return null
+}
+ }
+ 
 
  export const getOrderReadyForPickup=async(orderId,token)=>{ 
   const url = createUrl(`/restaurant/orderReadyForPickup/${orderId}`)  
@@ -276,8 +381,7 @@ export const addMenu = async(
   name,
   menuType,
   category,
-  price,
-  formData
+  price
   )=>{ 
   const url = createUrl(`/restaurant/addmenu/${resId}`)  
   const headers = {
@@ -294,24 +398,42 @@ try{
   debugger
    const response =  await axios.post(url,body,{headers})
    log(response.data)
-   const urlImage= createUrl(`/restaurant/menuImage/${response.data.id}`)  
-   const headersImage = {
-    Authorization: token==""? '':`Bearer ${token}`,
-    'Content-Type': 'multipart/form-data',
-  }
-  const bodyImage = {
-        formData
-  }
-  const newResponse =  await axios.post(urlImage,bodyImage,{headersImage})
-  
-   log(newResponse.data)
-   return {status:200}
+   
+   return response
 }catch(ex) {
   debugger
   log(ex)
   return null
 }
  }
+
+ export const addMenuImage= async(menuId,token,formData)=>{
+  const urlImage= createUrl(`/restaurant/menuImage/${menuId}`)  
+   const headers = {
+    Authorization: token==""? '':`Bearer ${token}`,
+    'Content-Type': 'multipart/form-data',
+  }
+  const body = {
+        formData
+  }
+  try{
+    debugger
+    const response =  await axios.post(urlImage,formData,{headers})
+
+     log(response.data)
+     
+     return response
+  }catch(ex) {
+    debugger
+    log(ex)
+    return null
+  }
+ }
+
+
+
+
+
  export const getMenu=async(menuId,token)=>{
   const url = createUrl(`/restaurant/menu/${menuId}`)  
   const headers = {
@@ -342,6 +464,86 @@ try{
    return response
 }catch(ex) {
   debugger
+  log(ex)
+  return null
+}
+}
+
+export const getPendingOrderCount =async(resId,token)=>{ 
+  const url = createUrl(`/restaurant/pendingOrderCount/${resId}`)  
+  const headers = {
+  //  "Content-Type": "application/json",
+    Authorization: token==""? '':`Bearer ${token}`,
+  };
+try{
+   const response =  await axios.get(url,{headers})
+   log(response.data)
+   return response
+}catch(ex) {
+  log(ex)
+  return null
+}
+}
+
+export const getDeliveredOrderCount =async(resId,token)=>{ 
+  const url = createUrl(`/restaurant/deliveredOrderCount/${resId}`)  
+  const headers = {
+  //  "Content-Type": "application/json",
+    Authorization: token==""? '':`Bearer ${token}`,
+  };
+try{
+   const response =  await axios.get(url,{headers})
+   log(response.data)
+   return response
+}catch(ex) {
+  log(ex)
+  return null
+}
+}
+
+export const getTotalOrderCount =async(resId,token)=>{ 
+  const url = createUrl(`/restaurant/totalOrderCount/${resId}`)  
+  const headers = {
+  //  "Content-Type": "application/json",
+    Authorization: token==""? '':`Bearer ${token}`,
+  };
+try{
+   const response =  await axios.get(url,{headers})
+   log(response.data)
+   return response
+}catch(ex) {
+  log(ex)
+  return null
+}
+}
+
+export const getTotalEarnings =async(resId,token)=>{ 
+  const url = createUrl(`/restaurant/totalEarnings/${resId}`)  
+  const headers = {
+  //  "Content-Type": "application/json",
+    Authorization: token==""? '':`Bearer ${token}`,
+  };
+try{
+   const response =  await axios.get(url,{headers})
+   log(response.data)
+   return response
+}catch(ex) {
+  log(ex)
+  return null
+}
+}
+
+export const getEarningsPerOrder =async(resId,token)=>{ 
+  const url = createUrl(`/restaurant/earningsPerOrder/${resId}`)  
+  const headers = {
+  //  "Content-Type": "application/json",
+    Authorization: token==""? '':`Bearer ${token}`,
+  };
+try{
+   const response =  await axios.get(url,{headers})
+   log(response.data)
+   return response
+}catch(ex) {
   log(ex)
   return null
 }

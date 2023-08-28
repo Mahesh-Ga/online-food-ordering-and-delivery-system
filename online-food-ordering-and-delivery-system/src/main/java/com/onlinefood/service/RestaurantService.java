@@ -3,6 +3,7 @@ package com.onlinefood.service;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.onlinefood.dto.ApiResponse;
@@ -10,8 +11,11 @@ import com.onlinefood.dto.GetMenuDTO;
 import com.onlinefood.dto.OrderDTOforRestaurant;
 import com.onlinefood.dto.OrderDetailsDTO;
 import com.onlinefood.dto.RestaurantNewMenuDTO;
+import com.onlinefood.dto.RestaurantOrderCountResponse;
+import com.onlinefood.dto.RestaurantOrderPriceResponse;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
+import com.onlinefood.dto.RestaurantUpdateDTO;
 import com.onlinefood.entities.Category;
 import com.onlinefood.entities.Order;
 import com.onlinefood.entities.OrderDetails;
@@ -23,6 +27,10 @@ public interface RestaurantService {
 	public RestaurantResponseDTO getRestaurantById(Long restId);
 
 	public ApiResponse removeRestaurant(Long restaurantId);
+	
+	public ApiResponse updateRestaurant(RestaurantUpdateDTO updatedRestaurant, Long resId);
+	
+	public ResponseEntity<String> changeRestaurantPassword(String email, String oldPassword, String newPassword);
 
 	public ApiResponse addMenu(Long restaurantId, RestaurantNewMenuDTO menu);
 
@@ -42,6 +50,8 @@ public interface RestaurantService {
 
 	public ApiResponse changeOrderStatus(Long orderId);
 	
+	public ApiResponse cancelOrder(Long orderId);
+	
 	public ApiResponse OrderReadyForPickUp(Long orderId);
 	
 	public ApiResponse uploadMenuImage(Long menuId, MultipartFile image) throws IOException;
@@ -58,8 +68,19 @@ public interface RestaurantService {
 //	public List<Order> getOrderList();
 	
 	List<RestaurantResponseDTO> searchRestaurant(String query);
+	
 	List<GetMenuDTO> searchMenu(String query, Category category);
 	
 	List<GetMenuDTO> getMenuByCategory(Category category);
+	
+	public RestaurantOrderCountResponse getMyPendingOrderCount(Long restaurantId);
+	
+	public RestaurantOrderCountResponse getMyDeliveredOrderCount(Long restaurantId) ;
+	
+	public RestaurantOrderCountResponse getMyTotalOrderCount(Long restaurantId);
+	
+	public RestaurantOrderPriceResponse getMyTotalEarnings(Long restaurantId) ;
+	
+	public RestaurantOrderPriceResponse getMyEarningsPerOrder(Long restaurantId);
 	
 }

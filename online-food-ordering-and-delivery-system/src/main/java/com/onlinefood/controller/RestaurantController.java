@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,13 +25,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.onlinefood.dto.ApiResponse;
+import com.onlinefood.dto.CustomerChangePasswordRequestDTO;
 import com.onlinefood.dto.CustomerRespDTO;
 import com.onlinefood.dto.GetMenuDTO;
 import com.onlinefood.dto.OrderDTOforRestaurant;
 import com.onlinefood.dto.OrderDetailsDTO;
+import com.onlinefood.dto.RestaurantChangePasswordRequestDTO;
 import com.onlinefood.dto.RestaurantNewMenuDTO;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
+import com.onlinefood.dto.RestaurantUpdateDTO;
 import com.onlinefood.entities.Category;
 import com.onlinefood.entities.Menu;
 import com.onlinefood.entities.Order;
@@ -61,7 +66,20 @@ public class RestaurantController {
 	public ResponseEntity<?> addRestaurant(@RequestBody @Valid RestaurantSignupDTO restaurant) {
 		return ResponseEntity.ok(restaurantService.addRestaurant(restaurant));
 	}
+	@PutMapping("/{resId}")
+	public ResponseEntity<?> updateRestaurant(@PathVariable Long resId, @RequestBody @Valid RestaurantUpdateDTO restaurant) {
+		return ResponseEntity.ok(restaurantService.updateRestaurant(restaurant, resId));
+	}
+	
+	@PutMapping("/password")
+	public ResponseEntity<String> changePassword(@RequestBody @Valid RestaurantChangePasswordRequestDTO changePasswordRequest) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String userEmail = authentication.getName();
+        System.out.println(userEmail);
+		return restaurantService.changeRestaurantPassword(userEmail, changePasswordRequest.getOldPassword(),
+				changePasswordRequest.getNewPassword());
 
+	}
 	@PostMapping("/addmenu/{resId}")
 	public ResponseEntity<?> addMenu(@PathVariable Long resId, @RequestBody @Valid RestaurantNewMenuDTO menu) {
 		return ResponseEntity.ok(restaurantService.addMenu(resId, menu));
@@ -72,6 +90,33 @@ public class RestaurantController {
 	public ResponseEntity<?> getMenu() {
 		List<GetMenuDTO> allMenuList = restaurantService.getAllMenu();
 		return new ResponseEntity<>(allMenuList, HttpStatus.OK);
+	}
+	@GetMapping("/pendingOrderCount/{resId}")
+	public ResponseEntity<?> getCountOfPendingOrders(@PathVariable Long resId) {
+		
+		return new ResponseEntity<>(restaurantService.getMyPendingOrderCount(resId), HttpStatus.OK);
+	}
+	@GetMapping("/deliveredOrderCount/{resId}")
+	public ResponseEntity<?> getCountOfdeliveredOrders(@PathVariable Long resId) {
+		
+		return new ResponseEntity<>(restaurantService.getMyDeliveredOrderCount(resId), HttpStatus.OK);
+	}
+	
+	@GetMapping("/totalOrderCount/{resId}")
+	public ResponseEntity<?> getCountOfTotalOrders(@PathVariable Long resId) {
+		
+		return new ResponseEntity<>(restaurantService.getMyTotalOrderCount(resId), HttpStatus.OK);
+	}
+	
+	@GetMapping("/totalEarnings/{resId}")
+	public ResponseEntity<?> getTotalEarnings(@PathVariable Long resId) {
+		
+		return new ResponseEntity<>(restaurantService.getMyTotalEarnings(resId), HttpStatus.OK);
+	}
+	@GetMapping("/earningsPerOrder/{resId}")
+	public ResponseEntity<?> getEarningsPerOrder(@PathVariable Long resId) {
+		
+		return new ResponseEntity<>(restaurantService.getMyEarningsPerOrder(resId), HttpStatus.OK);
 	}
 
 	@GetMapping("/getAllRestaurants")
@@ -124,6 +169,10 @@ public class RestaurantController {
 	@GetMapping("/confirmOrder/{orderId}")
 	public ResponseEntity<?> confirmOrder(@PathVariable Long orderId) {
 		return ResponseEntity.ok(restaurantService.changeOrderStatus(orderId));
+	}
+	@GetMapping("/cancelOrder/{orderId}")
+	public ResponseEntity<?> cancelOrder(@PathVariable Long orderId) {
+		return ResponseEntity.ok(restaurantService.cancelOrder(orderId));
 	}
 
 	

@@ -17,6 +17,9 @@ import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,8 +31,11 @@ import com.onlinefood.dto.OrderDTO;
 import com.onlinefood.dto.OrderDTOforRestaurant;
 import com.onlinefood.dto.OrderDetailsDTO;
 import com.onlinefood.dto.RestaurantNewMenuDTO;
+import com.onlinefood.dto.RestaurantOrderCountResponse;
+import com.onlinefood.dto.RestaurantOrderPriceResponse;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
+import com.onlinefood.dto.RestaurantUpdateDTO;
 import com.onlinefood.dto.customConvetor.MenuToGetMenuConvertor;
 import com.onlinefood.entities.Category;
 import com.onlinefood.entities.Customer;
@@ -61,6 +67,8 @@ public class RestaurantServiceImpl implements RestaurantService {
 	UserRepo userRepo;
 	@Autowired
 	OrderDetailsRepo orderDetailsRepo;
+	@Autowired
+	private PasswordEncoder encoder;
 	
 	@Autowired
 	ModelMapper mapper;
@@ -116,7 +124,48 @@ public class RestaurantServiceImpl implements RestaurantService {
 		return new ApiResponse("sucessfully removed");
 		// if we restaurant is getting deleted then all its menu should be deleted
 	}
+	@Override
+	public ApiResponse updateRestaurant(RestaurantUpdateDTO updatedRestaurant, Long resId) {
+		
+		Restaurant oldRestaurant = resRepo.findById(resId).orElseThrow(() -> new ResourceNotFoundException("Invalid Restaurant Id"));
+		oldRestaurant.setRestaurantName(updatedRestaurant.getRestaurantName());
+		oldRestaurant.setCuisine(updatedRestaurant.getCuisine());
+	
+      
+		User resUser=userRepo.findByEmail(oldRestaurant.getUser().getEmail()).orElseThrow(() -> new ResourceNotFoundException("Invalid Restaurant"));
+        resUser.setEmail(updatedRestaurant.getEmail());
+        
+		oldRestaurant.setMobileNumber(updatedRestaurant.getMobileNumber());
+		oldRestaurant.setFssai(updatedRestaurant.getFssai());
+		oldRestaurant.setAddress(updatedRestaurant.getAddress());
 
+		//
+//		updatedMenu.setRestaurant(oldMenu.getRestaurant());
+//		menuRepo.save(updatedMenu);
+		return new ApiResponse("Restaurant  Updated Sucessfully");
+	}
+	
+	@Override
+	public ResponseEntity<String> changeRestaurantPassword(String email, String oldPassword, String newPassword) {
+		User user = userRepo.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
+		//Customer customer = customerRepo.findByUser(user);
+		Restaurant restaurant=resRepo.findByUser(user);
+
+//		Customer customer = customerRepo.findByEmail(email);
+//		String encodedOldPassword = encoder.encode(oldPassword);
+//		System.out.println(customer.getUser().getPassword());
+//		System.out.println(encodedOldPassword);
+//		System.out.println(encoder.matches(customer.getUser().getPassword(),encodedOldPassword));
+		
+		if (encoder.matches(oldPassword, restaurant.getUser().getPassword()) && restaurant != null) {
+			restaurant.getUser().setPassword(encoder.encode(newPassword));
+			resRepo.save(restaurant);
+			return ResponseEntity.status(HttpStatus.OK).body("Password changed successfully.");
+		}
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You have entered the wrong current password. Please double-check your password and try again");
+	}
+	
 	@Override
 	public ApiResponse addMenu(Long restaurantId, RestaurantNewMenuDTO menu) {
 
@@ -214,10 +263,50 @@ public class RestaurantServiceImpl implements RestaurantService {
 		return ordersPending;
 		
 	}
+	
+	@Override
+	public RestaurantOrderCountResponse getMyPendingOrderCount(Long restaurantId) {
+		List<StatusType> statusList=new ArrayList<StatusType>();
+		statusList.add(StatusType.PENDING);
+		statusList.add(StatusType.CONFIRMED);
+		statusList.add(StatusType.READY_FOR_PICKUP);
+		Long orderCount = orderRepo.countByStatusInAndRestaurantId(statusList,restaurantId);
+		return new RestaurantOrderCountResponse("Got Pending Order Count",orderCount);
+		}
+	
+	@Override
+	public RestaurantOrderCountResponse getMyDeliveredOrderCount(Long restaurantId) {
+		List<StatusType> statusList=new ArrayList<StatusType>();
+		statusList.add(StatusType.DELIVERED);
+		Long orderCount = orderRepo.countByStatusInAndRestaurantId(statusList,restaurantId);
+		return new RestaurantOrderCountResponse("Got Delivered Order Count",orderCount);
+		}
+	
+	@Override
+	public RestaurantOrderCountResponse getMyTotalOrderCount(Long restaurantId) {
+		
+		Long orderCount = orderRepo.countByRestaurantId(restaurantId);
+		return new RestaurantOrderCountResponse("Got Total Order Count",orderCount);
+		}
+	
+	@Override
+	public RestaurantOrderPriceResponse getMyTotalEarnings(Long restaurantId) {
+		
+		double totalEarnings = orderRepo.sumTotalPriceByRestaurantId(restaurantId);
+		return new RestaurantOrderPriceResponse("Got Total Order Count",totalEarnings);
+		}
+	@Override
+	public RestaurantOrderPriceResponse getMyEarningsPerOrder(Long restaurantId) {
+		
+		double earningsPerOrder = orderRepo.calculateAverageEarningPerOrder(restaurantId);
+		return new RestaurantOrderPriceResponse("Got Total Order Count",earningsPerOrder);
+		}
+	
 	@Override
 	public List<OrderDTOforRestaurant> getMyPastOrder(Long restaurantId) {
 		List<StatusType> statusList=new ArrayList<StatusType>();
 		statusList.add(StatusType.DELIVERED);
+		statusList.add(StatusType.CANCELLED);
 		
 		 List<Order> orderList = orderRepo.findByRestaurantIdAndStatusIn(restaurantId, statusList);
 		
@@ -237,6 +326,11 @@ public class RestaurantServiceImpl implements RestaurantService {
 		Order order = orderRepo.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu Id"));
 		order.setStatus(StatusType.CONFIRMED);
 		return new ApiResponse("Order accepted by Restaurant");
+	}
+	public ApiResponse cancelOrder(Long orderId) {
+		Order order = orderRepo.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu Id"));
+		order.setStatus(StatusType.CANCELLED);
+		return new ApiResponse("Order cancelled by Restaurant");
 	}
 
 	@Override

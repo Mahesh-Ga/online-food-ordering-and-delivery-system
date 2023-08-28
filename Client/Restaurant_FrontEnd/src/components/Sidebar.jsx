@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { logout } from '../features/authSlice';
 import { setToggle } from '../features/toggleSlice';
+import { removeRestaurant } from '../features/restaurantSlice';
 
 function Sidebar() {
     const navigate = useNavigate();
@@ -44,6 +45,9 @@ function Sidebar() {
                 <a className='list-group-item py-2' onClick={()=>{
                     sessionStorage.removeItem('token')
                     sessionStorage.removeItem('email')
+                    sessionStorage.removeItem('resId')
+
+                    dispatch(removeRestaurant())
                     dispatch(setToggle())
                     dispatch(logout())
                     }} >
