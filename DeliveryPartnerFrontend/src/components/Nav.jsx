@@ -24,13 +24,13 @@ function Nav() {
         
         <li class="nav-item">
                  <Link className='nav-link' to='/home'>
-                   Home
+                  <h5> Home </h5>
                  </Link>
         </li>
 
         <li class="nav-item">
-                 <Link className='nav-link' to='/pastOrders'>
-                   Past Orders
+                 <Link className='nav-link' to='/past-orders'>
+             <h5>    Past Orders </h5>  
                  </Link>
         </li>
        

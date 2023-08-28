@@ -3,7 +3,6 @@ import Sidebar from './components/Sidebar'
 import Home from './components/Home'
 import Nav from './components/Nav'
 import { Route, Routes } from 'react-router-dom'
-import Users from './components/Users'
 import Restaurants from './components/Restaurants'
 import ApproveRestaurant from './components/ApproveReaustarant'
 import ApproveDeliveryBoy from './components/ApproveDeliveryBoy'
@@ -38,6 +37,7 @@ function App() {
             <Sidebar/>
           </div>
         }
+        
         {toggle &&
           <div className='col-4 col-md-2'>
           </div>
@@ -47,7 +47,6 @@ function App() {
            <Nav />
           
             <Routes>
-            <Route path="/users" exact element={<ProtectedRoute component={Users}/>}></Route>
             <Route path="/reaustarants" exact element={<ProtectedRoute component={Restaurants}/>}></Route>
             <Route path="/approvereaustarant" exact element={<ProtectedRoute component={ApproveRestaurant}/>}></Route>
             <Route path="/approvedeliveryboy" exact element={<ProtectedRoute component={ApproveDeliveryBoy}/>}></Route>

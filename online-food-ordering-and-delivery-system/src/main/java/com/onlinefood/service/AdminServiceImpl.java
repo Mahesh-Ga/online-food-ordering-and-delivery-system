@@ -94,6 +94,7 @@ public class AdminServiceImpl implements AdminService {
 	public ApiResponse approveDeliveryPartner(Long id) {
 		DeliveryPartner deliveryPartner = deliveryRepo.findById(id).orElseThrow();
 		deliveryPartner.setStatus(Status.APPROVED);
+		deliveryPartner.getUser().setActive(true);
 		return new ApiResponse("sucessfully approved");
 	}
 

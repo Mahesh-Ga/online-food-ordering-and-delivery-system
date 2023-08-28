@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useDispatch } from "react-redux"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { toast } from "react-toastify"
 import { login } from "../features/authSlice"
 import { signIn } from "../services/loginService"
@@ -76,10 +76,17 @@ function Login(){
                 }}
               />
             </div>
-            <div className='mb-3'>
+            <div className='mb-3' style={{ textAlign: "center" }}>
+              
               <button onClick={loginUser} className='btn btn-success'>
                 Login
               </button>
+              <br></br>
+              <br></br>
+              <h6 >
+              Don't have an account?{" "}
+              <Link to="/register-customer">Register here</Link>
+            </h6>
             </div>
           </div>
         </div>

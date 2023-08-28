@@ -7,13 +7,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.onlinefood.entities.DeliveryPartner;
 import com.onlinefood.entities.Order;
 import com.onlinefood.entities.Status;
 import com.onlinefood.entities.StatusType;
 
 public interface OrderRepo extends JpaRepository<Order, Long> {
 //		@Query(value = "select  from ",nativeQuery = true)
-	List<Order> findByStatus(StatusType status);
+//	List<Order> findByStatus(StatusType status);
 	
     List<Order> findByRestaurantIdAndStatusIn(Long restaurantId, List<StatusType> statuses);
 
@@ -28,5 +29,8 @@ public interface OrderRepo extends JpaRepository<Order, Long> {
     
     @Query("select o from Order o where o.status != 'COMPLETED'")
     List<Order> getCurrentOrder();
-    
+
+    List<Order> findByStatusInAndDeliveryPartnerIsNull(List<StatusType> statuses);
+
+    List<Order> findByDeliveryPartnerAndStatusIn(DeliveryPartner deliveryPartner,List<StatusType> statusList);
 }

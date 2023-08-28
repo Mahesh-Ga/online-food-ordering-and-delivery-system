@@ -21,7 +21,7 @@ import com.onlinefood.jwt_utils.JwtUtils;
 @RestController
 @RequestMapping("/user")
 //@CrossOrigin(origins = "http://localhost:3000")
-@CrossOrigin(origins = "http://localhost:3000", 
+@CrossOrigin(origins = {"http://localhost:3000","http://localhost:3001"}, 
 methods = {RequestMethod.GET, RequestMethod.POST}, 
 allowedHeaders = {"Authorization", "Content-Type"})
 
