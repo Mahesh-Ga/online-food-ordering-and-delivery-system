@@ -32,7 +32,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 			throws ServletException, IOException {
 		String authHeadr = request.getHeader("Authorization");
 		if (authHeadr != null && authHeadr.startsWith("Bearer")) {
-			System.out.println("got bearer token");
+//			System.out.println("got bearer token");
 			String token = authHeadr.substring(7);
 			Claims claims = utils.validateJwtToken(token);
 			
@@ -45,7 +45,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 		} 
 		
-			System.out.println("req did not contain any bearer token");
+//			System.out.println("req did not contain any bearer token");
 			filterChain.doFilter(request, response);
 		
 	}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import '../style.css'
 import { useSelector } from 'react-redux';
-import { confirmOrder, getOrderMenuItems, getOrderReadyForPickup, getPendingOrder} from '../services/restaurantService';
+import { cancelOrder, confirmOrder, getOrderMenuItems, getOrderReadyForPickup, getPendingOrder} from '../services/restaurantService';
 import { log } from '../utils/util';
 
 
@@ -68,7 +68,7 @@ const ready=async(orderId,token)=>{
 const cancel=async(orderId,token)=>{
   debugger
  
-  const response=await getOrderReadyForPickup(orderId,token)
+  const response=await cancelOrder(orderId,token)
   if(response != null && response.status == 200) {
     debugger;
     loadData();
@@ -113,7 +113,7 @@ const cancel=async(orderId,token)=>{
             disabled={c['status'] == 'PENDING' || c['status'] == 'READY_FOR_PICKUP'}>Ready To Pickup</button>
             </td>
             <td>
-            <button type="button" class="btn btn-danger"
+            <button type="button" class="btn btn-danger" onClick={()=>{cancel(c['orderId'],token)}}
             disabled={c['status'] == 'CONFIRMED' || c['status'] == 'READY_FOR_PICKUP'} >Decline</button>
             </td>
             <td>

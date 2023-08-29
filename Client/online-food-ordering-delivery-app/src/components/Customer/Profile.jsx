@@ -513,6 +513,7 @@ function Profile() {
                 <button
                   type="button"
                   class="btn btn-success"
+                  data-bs-dismiss="modal" 
                   onClick={() => {
                     addCustomerAddress(
                       addressFields.streetAddressLine1,
@@ -523,6 +524,7 @@ function Profile() {
                       addressFields.postalCode
                     );
                   }}
+
                 >
                   Add Address
                 </button>

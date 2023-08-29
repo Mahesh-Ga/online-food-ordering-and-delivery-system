@@ -29,7 +29,10 @@ function Header() {
                             <button className="nav-link" aria-current="page" style={{ color: "#FFFFFF", fontSize: "2.5vh", marginRight: "5vh" }} onClick={()=>{navigate("/profile")}}>Profile</button>
                         </li>
                         <li className="nav-item">
-                            <button className="nav-link" aria-current="page" style={{ color: "#FFFFFF", fontSize: "2.5vh", marginRight: "5vh" }}>Contact us</button>
+                            <button className="nav-link" aria-current="page" style={{ color: "#FFFFFF", fontSize: "2.5vh", marginRight: "5vh" }} onClick={()=>{navigate("/order-history")}}>My Orders</button>
+                        </li>
+                        <li className="nav-item">
+                            <button className="nav-link" aria-current="page" style={{ color: "#FFFFFF", fontSize: "2.5vh", marginRight: "5vh" }} onClick={()=>{navigate("/contact-us")}}>Contact us</button>
                         </li>
                     </ul>
                 </div>

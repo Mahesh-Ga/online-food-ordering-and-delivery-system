@@ -18,6 +18,7 @@ import PastOrders from './components/PastOrders '
 
 import RegisterRestaurant from './components/Register'
 import AddMenu from './components/addMenu'
+import { setRestaurant } from './features/restaurantSlice'
 
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
     {
       dispatch(setToken(sessionStorage.token))
       dispatch(login())   
+      dispatch(setRestaurant({id:sessionStorage.resId}))
     } 
   },[])
 

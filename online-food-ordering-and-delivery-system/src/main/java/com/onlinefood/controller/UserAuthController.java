@@ -35,7 +35,6 @@ public class UserAuthController {
 
 	@PostMapping("/signin")
 	public ResponseEntity<?> signIn(@RequestBody @Valid SignInRequestDTO request) {
-		System.out.println("in sign in " + request);
 		Authentication principal = mgr
 				.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
 		String jwtToken = utils.generateJwtToken(principal);

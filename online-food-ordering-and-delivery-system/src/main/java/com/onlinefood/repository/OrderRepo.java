@@ -14,10 +14,23 @@ import com.onlinefood.entities.StatusType;
 
 public interface OrderRepo extends JpaRepository<Order, Long> {
 //		@Query(value = "select  from ",nativeQuery = true)
-//	List<Order> findByStatus(StatusType status);
+
+	
+	  List<Order> findByStatus(StatusType status);
 	
     List<Order> findByRestaurantIdAndStatusIn(Long restaurantId, List<StatusType> statuses);
 
+    long countByStatusInAndRestaurantId(List<StatusType> statuses, Long restaurantId);
+
+    long countByRestaurantId(Long restaurantId);
+    
+    @Query("SELECT SUM(o.totalPrice) FROM Order o WHERE o.restaurant.id = :restaurantId")
+    Double sumTotalPriceByRestaurantId(Long restaurantId);
+    
+    @Query("SELECT AVG(o.totalPrice) FROM Order o WHERE o.restaurant.id = :restaurantId")
+    Double calculateAverageEarningPerOrder(Long restaurantId);
+
+    
     @Query("select sum(o.totalPrice) from Order o")
     Long getTotalSale();
 

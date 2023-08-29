@@ -29,6 +29,7 @@ import com.onlinefood.dto.CustomerChangePasswordRequestDTO;
 import com.onlinefood.dto.CustomerPlaceOrderDTO;
 import com.onlinefood.dto.CustomerRespDTO;
 import com.onlinefood.dto.CustomerUpdateDTO;
+import com.onlinefood.dto.OrderDTO;
 import com.onlinefood.entities.CustomerAddress;
 import com.onlinefood.entities.Menu;
 import com.onlinefood.repository.MenuRepo;
@@ -49,7 +50,8 @@ public class CustomerController {
 	}
 
 	@PutMapping("/password")
-	public ResponseEntity<String> changePassword(@RequestBody @Valid CustomerChangePasswordRequestDTO changePasswordRequest) {
+	public ResponseEntity<String> changePassword(
+			@RequestBody @Valid CustomerChangePasswordRequestDTO changePasswordRequest) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String userEmail = authentication.getName();
 
@@ -126,11 +128,34 @@ public class CustomerController {
 	// -----------------------------------------------------------------
 
 	@PostMapping("/order/{selectedCustomerAddressId}")
-	public ResponseEntity<String> placeOrder(@PathVariable Long selectedCustomerAddressId) {
+	public ResponseEntity<Long> placeOrder(@PathVariable Long selectedCustomerAddressId) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String userEmail = authentication.getName();
-		customerService.placeOrder(userEmail, selectedCustomerAddressId);
-		return ResponseEntity.ok("Order Successfully Placed.");
+		return customerService.placeOrder(userEmail, selectedCustomerAddressId);
 	}
+
+	@GetMapping("/allOrders")
+	public ResponseEntity<List<OrderDTO>> getAllOrders() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String userEmail = authentication.getName();
+		return new ResponseEntity<>(customerService.getAllOrders(userEmail), HttpStatus.OK);
+	}
+
+	@GetMapping("/order/{orderId}")
+	public ResponseEntity<OrderDTO> getOrder(@PathVariable Long orderId) {
+		return new ResponseEntity<>(customerService.getOrder(orderId), HttpStatus.OK);
+	}
+	
+	@PutMapping("/feedback/{menuId}/{orderId}/{rating}")
+	public ResponseEntity<String> giveFeedback(@PathVariable Long menuId, @PathVariable Long orderId,
+			@PathVariable int rating) {
+		return customerService.setFeedback(menuId, orderId, rating);
+	}
+
+	@PutMapping("/feedback/complete/{orderId}")
+	public ResponseEntity<String> completeFeedback(@PathVariable Long orderId) {
+		return customerService.completeFeedback(orderId);
+	}
+
 
 }

@@ -3,13 +3,14 @@ import { getCustomerCart } from "../../services/cart";
 import { getAddresses } from "../../services/address";
 import { placeOrderFromCart } from "../../services/order";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function OrderDetails() {
   const [cartItems, setCartItems] = useState([]);
   const [customerAddresses, setCustomerAddresses] = useState([]);
-  const [selectedRestId, setSelectedRestId] = useState();
+  const [selectedCustomerAddressId, setSelectedCustomerAddressId] = useState();
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const fetchCartItems = async () => {
     const response = await getCustomerCart();
@@ -22,8 +23,11 @@ function OrderDetails() {
   };
 
   const placeOrder = async () => {
-    const response = await placeOrderFromCart(selectedRestId);
-    toast.success(response);
+    const response = await placeOrderFromCart(selectedCustomerAddressId);
+    toast.info(" Please Complete Payment Process ...");
+    navigate("/payment", {
+      state: { orderId : response },
+    })
   };
 
   useEffect( () => {
@@ -32,7 +36,7 @@ function OrderDetails() {
   }, []);
 
   const check = (args) => {
-    setSelectedRestId(args.target.id);
+    setSelectedCustomerAddressId(args.target.id);
   };
 
   return (
@@ -63,7 +67,7 @@ function OrderDetails() {
                     {
                      cartItems.map((cartItem) => {
                       return (
-                        <tr key={cartItem.restaurant_id}>
+                        <tr key={cartItem.restaurant_id + cartItem.product_name }>
                           <td>{cartItem.product_name}</td>
                           <td>{cartItem.quantity}</td>
                           <td>{cartItem.price}</td>
@@ -72,15 +76,15 @@ function OrderDetails() {
                     })}
                   </tbody>
                 </table>
-                <h3 style={{ textAlign: "center" }}>
+                <h3 style={{ textAlign: "center" , marginTop : "2vh" }}>
                   Total Price : ₹
                   {cartItems.reduce((total, cartItem) => {
                     return total + cartItem.price * cartItem.quantity;
-                  }, 0)}
+                  }, 0)}  
                 </h3>
                 <button
                   type="button"
-                  className="btn btn-success"
+                  className="btn btn-success d-flex justify-content-center mx-auto mt-4"
                   data-bs-toggle="modal"
                   data-bs-target="#exampleModal"
                 >
@@ -182,11 +186,13 @@ function OrderDetails() {
                     <button
                       type="button"
                       className="btn btn-success"
+                      data-bs-dismiss="modal" 
                       onClick={() => {
-                        placeOrder(selectedRestId);
+                        // navigate("/payment")
+                        placeOrder(selectedCustomerAddressId);
                       }}
                     >
-                      Place Order
+                      Make a Payment
                     </button>
                   </div>
                 </div>

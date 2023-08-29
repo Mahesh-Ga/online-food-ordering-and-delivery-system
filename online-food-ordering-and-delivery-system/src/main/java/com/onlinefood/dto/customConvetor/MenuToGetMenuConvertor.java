@@ -11,7 +11,7 @@ public class MenuToGetMenuConvertor implements Converter<Menu, GetMenuDTO> {
 	@Override
 	public GetMenuDTO convert(MappingContext<Menu, GetMenuDTO> context) {
 		Menu source = context.getSource();
-		System.out.println(source.getRestaurant());
+//		System.out.println(source.getRestaurant());
         GetMenuDTO destination = new GetMenuDTO();
         
         if (source == null) {

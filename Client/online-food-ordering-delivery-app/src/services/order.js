@@ -16,3 +16,36 @@ export async function placeOrderFromCart(addressId) {
         return ex.response.data
     }
 }
+
+export async function getMenuByOrder(orderId) {
+    const url = createUrl('/restaurant/orderMenuItems/' + orderId)
+    const token = sessionStorage.getItem("token")
+
+    const headers = {
+        Authorization: `Bearer ${token}`,
+    };
+  
+    try {
+        const response = await axios.get(url, { headers })
+        return response.data
+    } catch (ex) {
+        return ex.response.data
+    }
+}
+
+export async function getOrderByOrderId(orderId) {
+    const url = createUrl('/customer/order/' + orderId)
+    const token = sessionStorage.getItem("token")
+
+    const headers = {
+        Authorization: `Bearer ${token}`,
+    };
+  
+    try {
+        const response = await axios.get(url, { headers })
+        return response.data
+    } catch (ex) {
+        return ex.response.data
+    }
+}
+

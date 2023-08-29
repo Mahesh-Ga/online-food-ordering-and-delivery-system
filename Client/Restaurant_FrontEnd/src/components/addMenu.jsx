@@ -13,11 +13,9 @@ function AddMenu() {
  
   const token = useSelector((state)=>state.token.tokenValue)
   const resId=useSelector((state)=>state.restaurant.id)
-  // get the navigation object
   const navigate = useNavigate()
 
   const newMenu = async () => {
-    debugger
     if (name.length == '') {
       toast.error('Please enter Menu name')
     }  else if (menuType.length =='') {
@@ -27,7 +25,6 @@ function AddMenu() {
     }else if (price.length =='') {
       toast.error('Price not Entered')
     } else {
-      // call register api
       const response = await addMenu(
         resId,
         token,
@@ -36,8 +33,7 @@ function AddMenu() {
         category,
         price
       )
-    debugger
-      // parse the response
+   
       if (response != null && response['status'] == 200) {
         toast.success('Successfully added a new menu')
         navigate('/menu')

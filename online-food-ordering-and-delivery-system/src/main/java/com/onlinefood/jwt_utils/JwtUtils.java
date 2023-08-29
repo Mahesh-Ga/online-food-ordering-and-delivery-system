@@ -73,14 +73,13 @@ public class JwtUtils {
 		String authorityString = authorities.stream()
 											.map(authority -> authority.getAuthority())
 											.collect(Collectors.joining(","));
-		System.out.println(authorityString);
 		return authorityString;
 	}
 
 	public List<GrantedAuthority> getAuthoritiesFromClaims(Claims claims) {
 		String authString = (String) claims.get("authorities");
 		List<GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(authString);
-		authorities.forEach(System.out::println);
+//		authorities.forEach(System.out::println);
 		return authorities;
 	}
 

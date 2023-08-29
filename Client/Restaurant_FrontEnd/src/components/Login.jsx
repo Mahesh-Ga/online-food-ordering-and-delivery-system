@@ -60,7 +60,8 @@ function Login(){
           
           const restaurant=  await getRestaurantProfile(email,jwt)       
             restaurant.data.email=sessionStorage['email'];
-            console.log(restaurant);
+            sessionStorage['resId'] = restaurant.data.id;
+           // console.log(restaurant);
             dispatch(setRestaurant(restaurant.data))
             debugger
           navigate('/home')
