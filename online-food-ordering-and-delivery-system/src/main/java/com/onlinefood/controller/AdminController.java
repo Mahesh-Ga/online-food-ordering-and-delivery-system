@@ -70,7 +70,6 @@ public class AdminController {
 		
 	@PutMapping("/approve/restaurant/{id}")
 	public ResponseEntity<?> approveRestaurant(@PathVariable Long id) {
-		System.out.println("in rest put");
 		return adminService.approveRestaurant(id);
 	}
 

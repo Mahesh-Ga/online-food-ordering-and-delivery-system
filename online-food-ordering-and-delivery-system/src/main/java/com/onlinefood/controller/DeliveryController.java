@@ -42,7 +42,6 @@ public class DeliveryController {
 	public Order acceptOrder(@PathVariable Long orderId) {
 	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String email = authentication.getName();
-		System.out.println(email);
 		return deliveryservice.acceptOrder(orderId,email);
 	}
 	

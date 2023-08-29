@@ -30,11 +30,13 @@ public class RestaurantResponseDTO {
 
 	private CuisineType cuisine;
 
+	private String email;
+	
 	private String mobileNumber;
 	
 	private String fssai;
 
 	private Address address;
 
-	private User user;
+//	private User user;
 }

@@ -25,6 +25,7 @@ import com.onlinefood.dto.ApiResponse;
 import com.onlinefood.dto.CustomerRespDTO;
 import com.onlinefood.dto.GetMenuDTO;
 import com.onlinefood.dto.OrderDTOforRestaurant;
+import com.onlinefood.dto.OrderDetailsDTO;
 import com.onlinefood.dto.RestaurantNewMenuDTO;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
@@ -83,7 +84,7 @@ public class RestaurantController {
 	@GetMapping("/menubyResId/{resId}")
 	public ResponseEntity<?> getMenu(@PathVariable Long resId) {
 		List<GetMenuDTO> menuList = restaurantService.getAllMenuByRestaurantId(resId);
-
+		
 		return new ResponseEntity<>(menuList, HttpStatus.OK);
 	}
 
@@ -124,7 +125,6 @@ public class RestaurantController {
 	@PostMapping(value = "/menuImage/{menuId}", consumes = "multipart/form-data")
 	public ResponseEntity<?> uploadMenuImage(@PathVariable Long menuId, @RequestParam MultipartFile imageFile)
 			throws IOException {
-		System.out.println("in upload img " + menuId);
 		return ResponseEntity.status(HttpStatus.CREATED).body(restaurantService.uploadMenuImage(menuId, imageFile));
 	}
 
@@ -138,7 +138,7 @@ public class RestaurantController {
 	@PostMapping(value = "/restaurantImage/{resId}", consumes = "multipart/form-data")
 	public ResponseEntity<?> uploadRestaurantImage(@PathVariable Long resId, @RequestParam MultipartFile imageFile)
 			throws IOException {
-		System.out.println("in upload img " + resId);
+//		System.out.println("in upload img " + resId);
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(restaurantService.uploadRestaurantImage(resId, imageFile));
 	}
@@ -149,6 +149,7 @@ public class RestaurantController {
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(restaurantService.getRestaurantImage(resId));
 	}
+
 	@GetMapping("/{email}")
 	public ResponseEntity<RestaurantResponseDTO> getRestaurantProfile(@PathVariable String email) {
 //	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -165,12 +166,18 @@ public class RestaurantController {
 	}
 
 	@GetMapping("/menu/search")
-	public List<GetMenuDTO> searchMenu(@RequestParam String query,@RequestParam(required = false) Category category) {
-		return restaurantService.searchMenu(query,category);
+	public List<GetMenuDTO> searchMenu(@RequestParam String query, @RequestParam(required = false) Category category) {
+		return restaurantService.searchMenu(query, category);
 	}
 
 	@GetMapping("/menu/category/{categoryType}")
 	public List<GetMenuDTO> searchMenu(@PathVariable Category categoryType) {
 		return restaurantService.getMenuByCategory(categoryType);
+	}
+
+	@GetMapping("/orderMenuItems/{orderId}")
+	public ResponseEntity<?> getOrderMenuItems(@PathVariable Long orderId) {
+		List<OrderDetailsDTO> myOrderDetails = restaurantService.getOrderDetails(orderId);
+		return ResponseEntity.ok(myOrderDetails);
 	}
 }

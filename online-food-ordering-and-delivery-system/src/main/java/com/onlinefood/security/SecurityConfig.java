@@ -56,7 +56,8 @@ public class SecurityConfig {
 				"/v*/api-docs/**",
 				"/restaurant/search",
 				"/restaurant/menu/search").permitAll()  
-				.antMatchers("/customer/**","/cart/add/*").hasRole("CUSTOMER")
+				.antMatchers("/restaurant/orderMenuItems/*").hasAnyRole("CUSTOMER","RESTAURANT")
+				.antMatchers("/customer/**","/customer/cart/add/*","/customer/allOrders","/customer/feedback/*/*/*","/customer/feedback/complete/*","/customer/order/*","/payment/*","/payment").hasRole("CUSTOMER")
 				.antMatchers("/restaurant/menu/*/*").permitAll()
 				.antMatchers("/admin/**").hasRole("ADMIN")
 				.antMatchers("/restaurant/**").hasRole("RESTAURANT")

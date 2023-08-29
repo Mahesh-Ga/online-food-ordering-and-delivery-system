@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.onlinefood.dto.ApiResponse;
 import com.onlinefood.dto.GetMenuDTO;
 import com.onlinefood.dto.OrderDTOforRestaurant;
+import com.onlinefood.dto.OrderDetailsDTO;
 import com.onlinefood.dto.RestaurantNewMenuDTO;
 import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
@@ -51,6 +52,8 @@ public interface RestaurantService {
 	public RestaurantResponseDTO getMyRestaurant(String email);
 
 //	public List<Order> getOrderList();
+	
+	public List<OrderDetailsDTO> getOrderDetails(Long OrderId);
 	
 	List<RestaurantResponseDTO> searchRestaurant(String query);
 	List<GetMenuDTO> searchMenu(String query, Category category);

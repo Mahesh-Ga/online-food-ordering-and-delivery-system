@@ -22,7 +22,7 @@ import com.onlinefood.dto.ApiResponse;
 public class GlobalExceptionHandler {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-		System.out.println("in meth arg invalid " + e);
+//		System.out.println("in meth arg invalid " + e);
 		List<FieldError> errList = e.getFieldErrors();
 //		Map<String, String> errMap=new HashMap<>();
 //		for(FieldError err : errList)
