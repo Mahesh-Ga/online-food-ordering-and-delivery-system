@@ -548,3 +548,37 @@ try{
   return null
 }
 }
+
+export const getMenuImage=async(menuId,token)=>{
+  const url = createUrl(`/restaurant/menuImage/${menuId}`)  
+  const headers = {
+    Authorization: token==""? '':`Bearer ${token}`,
+  }
+try{
+  debugger
+   const response =  await axios.get(url,{headers})
+   log(response.data)
+   return response
+}catch(ex) {
+  debugger
+  log(ex)
+  return null
+}
+}
+
+export const getRestaurantImage=async(resId,token)=>{
+  const url = createUrl(`/restaurant/restaurantImage/${resId}`)  
+  const headers = {
+    Authorization: token==""? '':`Bearer ${token}`,
+  }
+try{
+  debugger
+   const response =  await axios.get(url,{headers})
+   log(response.data)
+   return response
+}catch(ex) {
+  debugger
+  log(ex)
+  return null
+}
+}

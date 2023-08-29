@@ -1,7 +1,7 @@
 import React from 'react'
 import '../style.css'
 import { useState , useEffect } from 'react'
-import { addRestaurantImage, getAllActiveRestaurants, getDeliveredOrderCount, getEarningsPerOrder, getPendingOrderCount, getRestaurantProfile, getTotalEarnings, getTotalOrderCount, updateReataurant, updateRestaurantPassword } from '../services/restaurantService';
+import { addRestaurantImage, getAllActiveRestaurants, getDeliveredOrderCount, getEarningsPerOrder, getPendingOrderCount, getRestaurantImage, getRestaurantProfile, getTotalEarnings, getTotalOrderCount, updateReataurant, updateRestaurantPassword } from '../services/restaurantService';
 import { toast } from 'react-toastify';
 import CountUp from './Counter';
 import { useNavigate } from 'react-router-dom';
@@ -34,6 +34,7 @@ function Home() {
     const [totalEarnings, setTotalEarnings] = useState('')
     const [earningsPerOrder, setEarningsPerOrder] = useState('')
     const [oldPassword,setOldPassword] = useState('')
+    const [resImage,setResImage]=useState(null)
      const navigate=useNavigate();
      const dispatch = useDispatch();
 
@@ -72,11 +73,22 @@ function Home() {
           setState(response.data.address.state)
           setPostalCode(response.data.address.postalCode)
           setCountry(response.data.address.country)
-
+          setResImage(`https://localhost:7070/restaurant/restaurantImage/${resId}`)
         }
         else{
           debugger;
         }
+
+        //  const getMyRestaurantImage=await getRestaurantImage(resId,token)
+        //  debugger
+        //  if(getMyRestaurantImage != null && getMyRestaurantImage.status == 201) {
+        //   debugger;
+        //  setResImage(getMyRestaurantImage.data);
+
+        // }
+        // else{
+        //   debugger;
+        // }
 
         const CountPendingOrder = await getPendingOrderCount(resId,token)
         debugger  
@@ -223,6 +235,7 @@ function Home() {
       loadData();
       setSelectedFile(null);
       toast.success('Successfully addded a Restaurant Image')
+      setResImage(`https://localhost:7070/restaurant/restaurantImage/${resId}`)
       
       
     } else {
@@ -296,15 +309,19 @@ function Home() {
             <div >
       <h1 style={{ textAlign: 'center', margin: 20 }}>Restaurant Info</h1>
       <div className='row' style={{ marginTop: 50 }}>
-        
-            <div className='col-md-12'>
-              <div className='card'>
-                <img
-               src={`https://localhost:7070/restaurant/restaurantImage/${restaurant['id']}`}
-
+      <div className='col-md-3'>
+            <img  className='col-md-12'
+                src={`https://localhost:7070/restaurant/restaurantImage/${restaurant['id']}`}
+                // src={resImage}
                   style={{ height: 200 }}
                   alt=''
                 />
+            </div>
+            <div className='col-md-9'>
+              <div className='card'>
+             
+            
+            
                 <div className='card-body' style={{backgroundColor :'navajowhite',borderBlockColor:"navajowhite" }}>
                   <h5 className='card-title'>Restaurant Name: {restaurant['restaurantName']}</h5>
                   <div className='card-text'>
@@ -605,9 +622,12 @@ function Home() {
                       
                     </div>
                   </div>
+                  
                 </div>
+               
               </div>
             </div>
+           
          
       </div>
     </div>

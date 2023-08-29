@@ -37,4 +37,6 @@ public class RestaurantResponseDTO {
 	private Address address;
 
 	private User user;
+	
+	private String imagePath;
 }
