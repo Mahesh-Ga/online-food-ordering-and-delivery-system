@@ -7,6 +7,9 @@ import { toast } from "react-toastify";
 import { log } from "../../utilities/utils";
 import { useDispatch } from "react-redux";
 import { login } from "../../features/authSlice";
+import jwtDecode from "jwt-decode";
+
+
 
 function Login() {
   const [cred, setCred] = useState({ email: "", password: "" });
@@ -15,14 +18,19 @@ function Login() {
 
   const validateData = async () => {
     const response = await loginUser(cred.email, cred.password);
-    // log(response.jwt)
     if(response){
     if (response.jwt !== null && response.jwt !== undefined) {
       sessionStorage.setItem("token", response.jwt);
+      const decodedToken = jwtDecode(response.jwt);
+      const authorities = decodedToken.authorities;
       dispatch(login());
-      navigate("/dashboard");
+      if(authorities === "ROLE_CUSTOMER") {
+         navigate("/dashboard");
+      }
+      else  {
+        toast.error("Unauthorised access");
+      }
     } else {
-      log(response);
       if (response.message) {
         toast.error(response.message);
       } else {

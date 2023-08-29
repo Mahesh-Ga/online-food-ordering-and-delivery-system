@@ -12,9 +12,11 @@ import {
   resetCart,
 } from "../../services/cart";
 import { toast } from "react-toastify";
+import { log } from "../../utilities/utils";
+
+
 
 function Menu() {
-  const [isVegMenu, setIsVegMenu] = useState(false);
   const [restaurant, setRestaurant] = useState({
     id: 0,
     restaurantName: "",
@@ -35,12 +37,6 @@ function Menu() {
 
   const navigate = useNavigate();
   const location = useLocation();
-
-  const toggleMenu = () => {
-    setIsVegMenu(!isVegMenu);
-  };
-
-  const buttonClasses = isVegMenu ? "btn veg-menu" : "btn all-menu";
 
   const fetchRestaurant = async () => {
     const response = await getRestaurantById(location.state.restaurantId);
@@ -71,9 +67,17 @@ function Menu() {
     toast.success(response,{
       autoClose :500
     });
+    if(cartItems.length === 1) {
+          log("callin greset")
+          resetEntireCart()
+        }
   };
 
   const deleteFromCart = async (menuId) => {
+    if(cartItems.length === 1) {
+          log("callin greset")
+          resetEntireCart()
+        }
     const response = await deleteItemFromCart(menuId);
     fetchCartItems();
     toast.success(response,{
@@ -86,17 +90,13 @@ function Menu() {
      await resetCart();
   }
 
-  useEffect(()=>{
-    if(cartItems.length === 0) {
-      resetEntireCart()
-    }
-  },[cartItems])
-
   useEffect( () => {
      fetchRestaurant();
      fetchMenuByRestaurant();
      fetchCartItems();
   },[]);
+
+
 
   return (
     <>
@@ -230,19 +230,17 @@ function Menu() {
                          </div> 
                         </div> */}
           </div>
-          <div className="row d-flex justify-content-center">
+          {/* <div className="row d-flex justify-content-center">
             <div className="col-md-9">
               <div className="card mt-3">
                 <div className=" d-flex flex-row-reverse">
                   <div className="p-4 pb-2 pt-2">
-                    <button className={buttonClasses} onClick={toggleMenu}>
-                      Pure Veg
-                    </button>
+    
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
         <hr />
         <div className="container-fluid mt-4">
@@ -260,7 +258,7 @@ function Menu() {
             <div className="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
 
             <div className="col-xs-7 col-sm-7 col-md-7 col-lg-7">
-              {menu.map((menu) => {
+              { menu.map((menu)=> {
                 return (
                   <div className="card mb-3" key={menu.id}>
                     <div className="row g-0">
@@ -449,7 +447,7 @@ function Menu() {
                           navigate("/order-details");
                         }}
                       >
-                        Place Order
+                       Proceed to Checkout
                       </button>
                     </div>
                     }

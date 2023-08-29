@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,6 +40,10 @@ public class OrderDetails extends BaseEntity {
 	
 	@Column
 	private String menuName;
+	
+	@Column
+	@Max(5)
+	private int rating = 0;
 	
 //	 public void setMenu(Menu menu) {
 //	        if (this.menu != null) {

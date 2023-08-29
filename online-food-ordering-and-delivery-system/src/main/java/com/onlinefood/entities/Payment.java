@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -22,8 +23,12 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class Payment extends BaseEntity {
+public class Payment {
 
+	@Id
+	@Column
+	private String paymentId;
+	
 	@OneToOne
 	@JoinColumn(name = "order_id")
 	private Order order;
@@ -34,7 +39,7 @@ public class Payment extends BaseEntity {
 	@Column
 	private double amount;
 		
-	@Embedded
-	private PaymentCard paymentMethod;
+//	@Embedded
+//	private PaymentCard paymentMethod;
 
 }

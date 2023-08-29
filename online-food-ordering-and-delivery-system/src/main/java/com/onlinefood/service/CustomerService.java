@@ -11,7 +11,9 @@ import com.onlinefood.dto.CustomerAddOrderDTO;
 import com.onlinefood.dto.CustomerPlaceOrderDTO;
 import com.onlinefood.dto.CustomerRespDTO;
 import com.onlinefood.dto.CustomerUpdateDTO;
+import com.onlinefood.dto.OrderDTO;
 import com.onlinefood.entities.CustomerAddress;
+import com.onlinefood.entities.Menu;
 
 public interface CustomerService {
 
@@ -32,6 +34,16 @@ public interface CustomerService {
 	CustomerAddress updateAddress(Long addressId, CustomerAddAddressDTO updatedAddress);
 
 	//order
-	void placeOrder(String email,Long selectedCustomerAddressId);
+	ResponseEntity<Long> placeOrder(String email,Long selectedCustomerAddressId);
+	
+	List<OrderDTO> getAllOrders(String email);
+	
+	OrderDTO getOrder(Long orderId);
+	
+	ResponseEntity<String> setFeedback(Long menuId, Long orderId , int rating);
+	
+	ResponseEntity<String> completeFeedback(Long orderId);
+	
+	void setRatingToMenu(Long menuId);
 		
 }

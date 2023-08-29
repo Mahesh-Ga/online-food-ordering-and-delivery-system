@@ -17,10 +17,12 @@ import org.springframework.stereotype.Service;
 import com.onlinefood.custom_exceptions.ResourceNotFoundException;
 import com.onlinefood.dto.ApiResponse;
 import com.onlinefood.dto.CartDetails;
+import com.onlinefood.dto.OrderDTO;
 import com.onlinefood.entities.Cart;
 import com.onlinefood.entities.CartItem;
 import com.onlinefood.entities.Customer;
 import com.onlinefood.entities.Menu;
+import com.onlinefood.entities.Order;
 import com.onlinefood.entities.User;
 import com.onlinefood.repository.CartItemRepo;
 import com.onlinefood.repository.CartRepo;
@@ -59,8 +61,9 @@ public class CartServiceImpl implements CartService {
 		if (customer != null) {
 			Cart cart = cartRepo.findByCustomer(customer);
 			return cart;
-		}
-		throw new ResourceNotFoundException("Invalid customer email");
+		} else
+			throw new ResourceNotFoundException("Invalid customer email");
+
 	}
 
 	@Override
@@ -84,9 +87,8 @@ public class CartServiceImpl implements CartService {
 		Menu menuItem = menuRepo.findById(menuItemId)
 				.orElseThrow(() -> new ResourceNotFoundException("Invalid menu Id"));
 		Cart cart = getCart(email);
-
+		System.out.println(cart.getRestaurant());
 		if (cart.getRestaurant() == null) {
-			System.out.println(cart.getRestaurant());
 			cart.setRestaurant(menuItem.getRestaurant());
 			cartRepo.save(cart);
 		} else {
@@ -120,8 +122,7 @@ public class CartServiceImpl implements CartService {
 		if (cartItem != null) {
 			if (cartItem.getQuantity() == 1) {
 				cartItemRepo.delete(cartItem);
-			}
-			else
+			} else
 				cartItem.setQuantity(cartItem.getQuantity() - 1);
 		}
 
@@ -155,13 +156,13 @@ public class CartServiceImpl implements CartService {
 
 		for (Object[] result : results) {
 			CartDetails cartD = new CartDetails((String) result[0], (double) result[1], (int) result[2],
-					(BigInteger) result[3],(BigInteger) result[4]);
+					(BigInteger) result[3], (BigInteger) result[4]);
 			cartDetails.add(cartD);
 		}
 
 		return cartDetails;
 	}
-	
+
 	@Override
 	public void resetCart(String email) {
 		User user = userRepo.findByEmail(email)
@@ -171,4 +172,6 @@ public class CartServiceImpl implements CartService {
 		customerCart.setRestaurant(null);
 		cartRepo.save(customerCart);
 	}
+
+	
 }

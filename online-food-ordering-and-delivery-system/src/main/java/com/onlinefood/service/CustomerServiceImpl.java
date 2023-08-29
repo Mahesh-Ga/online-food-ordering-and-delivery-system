@@ -3,12 +3,14 @@ package com.onlinefood.service;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
 import org.apache.logging.log4j.util.StringBuilderFormattable;
+import org.hibernate.loader.AbstractEntityJoinWalker;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,8 @@ import com.onlinefood.dto.CustomerAddDTO;
 import com.onlinefood.dto.CustomerPlaceOrderDTO;
 import com.onlinefood.dto.CustomerRespDTO;
 import com.onlinefood.dto.CustomerUpdateDTO;
+import com.onlinefood.dto.OrderDTO;
+import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.entities.Cart;
 import com.onlinefood.entities.Customer;
 import com.onlinefood.entities.CustomerAddress;
@@ -45,6 +49,7 @@ import com.onlinefood.repository.OrderRepo;
 import com.onlinefood.repository.RestaurantRepo;
 import com.onlinefood.repository.RoleRepo;
 import com.onlinefood.repository.UserRepo;
+
 
 @Service
 @Transactional
@@ -82,7 +87,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	private PasswordEncoder encoder;
-	
+
 	@Autowired
 	private CartService cartService;
 
@@ -91,7 +96,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	private MenuRepo menuRepo;
-	
+
 	@Override
 	public CustomerRespDTO getCustomer(String email) {
 
@@ -131,13 +136,14 @@ public class CustomerServiceImpl implements CustomerService {
 //		System.out.println(customer.getUser().getPassword());
 //		System.out.println(encodedOldPassword);
 //		System.out.println(encoder.matches(customer.getUser().getPassword(),encodedOldPassword));
-		
+
 		if (encoder.matches(oldPassword, customer.getUser().getPassword()) && customer != null) {
 			customer.getUser().setPassword(encoder.encode(newPassword));
 			customerRepo.save(customer);
 			return ResponseEntity.status(HttpStatus.OK).body("Password changed successfully.");
 		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("You have entered the wrong current password. Please double-check your password and try again");
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body("You have entered the wrong current password. Please double-check your password and try again");
 	}
 
 	@Override
@@ -153,7 +159,7 @@ public class CustomerServiceImpl implements CustomerService {
 		customer.setUser(user);
 		customerRepo.save(customer);
 		cartService.createCart(customer);
-		
+
 		return new ApiResponse("Sucessfully Registered");
 
 	}
@@ -218,7 +224,7 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public void placeOrder(String email, Long selectedCustomerAddressId) {
+	public ResponseEntity<Long> placeOrder(String email, Long selectedCustomerAddressId) {
 		User user = userRepo.findByEmail(email)
 				.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
 		Customer customer = customerRepo.findByUser(user);
@@ -227,8 +233,7 @@ public class CustomerServiceImpl implements CustomerService {
 		else {
 			Cart customerCart = cartRepo.findByCustomer(customer);
 			Order o = new Order();
-			CustomerAddress customerAddress = customerAddressRepo
-					.findAddressById(selectedCustomerAddressId);
+			CustomerAddress customerAddress = customerAddressRepo.findAddressById(selectedCustomerAddressId);
 			o.setCustomerAddress(customerAddress);
 
 //			List<CartDetails> cartDetails = cartItemRepo.getCartDetails(customerCart.getId());
@@ -253,23 +258,79 @@ public class CustomerServiceImpl implements CustomerService {
 			o.setStatus(StatusType.PENDING);
 			customer.addOrder(o);
 			orderRepo.save(o);
-				
-		    List<OrderDetails> orderDetailsList = new ArrayList<>();
-		    for (CartDetails cartDetail : cartDetails) {
-		        OrderDetails orderDetail = new OrderDetails();
-		        Menu menu = menuRepo.findById(cartDetail.getMenu_id().longValue()).orElseThrow(()-> new ResourceNotFoundException("Invalid menu id"));
-		        orderDetail.setOrder(o); 
-		        orderDetail.setMenuName(cartDetail.getProduct_name());
-		        orderDetail.setPriceAtOrder(cartDetail.getPrice());
-		        orderDetail.setQuantity(cartDetail.getQuantity());
-		        orderDetail.setMenu(menu);
-		        orderDetailsList.add(orderDetail);
-		    }
-		    orderDetailsRepo.saveAll(orderDetailsList);
-		    
-		    customerCart.setRestaurant(null);
-		    cartItemRepo.deleteAllByCartId(customerCart);
+			List<OrderDetails> orderDetailsList = new ArrayList<>();
+			for (CartDetails cartDetail : cartDetails) {
+				OrderDetails orderDetail = new OrderDetails();
+				Menu menu = menuRepo.findById(cartDetail.getMenu_id().longValue())
+						.orElseThrow(() -> new ResourceNotFoundException("Invalid menu id"));
+				orderDetail.setOrder(o);
+				orderDetail.setMenuName(cartDetail.getProduct_name());
+				orderDetail.setPriceAtOrder(cartDetail.getPrice());
+				orderDetail.setQuantity(cartDetail.getQuantity());
+				orderDetail.setMenu(menu);
+				orderDetailsList.add(orderDetail);
+			}
+			orderDetailsRepo.saveAll(orderDetailsList);
+
+			customerCart.setRestaurant(null);
+			cartItemRepo.deleteAllByCartId(customerCart);
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(o.getId());
 		}
+	}
+
+	@Override
+	public List<OrderDTO> getAllOrders(String email) {
+
+		User user = userRepo.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid Email Id !!!!"));
+		Customer customer = customerRepo.findByUser(user);
+		List<Order> customerOrders = customer.getOrderList();
+		Collections.reverse(customerOrders);
+		return (customerOrders.stream().map(order -> {
+			OrderDTO orderDTO = mapper.map(order, OrderDTO.class);
+			orderDTO.setRestaurant(mapper.map(order.getRestaurant(), RestaurantResponseDTO.class));
+			return orderDTO;
+		}).collect(Collectors.toList()));
+
+	}
+
+	@Override
+	public ResponseEntity<String> setFeedback(Long menuId, Long orderId, int rating) {
+		OrderDetails orderDetail = orderDetailsRepo.findByMenuIdAndOrderId(menuId, orderId);
+		orderDetail.setRating(rating);
+		orderDetailsRepo.save(orderDetail);
+		return ResponseEntity.status(HttpStatus.OK).body("FeedBack Completed");
+	}
+
+	@Override
+	public ResponseEntity<String> completeFeedback(Long orderId) {
+		Order order = orderRepo.findById(orderId)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid Order Id !!!!"));
+		order.setStatus(StatusType.COMPLETED);
+		orderRepo.save(order);
+		return ResponseEntity.status(HttpStatus.OK).body("Order Completed");
+	}
+
+	@Override
+	public void setRatingToMenu(Long menuId) {
+		Menu menu = menuRepo.findById(menuId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu Id !!!!"));
+		List<OrderDetails> orderDetailsList = orderDetailsRepo.findByMenu(menu);
+		if (orderDetailsList.isEmpty()) {
+			return;
+		}
+		int totalRatings = 0;
+		for (OrderDetails orderDetails : orderDetailsList) {
+			totalRatings += orderDetails.getRating();
+		}
+		menu.setRating(totalRatings / orderDetailsList.size());
+		menuRepo.save(menu);
+	}
+	
+	@Override
+	public OrderDTO getOrder(Long orderId) {
+		Order order = orderRepo.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Invalid order id"));
+		return mapper.map(order, OrderDTO.class);
 	}
 
 }
