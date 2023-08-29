@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.util.StringBuilderFormattable;
 
@@ -200,15 +202,42 @@ public class RestaurantServiceImpl implements RestaurantService {
 	}
 
 	@Override
-	public OrderDTOforRestaurant getMyPendingOrder(Long restaurantId) {
-		Order pendingOrder = orderRepo.findByRestaurantIdAndStatus(restaurantId, StatusType.PENDING);
+	public List<OrderDTOforRestaurant> getMyPendingOrder(Long restaurantId) {
+		List<StatusType> statusList=new ArrayList<StatusType>();
+		statusList.add(StatusType.PENDING);
+		statusList.add(StatusType.CONFIRMED);
+		statusList.add(StatusType.READY_FOR_PICKUP);
+		 List<Order> orderList = orderRepo.findByRestaurantIdAndStatusIn(restaurantId, statusList);
+		
+//		 .stream()
+//			.map(menu -> extraMapper.map(menu, GetMenuDTO.class)).collect(Collectors.toList())
 //		System.out.println(pendingOrder.getId());
-		OrderDTOforRestaurant orderPending = mapper.map(pendingOrder, OrderDTOforRestaurant.class);
-		orderPending.setOrderId(pendingOrder.getId());
-
-		return orderPending;
+		List<OrderDTOforRestaurant> ordersPending =orderList.stream().map(m->mapper.map(m, OrderDTOforRestaurant.class)).collect(Collectors.toList());
+				
+		IntStream.range(0, orderList.size())
+	    .forEach(index -> ordersPending.get(index).setOrderId(orderList.get(index).getId()));
+		System.out.println(ordersPending.toString());
+		return ordersPending;
+		
 	}
-
+	@Override
+	public List<OrderDTOforRestaurant> getMyPastOrder(Long restaurantId) {
+		List<StatusType> statusList=new ArrayList<StatusType>();
+		statusList.add(StatusType.DELIVERED);
+		
+		 List<Order> orderList = orderRepo.findByRestaurantIdAndStatusIn(restaurantId, statusList);
+		
+//		 .stream()
+//			.map(menu -> extraMapper.map(menu, GetMenuDTO.class)).collect(Collectors.toList())
+//		System.out.println(pendingOrder.getId());
+		List<OrderDTOforRestaurant> ordersPending =orderList.stream().map(m->mapper.map(m, OrderDTOforRestaurant.class)).collect(Collectors.toList());
+				
+		IntStream.range(0, orderList.size())
+	    .forEach(index -> ordersPending.get(index).setOrderId(orderList.get(index).getId()));
+		System.out.println(ordersPending.toString());
+		return ordersPending;
+		
+	}
 	@Override
 	public ApiResponse changeOrderStatus(Long orderId) {
 		Order order = orderRepo.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Invalid Menu Id"));
@@ -331,17 +360,15 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 	}
 
-	@Override
-	public List<OrderDetailsDTO> getOrderDetails(Long OrderId) {
-//	System.out.println("inside getOrderDetails" + OrderId);
-		Order order = orderRepo.findById(OrderId)
-				.orElseThrow(() -> new ResourceNotFoundException("Invalid order ID!!!!"));
-		// List<OrderDetails> orderDt=orderDetailsRepo.findByOrder(order);
-		// System.out.println(order.toString());
-		List<OrderDetails> orderDetails = order.getOrderDetails();
-		List<OrderDetailsDTO> orderDetailsList = orderDetails.stream().map(m -> mapper.map(m, OrderDetailsDTO.class))
-				.collect(Collectors.toList());
-//     System.out.println(orderDetailsList.toString());
-		return orderDetailsList;
-	}
+@Override
+public List<OrderDetailsDTO> getOrderDetails(Long OrderId) {
+	
+	Order order=orderRepo.findById(OrderId).orElseThrow(() -> new ResourceNotFoundException("Invalid order ID!!!!"));
+	System.out.println(order.toString());
+	List<OrderDetails> orderDetails = order.getOrderDetails();
+	List<OrderDetailsDTO> orderDetailsList =orderDetails.stream().map(m->mapper.map(m, OrderDetailsDTO.class)).collect(Collectors.toList());
+    // System.out.println(orderDetailsList.toString());
+	return orderDetailsList;
+}
+
 }

@@ -13,6 +13,7 @@ import lombok.ToString;
 @ToString
 public class OrderDTOforRestaurant {
 	private Long orderId;
+	
 	private LocalDateTime orderTimestamp;
 
 	private StatusType status;

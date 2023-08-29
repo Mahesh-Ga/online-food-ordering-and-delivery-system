@@ -14,6 +14,7 @@ import com.onlinefood.dto.RestaurantResponseDTO;
 import com.onlinefood.dto.RestaurantSignupDTO;
 import com.onlinefood.entities.Category;
 import com.onlinefood.entities.Order;
+import com.onlinefood.entities.OrderDetails;
 
 public interface RestaurantService {
 
@@ -35,8 +36,10 @@ public interface RestaurantService {
 
 	public ApiResponse removeMenu(Long menuId);
 
-	public OrderDTOforRestaurant getMyPendingOrder(Long restaurantId);
+	public List<OrderDTOforRestaurant> getMyPendingOrder(Long restaurantId);
 	
+	public List<OrderDTOforRestaurant> getMyPastOrder(Long restaurantId);
+
 	public ApiResponse changeOrderStatus(Long orderId);
 	
 	public ApiResponse OrderReadyForPickUp(Long orderId);
@@ -51,6 +54,7 @@ public interface RestaurantService {
 	
 	public RestaurantResponseDTO getMyRestaurant(String email);
 
+	public List<OrderDetailsDTO> getOrderDetails(Long OrderId);
 //	public List<Order> getOrderList();
 	
 	public List<OrderDetailsDTO> getOrderDetails(Long OrderId);
