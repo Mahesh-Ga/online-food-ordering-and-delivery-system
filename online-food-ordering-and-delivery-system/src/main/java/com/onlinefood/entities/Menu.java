@@ -14,6 +14,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
@@ -57,10 +58,13 @@ public class Menu extends BaseEntity {
 
 	@Column
 	private boolean isDeleted;
+	
 	@ManyToOne
 	@JoinColumn(name = "restaurant_id")
+	@JsonIgnore
 	private Restaurant restaurant;
 	
+	@JsonIgnore
 	@OneToMany( mappedBy = "menu" ,cascade = CascadeType.ALL,orphanRemoval = true)
 	private List<OrderDetails> orderDetails;
 	

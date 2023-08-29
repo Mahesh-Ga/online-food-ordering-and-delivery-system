@@ -57,6 +57,8 @@ public interface RestaurantService {
 	public List<OrderDetailsDTO> getOrderDetails(Long OrderId);
 //	public List<Order> getOrderList();
 	
+	public List<OrderDetailsDTO> getOrderDetails(Long OrderId);
+	
 	List<RestaurantResponseDTO> searchRestaurant(String query);
 	List<GetMenuDTO> searchMenu(String query, Category category);
 	

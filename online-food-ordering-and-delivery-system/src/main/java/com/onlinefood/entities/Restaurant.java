@@ -29,7 +29,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString(exclude = { "menuList", "orderList" })
+@ToString(exclude = { "menuList", "orderList","user" })
 public class Restaurant extends BaseEntity {
 	
 	@Column(name = "restaurant_name", length = 100)

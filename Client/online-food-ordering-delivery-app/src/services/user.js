@@ -122,3 +122,50 @@ export async function deleteCustomerProfile() {
 }
 
 
+export async function allOrdersForCustomer() {
+    const url = createUrl('/customer/allOrders')
+    const token = sessionStorage.getItem("token")
+
+    const headers = {
+        Authorization: `Bearer ${token}`,
+    };
+  
+    try {
+        const response = await axios.get(url,{ headers })
+        return response.data
+    } catch (ex) {
+        return ex.response.data
+    }
+}
+
+export async function giveFeedback(menuId, orderId , rating) {
+    const url = createUrl('/customer/feedback/' + menuId + "/" + orderId + "/" + rating)
+    const token = sessionStorage.getItem("token")
+
+    const headers = {
+        Authorization: `Bearer ${token}`,
+    };
+  
+    try {
+        const response = await axios.put(url,{} , { headers })
+        return response.data
+    } catch (ex) {
+        return ex.response.data
+    }
+}
+
+export async function completeFeedback(orderId) {
+    const url = createUrl('/customer/feedback/complete/'+ orderId )
+    const token = sessionStorage.getItem("token")
+
+    const headers = {
+        Authorization: `Bearer ${token}`,
+    };
+  
+    try {
+        const response = await axios.put(url,{} , { headers })
+        return response.data
+    } catch (ex) {
+        return ex.response.data
+    }
+}

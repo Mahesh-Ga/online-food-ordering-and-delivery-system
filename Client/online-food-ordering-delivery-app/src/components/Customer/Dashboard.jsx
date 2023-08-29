@@ -1,7 +1,7 @@
 import axios from "axios";
-import { getAllMenu, getMenuByCategory } from "../../services/menu";
+import { getAllMenu} from "../../services/menu";
 import { getAllRestaurants } from "../../services/restaurant";
-import { log } from "../../utilities/utils";
+import { createUrl, log } from "../../utilities/utils";
 import "./Dashboard.css";
 import "./VegToggleButton.css";
 import { useEffect, useState } from "react";
@@ -30,7 +30,7 @@ function Dashboard() {
 
   const handleMenuSearch = async () => {
     try {
-      let url = `https://localhost:7070/restaurant/menu/search?query=${query}`;
+      let url =  createUrl(`/restaurant/menu/search?query=${query}`);
  
       if (isVegMenu) {
         url += "&category=VEG";
@@ -45,7 +45,7 @@ function Dashboard() {
   const handleRestaurantSearch = async () => {
     try {
       const response = await axios.get(
-        `https://localhost:7070/restaurant/search?query=${query}`
+        createUrl(`/restaurant/search?query=${query}`)
       );
       setRestaurantResults(response.data);
     } catch (error) {
@@ -111,9 +111,9 @@ function Dashboard() {
                       value={query}
                       onChange={onChangeQuery}
                     />
-                    <a href="#" className="search-icon">
+                    <button className="search-icon">
                       <i className="fa fa-search"></i>
-                    </a>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -156,7 +156,8 @@ function Dashboard() {
               className="col-xs-10 col-sm-10 col-md-10 col-lg-10"
               style={{
                 backgroundColor: "#eee",
-                boxShadow: "1px 2px 9    px #F4AAB9",
+                boxShadow: "1px 2px 9px #F4AAB9",
+                minHeight: "40vh"
               }}
             >
               {/* {isVegMenu ? (
@@ -360,7 +361,7 @@ function Dashboard() {
                             <img
                               src={`https://localhost:7070/restaurant/menuImage/${menu.id}`}
                               className="card-img-top"
-                              alt={`${menu.name + " " + "image"}`}
+                              alt={`${menu.name}`}
                             />
                             <div className="card-body">
                               <h5 className="card-title">{menu.name}</h5>
@@ -374,13 +375,13 @@ function Dashboard() {
                                   <img
                                     className="menu-type-img"
                                     src="http://localhost:3000/assets/veg_symbol.png"
-                                    alt={`${menu.name + " " + "image"}`}
+                                    alt={`${menu.name}`}
                                   />
                                 ) : (
                                   <img
                                     className="menu-type-img"
                                     src="http://localhost:3000/assets/non-veg.jpg"
-                                    alt={`${menu.name + " " + "image"}`}
+                                    alt={`${menu.name}`}
                                   />
                                 )}
                               </div>
@@ -423,7 +424,7 @@ function Dashboard() {
                             <img
                               src={`https://localhost:7070/restaurant/menuImage/${menu.id}`}
                               className="card-img-top"
-                              alt={`${menu.name + " " + "image"}`}
+                              alt={`${menu.name}`}
                             />
                             <div className="card-body">
                               <h5 className="card-title">{menu.name}</h5>
@@ -437,13 +438,13 @@ function Dashboard() {
                                   <img
                                     className="menu-type-img"
                                     src="http://localhost:3000/assets/veg_symbol.png"
-                                    alt={`${menu.name + " " + "image"}`}
+                                    alt={`${menu.name}`}
                                   />
                                 ) : (
                                   <img
                                     className="menu-type-img"
                                     src="http://localhost:3000/assets/non-veg.jpg"
-                                    alt={`${menu.name + " " + "image"}`}
+                                    alt={`${menu.name}`}
                                   />
                                 )}
                               </div>
@@ -508,7 +509,7 @@ function Dashboard() {
                         <img
                           src={`https://localhost:7070/restaurant/restaurantImage/${rest.id}`}
                           className="card-img-top"
-                          alt={`image for ${rest.restaurantName}`}
+                          alt={`${rest.restaurantName}`}
                         />
                         <div className="card-body">
                           <h5 className="card-title">{rest.restaurantName}</h5>
@@ -549,7 +550,7 @@ function Dashboard() {
                         <img
                           src={`https://localhost:7070/restaurant/restaurantImage/${rest.id}`}
                           className="card-img-top"
-                          alt={`image for ${rest.restaurantName}`}
+                          alt={`${rest.restaurantName}`}
                         />
                         <div className="card-body">
                           <h5 className="card-title">{rest.restaurantName}</h5>

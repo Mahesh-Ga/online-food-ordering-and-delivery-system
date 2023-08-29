@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -45,7 +46,7 @@ public class Customer extends BaseEntity {
 	@OneToMany( mappedBy = "customer" , cascade = CascadeType.MERGE,  orphanRemoval = true)
 	private List<CustomerAddress> addrList = new ArrayList<>();
 
-	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
 	private List<Order> orderList = new ArrayList<>();
 	
 	@OneToOne

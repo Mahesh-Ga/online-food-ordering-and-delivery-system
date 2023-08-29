@@ -2,7 +2,9 @@ import axios from 'axios'
 import { createUrl, log } from '../utilities/utils'
 
 export async function addCartItem(menuItemId) {
+    
     const url = createUrl('/cart/add/' + menuItemId)
+    log(url)
     const token = sessionStorage.getItem("token")
 
     const headers = {
