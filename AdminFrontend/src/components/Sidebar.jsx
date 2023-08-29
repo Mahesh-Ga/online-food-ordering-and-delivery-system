@@ -26,12 +26,6 @@ function Sidebar() {
                         Dashboard
                     </span>
                 </a>
-                <a className='list-group-item py-2'  style={{backgroundColor:"lightgray"}} onClick={()=>{navigate('/users');}}>
-                    <i className='bi bi-people fs-5 me-3'>
-
-                    </i>
-                    <span >Customers</span>
-                </a>
                 <a className='list-group-item py-2' style={{backgroundColor:"lightgray"}} onClick={()=>{navigate('/reaustarants')}} >
                     <i className='bi-r-square-fill fs-5 me-3'>
                     </i>

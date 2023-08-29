@@ -39,7 +39,7 @@ function Home() {
   
       const response = await getAllActiveRestaurants(token)
       debugger  
-      if(response.status == 200) {
+      if(response != null && response.status == 200) {
           debugger;
           setRestaurant(response.data);  
         }
@@ -69,6 +69,7 @@ function Home() {
         else{
           debugger;
         }
+
     }
     const loadTotalSale = async()=>{
       const response = await getTotalSale(token)
@@ -140,7 +141,7 @@ function Home() {
             </div>
             
             <div className="accordion" id="accordionExample" >
-            <h2 style={{ textAlign: 'center', margin: 10 }}>Orders</h2>
+            <h2 style={{ textAlign: 'center', margin: 10 }}>Restaurants</h2>
            
             
             {
@@ -164,7 +165,7 @@ function Home() {
 
                   <div className="col-md-6">
                     <label for="email" className="form-label">Email</label>
-                    <input type="email" className="form-control" id="email" value={restaurant.email} readOnly />
+                    <input type="email" className="form-control" id="email" value={restaurant.user.email} readOnly />
                   </div>
 
                   <div className="col-md-6">

@@ -38,7 +38,7 @@ import com.onlinefood.service.CustomerService;
 @RestController
 @RequestMapping("/customer")
 @Validated
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = { "${adminreact.url}", "${deliveryreact.url}","${restaurant.url}","{customer.url}"})
 public class CustomerController {
 
 	@Autowired

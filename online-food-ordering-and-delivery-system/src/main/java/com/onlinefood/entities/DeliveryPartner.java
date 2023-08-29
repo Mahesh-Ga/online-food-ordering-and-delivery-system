@@ -40,15 +40,8 @@ public class DeliveryPartner extends BaseEntity{
 	@Column(length = 20)
 	private String lastName;
 	
-//	@Column(length = 50, unique = true, nullable = false) 
-//	private String email;
-//	
-//	@Column(length = 20, nullable = false) 
-//	@JsonProperty(access = Access.WRITE_ONLY)
-//	private String password;
-//	
 	@Column(length = 15, unique = true) 
-	private String mobile_no;
+	private String mobileNumber;
 	
 	@Column(length = 20, unique = true) 
 	private String vehicleNumber;
@@ -58,10 +51,6 @@ public class DeliveryPartner extends BaseEntity{
 	
 	@Column
 	private double earnings;
-//	
-//	@OneToOne
-//	@JoinColumn(name = "address_id")
-//	private CustomerAddress address;
 	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "user_id" )
@@ -76,6 +65,5 @@ public class DeliveryPartner extends BaseEntity{
 	@Enumerated(EnumType.STRING)
 	@Column(length = 20)
 	private Status status;
-
     
 }

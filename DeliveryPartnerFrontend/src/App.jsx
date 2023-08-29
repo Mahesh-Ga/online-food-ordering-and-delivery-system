@@ -11,6 +11,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import { setToken } from './features/tokenSlice'
 import PastOrders from './components/PastOrders'
 import Profile from './components/Profile'
+import Register from './components/Register'
 
 function App() {
   const dispatch = useDispatch()
@@ -34,8 +35,9 @@ function App() {
             <Routes>
     
             <Route path="/profile" exact element={<ProtectedRoute component={Profile}/>}></Route>
-            <Route path="/pastOrders" exact element={<ProtectedRoute component={PastOrders}/>}></Route>
+            <Route path="/past-orders" exact element={<ProtectedRoute component={PastOrders}/>}></Route>
             <Route path="/home" exact element={<ProtectedRoute component={Home}/>}></Route>
+            <Route path="/register-customer" Component={Register}></Route>
             
             <Route path="/*" Component={Login}></Route>
             </Routes>

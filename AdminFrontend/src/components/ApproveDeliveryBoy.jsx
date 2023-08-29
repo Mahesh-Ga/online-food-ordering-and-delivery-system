@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import '../style.css'
-import { approveRestaurant, pendingRestaurants, rejectRestaurant } from '../services/restaurantService';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { approveDeliveryPartner, pendingDeliveryPartners, rejectDeliveryPartner } from '../services/deliveryService';

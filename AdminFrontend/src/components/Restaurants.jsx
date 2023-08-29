@@ -26,7 +26,7 @@ const token = useSelector((state)=>state.token.tokenValue)
 
     const response = await getAllActiveRestaurants(token)
     debugger  
-    if(response.status == 200) {
+    if(response != null && response.status == 200) {
         debugger;
         setRestaurant(response.data);  
       }
@@ -38,7 +38,7 @@ const token = useSelector((state)=>state.token.tokenValue)
 
   const remove = async(id) => {
    const response = await removeRestaurant(id)
-      if(response.status ==200) {
+      if(response != null && response.status ==200) {
        toast.success("successfully removed")
         loadData();
       }
