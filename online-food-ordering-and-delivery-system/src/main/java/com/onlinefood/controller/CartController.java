@@ -26,7 +26,7 @@ import com.onlinefood.service.CartService;
 @RestController
 @RequestMapping("/cart")
 @Validated
-@CrossOrigin(origins = {"http://localhost:3000","http://localhost:3001"})
+@CrossOrigin(origins = { "${adminreact.url}", "${deliveryreact.url}","${restaurant.url}","{customer.url}"})
 public class CartController {
 
 	@Autowired
