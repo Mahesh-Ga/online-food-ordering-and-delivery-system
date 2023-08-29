@@ -27,6 +27,9 @@ function Login() {
       if(authorities === "ROLE_CUSTOMER") {
          navigate("/dashboard");
       }
+      else  {
+        toast.error("Unauthorised access");
+      }
     } else {
       if (response.message) {
         toast.error(response.message);
