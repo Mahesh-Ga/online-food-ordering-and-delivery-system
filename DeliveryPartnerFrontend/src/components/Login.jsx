@@ -5,7 +5,6 @@ import { toast } from "react-toastify"
 import { login } from "../features/authSlice"
 import { signIn } from "../services/loginService"
 import { setToken } from "../features/tokenSlice"
-import { setToggle } from "../features/toggleSlice"
 
 function Login(){
 
@@ -38,7 +37,6 @@ function Login(){
          dispatch(setToken(jwt))
          debugger
         toast.success(`Welcome ${email} to online food ordering and delivery application`)
-          dispatch(setToggle())
           navigate('/home')
 
         } else {
@@ -50,9 +48,7 @@ function Login(){
 
     return <>
         <div>
-      <h1 style={{ textAlign: 'center', margin: 10 }}>Welcome To Admin Page</h1>
-      <br></br>
-      <br></br>
+      <h2 style={{ textAlign: 'center', margin: 10 }}>Login as a Delivery Partner</h2>
       <br></br>
       <br></br>
       

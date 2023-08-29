@@ -25,5 +25,9 @@ public class OrderDetailsDTO {
 
 
 	
+	private double priceAtOrder;
+	private String menuName;
+
+	
 }
 

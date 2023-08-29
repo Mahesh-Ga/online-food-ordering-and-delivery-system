@@ -1,3 +1,4 @@
+
 package com.onlinefood.entities;
 
 import javax.persistence.CascadeType;
