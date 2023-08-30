@@ -209,6 +209,25 @@ public class RestaurantServiceImpl implements RestaurantService {
 		} else
 			return null;
 	}
+	
+	
+@Override	
+	public List<GetMenuDTO> getAllMenuOfMyRestaurant(Long restaurantId) {
+		ModelMapper extraMapper = new ModelMapper();
+		extraMapper.addConverter(new MenuToGetMenuConvertor());
+		Optional<Restaurant> restaurant = Optional.of(resRepo.findById(restaurantId)
+				.orElseThrow(() -> new ResourceNotFoundException("Invalid Restaurant Id")));
+		if (restaurant.isPresent()) {
+			List<GetMenuDTO> menuDTOList = menuRepo.findByRestaurantIdAndIsDeletedFalse(restaurantId).stream()
+					.map(menu -> extraMapper.map(menu, GetMenuDTO.class)).collect(Collectors.toList());
+//			for (GetMenuDTO menuDTO : menuDTOList) {
+//				customerService.setRatingToMenu(menuDTO.getId());
+//			}
+			return menuDTOList;
+		} else
+			return null;
+	}
+
 
 	@Override
 	public GetMenuDTO getMenuById(Long menuId) {
@@ -359,7 +378,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 		// menu found --> PERSISTENT
 		// store the image on server side folder
 		String path = menuFolderLocation.concat(image.getOriginalFilename());
-		// System.out.println(path);
+	System.out.println(path);
 		// Use FileUtils method : writeByte[] --> File
 		FileUtils.writeByteArrayToFile(new File(path), image.getBytes());
 		// set image path
@@ -384,6 +403,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 		// menu found --> PERSISTENT
 		// store the image on server side folder
 		String path = restaurantFolderLocation.concat(image.getOriginalFilename());
+		
 		// System.out.println(path);
 		// Use FileUtils method : writeByte[] --> File
 		FileUtils.writeByteArrayToFile(new File(path), image.getBytes());
@@ -474,7 +494,8 @@ public List<OrderDetailsDTO> getOrderDetails(Long OrderId) {
     //List<OrderDetails> orderDt=orderDetailsRepo.findByOrder(order);
 	//System.out.println(order.toString());
 	List<OrderDetails> orderDetails = order.getOrderDetails();
-	List<OrderDetailsDTO> orderDetailsList =orderDetails.stream().map(m->mapper.map(m, OrderDetailsDTO.class)).collect(Collectors.toList());
+	List<OrderDetailsDTO> orderDetailsList =orderDetails.stream()
+			.map(m->mapper.map(m, OrderDetailsDTO.class)).collect(Collectors.toList());
      System.out.println(orderDetailsList.toString());
 	return orderDetailsList;
 }

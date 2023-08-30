@@ -82,5 +82,7 @@ public interface RestaurantService {
 	public RestaurantOrderPriceResponse getMyTotalEarnings(Long restaurantId) ;
 	
 	public RestaurantOrderPriceResponse getMyEarningsPerOrder(Long restaurantId);
-	
+
+	public List<GetMenuDTO> getAllMenuOfMyRestaurant(Long restaurantId);
+		
 }
