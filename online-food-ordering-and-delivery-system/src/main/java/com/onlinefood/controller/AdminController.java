@@ -28,7 +28,7 @@ import com.onlinefood.service.RestaurantService;
 
 @RestController
 @RequestMapping("/admin")
-@CrossOrigin(origins = {"http://localhost:3000","http://localhost:3001"}, 
+@CrossOrigin(origins = {"http://localhost:3000","http://localhost:3001","http://localhost:3002"}, 
 methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE}, 
 allowedHeaders = {"Authorization", "Content-Type"})
 public class AdminController {

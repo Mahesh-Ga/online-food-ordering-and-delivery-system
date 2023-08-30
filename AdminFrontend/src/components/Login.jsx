@@ -27,10 +27,12 @@ function Login(){
         toast.error('Please enter password')
       } else {
         const response = await signIn(email,password);
+        if (response != null && response['status'] == 200) {
+        
+        debugger
          const decodedToken = jwtDecode(response.data.jwt);
         const authorities = decodedToken.authorities;
         if(authorities === "ROLE_ADMIN") {
-        if (response != null && response['status'] == 200) {
         const { jwt } = response['data']
   
            sessionStorage['token'] = jwt
@@ -43,12 +45,14 @@ function Login(){
           dispatch(setToggle())
           navigate('/home')
 
-        } else {
-          toast.error('Invalid user name or password')
         }
-      }else {
+      else {
         toast.error("Unauthorized Access")
       }
+    } else {
+      toast.error('Invalid user name or password')
+    }
+
     }
     }
   

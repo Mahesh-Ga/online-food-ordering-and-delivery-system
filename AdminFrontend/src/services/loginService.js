@@ -16,6 +16,7 @@ export const signIn = async(email,password)=>{
      log(response.data)
      return response
   }catch(ex) {
+    debugger
     log(ex)
     return null
   }

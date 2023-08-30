@@ -37,7 +37,7 @@ const token = useSelector((state)=>state.token.tokenValue)
 
 
   const remove = async(id) => {
-   const response = await removeRestaurant(id)
+   const response = await removeRestaurant(id,token)
       if(response != null && response.status ==200) {
        toast.success("successfully removed")
         loadData();
