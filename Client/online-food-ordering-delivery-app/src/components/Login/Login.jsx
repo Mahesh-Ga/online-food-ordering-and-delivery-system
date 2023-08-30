@@ -9,8 +9,6 @@ import { useDispatch } from "react-redux";
 import { login } from "../../features/authSlice";
 import jwtDecode from "jwt-decode";
 
-
-
 function Login() {
   const [cred, setCred] = useState({ email: "", password: "" });
   const navigate = useNavigate();
@@ -18,28 +16,30 @@ function Login() {
 
   const validateData = async () => {
     const response = await loginUser(cred.email, cred.password);
-    if(response){
-    if (response.jwt !== null && response.jwt !== undefined) {
-      sessionStorage.setItem("token", response.jwt);
-      const decodedToken = jwtDecode(response.jwt);
-      const authorities = decodedToken.authorities;
-      dispatch(login());
-      if(authorities === "ROLE_CUSTOMER") {
-         navigate("/dashboard");
-      }
-      else  {
-        toast.error("Unauthorised access");
+
+    if (response) {
+      if (response.jwt !== null && response.jwt !== undefined) {
+        sessionStorage.setItem("token", response.jwt);
+
+        const decodedToken = jwtDecode(response.jwt);
+        const authorities = decodedToken.authorities;
+        log(authorities)
+        dispatch(login());
+        if (authorities === "ROLE_CUSTOMER") {
+          navigate("/dashboard");
+        } else {
+          toast.error("Unauthorized Access");
+        }
+      } else {
+        if (response.message) {
+          toast.error(response.message);
+        } else {
+          toast.error(response.email || response.password);
+        }
       }
     } else {
-      if (response.message) {
-        toast.error(response.message);
-      } else {
-        toast.error(response.email || response.password);
-      }
-    }}else{
-      toast.error("Server Error")
+      toast.error("Server Error");
     }
-    
   };
 
   const textChange = (args) => {
@@ -128,6 +128,33 @@ function Login() {
               Don't have an account?{" "}
               <Link to="/register-customer">Register here</Link>
             </h6>
+            <div class="btn-group" style={{ width: "15vh" }}>
+              <button
+                type="button"
+                className="btn btn-info dropdown-toggle mt-3"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Login As
+              </button>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="dropdown-item" href="http://localhost:3002">
+                    Admin
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="http://localhost:3001">
+                    Restaurant
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="http://localhost:3003">
+                    Delivery Partner
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>

@@ -1,0 +1,33 @@
+{
+  "restaurantName": "Rest1",
+  "cuisine": "INDIAN",
+  "email": "rest1@gmail.com",
+  "password": "Res@1234",
+  "mobileNumber": "1234567890",
+  "fssai": "123123132",
+  "address": {
+    "streetAddressLine1": "string",
+    "streetAddressLine2": "string",
+    "city": "string",
+    "state": "string",
+    "postalCode": "string",
+    "country": "string"
+  }
+}
+
+
+{
+  "name": "Cocacola",
+  "menuType": "APPETIZERS",
+  "category": "VEG",
+  "price": 10
+}
+
+{
+  "firstName": "mahesh",
+  "lastName": "galande",
+  "email": "mahesh@gmail.com",
+  "password": "Mahesh@123",
+  "confirmPassword": "Mahesh@123",
+  "mobile_no": "1234567890"
+}

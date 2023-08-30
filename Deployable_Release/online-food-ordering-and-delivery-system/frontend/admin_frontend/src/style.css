@@ -1,0 +1,9 @@
+.list-group a:hover{
+    background-color: gray;
+    color: black;
+
+}
+
+.backgroundStyle{
+    background-color: lightgray;
+}

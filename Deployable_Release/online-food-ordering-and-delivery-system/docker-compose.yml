@@ -1,0 +1,69 @@
+version: '3'
+services:
+  frontend-admin:
+    build:
+      context: .
+      dockerfile: frontend/admin_frontend/Dockerfile
+    ports:
+      - "3002:3002"
+    networks:
+      - my-network
+
+  frontend-customer:
+    build:
+      context: .
+      dockerfile: frontend/customer_frontend/Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - my-network
+
+  frontend-delivery_partner:
+    build:
+      context: .
+      dockerfile: frontend/delivery_partner_frontend/Dockerfile
+    ports:
+      - "3003:3003"
+    networks:
+      - my-network      
+
+  frontend-restaurant:
+    build:
+      context: .
+      dockerfile: frontend/restaurant_frontend/Dockerfile
+    ports:
+      - "3001:3001"
+    networks:
+      - my-network 
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/online-food-ordering-and-delivery-system/Dockerfile
+    ports:
+      - "7070:7070"
+    environment:
+      MYSQL_HOST: db
+      MYSQL_PORT: 3306
+      MYSQL_PASSWORD: manager
+    depends_on:
+      - db
+    networks:
+      - my-network
+
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: manager
+      MYSQL_DATABASE: food
+    volumes:
+      - ./db_data/db:/var/lib/mysql
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
+
+# volumes:
+#   db-data:

@@ -6,6 +6,7 @@ import { login } from "../features/authSlice"
 import { signIn } from "../services/loginService"
 import { setToken } from "../features/tokenSlice"
 import { setToggle } from "../features/toggleSlice"
+import jwtDecode from "jwt-decode"
 
 function Login(){
 
@@ -26,8 +27,9 @@ function Login(){
         toast.error('Please enter password')
       } else {
         const response = await signIn(email,password);
-        
-        debugger;
+         const decodedToken = jwtDecode(response.data.jwt);
+        const authorities = decodedToken.authorities;
+        if(authorities === "ROLE_ADMIN") {
         if (response != null && response['status'] == 200) {
         const { jwt } = response['data']
   
@@ -44,7 +46,10 @@ function Login(){
         } else {
           toast.error('Invalid user name or password')
         }
+      }else {
+        toast.error("Unauthorized Access")
       }
+    }
     }
   
 
