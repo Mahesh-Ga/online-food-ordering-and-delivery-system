@@ -249,7 +249,7 @@ debugger
           <div className='mb-3'>
           <div class="form-check">
   <input class="form-check-input" type="radio"  id="flexRadioDefault1"
-  value="VEG" 
+  value="VEG" name='aaa'
   checked={category === 'VEG'} 
   onChange={(e) => setCategory(e.target.value)} />
   <label class="form-check-label" >
@@ -258,7 +258,7 @@ debugger
 </div>
 <div class="form-check">
   <input class="form-check-input" type="radio"  id="flexRadioDefault2"
-  value="VEG" 
+  value="NONVEG" name='aaa'
   checked={category === 'NONVEG'} 
   onChange={(e) => setCategory(e.target.value)} />
   <label class="form-check-label">

@@ -129,7 +129,7 @@ public class RestaurantController {
 
 	@GetMapping("/menubyResId/{resId}")
 	public ResponseEntity<?> getMenu(@PathVariable Long resId) {
-		List<GetMenuDTO> menuList = restaurantService.getAllMenuByRestaurantId(resId);
+		List<GetMenuDTO> menuList = restaurantService.getAllMenuOfMyRestaurant(resId);
 		
 		return new ResponseEntity<>(menuList, HttpStatus.OK);
 	}
