@@ -73,7 +73,7 @@ public class RestaurantController {
 	public ResponseEntity<String> changePassword(@RequestBody @Valid RestaurantChangePasswordRequestDTO changePasswordRequest) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String userEmail = authentication.getName();
-        System.out.println(userEmail);
+//        System.out.println(userEmail);
 		return restaurantService.changeRestaurantPassword(userEmail, changePasswordRequest.getOldPassword(),
 				changePasswordRequest.getNewPassword());
 
@@ -149,7 +149,7 @@ public class RestaurantController {
 
 	@DeleteMapping("/menu/{menuId}")
 	public ResponseEntity<?> removeMenu(@PathVariable Long menuId) {
-		System.out.println("inside delete menu ");
+//		System.out.println("inside delete menu ");
 		return ResponseEntity.ok(restaurantService.removeMenu(menuId));
 	}
 

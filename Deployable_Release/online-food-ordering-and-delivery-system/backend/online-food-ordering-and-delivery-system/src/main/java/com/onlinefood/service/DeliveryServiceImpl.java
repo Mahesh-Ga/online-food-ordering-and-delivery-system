@@ -59,12 +59,12 @@ public class DeliveryServiceImpl implements DeliveryService{
 	
 	@Override
 	public ResponseEntity<?> acceptOrder(Long orderId,String email) {
-		System.out.println(email);
+//		System.out.println(email);
 		Order order = orderrepo.findById(orderId).orElseThrow();
 		User user = userRepo.findByEmail(email).orElseThrow();
 		DeliveryPartner delivery = deliveryrepo.findByUser(user);
 		order.setDeliveryPartner(delivery);
-		System.out.println();
+//		System.out.println();
 		return ResponseEntity.status(HttpStatus.OK).body("sucessfully accepted");
 		}
 
@@ -117,7 +117,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 	    .forEach(index -> ordersPending.get(index)
 	    		.setOrderId(orderList.get(index).getId()));
 		
-		System.out.println(ordersPending.toString());
+//		System.out.println(ordersPending.toString());
 		return ordersPending;
 		
 	}
@@ -146,7 +146,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 	    .forEach(index -> ordersPending.get(index)
 	    		.setOrderId(orderList.get(index).getId()));
 		
-		System.out.println(ordersPending.toString());
+//		System.out.println(ordersPending.toString());
 		return ordersPending;
 		
 	}
@@ -217,7 +217,7 @@ public List<OrderDTOforRestaurant> getPastOrder(String email) {
     .forEach(index -> pastorders.get(index)
     		.setOrderId(orderList.get(index).getId()));
 	
-	System.out.println(pastorders.toString());
+//	System.out.println(pastorders.toString());
 	return pastorders;
 }
 
