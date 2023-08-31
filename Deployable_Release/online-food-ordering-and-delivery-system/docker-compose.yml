@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: frontend/admin_frontend/Dockerfile
     ports:
-      - "3002:3002"
+      - "3002:80"
     networks:
       - my-network
 
@@ -14,7 +14,7 @@ services:
       context: .
       dockerfile: frontend/customer_frontend/Dockerfile
     ports:
-      - "3000:3000"
+      - "3000:80"
     networks:
       - my-network
 
@@ -23,7 +23,7 @@ services:
       context: .
       dockerfile: frontend/delivery_partner_frontend/Dockerfile
     ports:
-      - "3003:3003"
+      - "3003:80"
     networks:
       - my-network      
 
@@ -32,7 +32,7 @@ services:
       context: .
       dockerfile: frontend/restaurant_frontend/Dockerfile
     ports:
-      - "3001:3001"
+      - "3001:80"
     networks:
       - my-network 
 
