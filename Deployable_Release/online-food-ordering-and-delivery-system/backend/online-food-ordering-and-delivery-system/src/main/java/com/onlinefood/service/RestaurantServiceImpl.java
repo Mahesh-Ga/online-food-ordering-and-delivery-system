@@ -269,7 +269,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 				
 		IntStream.range(0, orderList.size())
 	    .forEach(index -> ordersPending.get(index).setOrderId(orderList.get(index).getId()));
-		System.out.println(ordersPending.toString());
+//		System.out.println(ordersPending.toString());
 		return ordersPending;
 		
 	}
@@ -327,7 +327,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 				
 		IntStream.range(0, orderList.size())
 	    .forEach(index -> ordersPending.get(index).setOrderId(orderList.get(index).getId()));
-		System.out.println(ordersPending.toString());
+//		System.out.println(ordersPending.toString());
 		return ordersPending;
 		
 	}
@@ -469,13 +469,13 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 @Override
 public List<OrderDetailsDTO> getOrderDetails(Long OrderId) {
-	System.out.println("inside getOrderDetails" + OrderId);
+//	System.out.println("inside getOrderDetails" + OrderId);
 	Order order=orderRepo.findById(OrderId).orElseThrow(() -> new ResourceNotFoundException("Invalid order ID!!!!"));
     //List<OrderDetails> orderDt=orderDetailsRepo.findByOrder(order);
 	//System.out.println(order.toString());
 	List<OrderDetails> orderDetails = order.getOrderDetails();
 	List<OrderDetailsDTO> orderDetailsList =orderDetails.stream().map(m->mapper.map(m, OrderDetailsDTO.class)).collect(Collectors.toList());
-     System.out.println(orderDetailsList.toString());
+//     System.out.println(orderDetailsList.toString());
 	return orderDetailsList;
 }
 

@@ -30,7 +30,7 @@ public class PaymentController {
 			String clientSecret = paymentService.createPaymentIntent(order);
 			return ResponseEntity.ok(clientSecret);
 		} catch (StripeException e) {
-			System.out.println(e);
+//			System.out.println(e);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Payment intent creation failed.");
 		}
 	}

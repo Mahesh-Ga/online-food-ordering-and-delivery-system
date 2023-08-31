@@ -87,7 +87,7 @@ public class CartServiceImpl implements CartService {
 		Menu menuItem = menuRepo.findById(menuItemId)
 				.orElseThrow(() -> new ResourceNotFoundException("Invalid menu Id"));
 		Cart cart = getCart(email);
-		System.out.println(cart.getRestaurant());
+//		System.out.println(cart.getRestaurant());
 		if (cart.getRestaurant() == null) {
 			cart.setRestaurant(menuItem.getRestaurant());
 			cartRepo.save(cart);

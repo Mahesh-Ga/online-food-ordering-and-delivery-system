@@ -99,7 +99,7 @@ public class DeliveryController {
 
 	@GetMapping("/customer/{id}")
 	public CustomerRespDTO getCustomer(@PathVariable Long id) {
-		System.out.println("in get customer ");
+//		System.out.println("in get customer ");
 		return deliveryservice.getCustomer(id);
 
 	}
